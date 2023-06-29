@@ -5,6 +5,7 @@ import getSwaggerOptions from "../docs/head.js";
 
 import teste from "./testeRoutes.js";
 import usuario from "../routes/usuarioRoutes.js";
+import login from "../routes/loginRoutes.js";
 
 export const logRoutes = (req,res,next) => {
 	const timestamp = new Date().toISOString();
@@ -31,7 +32,8 @@ const routes = (app) => {
 
 	app.use(
 		teste,
-		usuario
+		usuario,
+		login
 	);
 
 	app.use((req,res,next) => {

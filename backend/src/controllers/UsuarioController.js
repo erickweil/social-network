@@ -22,27 +22,33 @@ export default class UsuarioControler {
 	
 	static async cadastrarUsuario(req,res) {
 		try {
-			let usuarioExiste = await usuarios.findOne({
-				email: req.body.email
-			});
-	
-			if (usuarioExiste) {
-				return res.status(400).json({ error: true, message: "E-mail já cadastrado!" });
+			const nome = req.body.nome;
+			const email = req.body.email;
+			const senha = req.body.senha;
+
+			if(!nome || !email || !senha) {
+				return res.status(400).json({ error: true, message: "Preencha todos os campos" });
 			}
 	
-			let usuario = await usuarios.create({
-				nome: req.body.nome,
-				email: req.body.email,
-				senha: req.body.senha,
+			let resultCriar = await usuarios.criarUsuario({
+				nome: nome,
+				email: email,
+				senha: senha,
 			});
 	
-			if(!usuario) {
-				return res.status(500).json({ error: true, message: "Erro nos dados, confira e repita" });
+			if(!resultCriar.sucesso) {
+				return res.status(500).json({ error: true, message: resultCriar.erro });
 			}
-	
-			let result = await usuario.save();
-	
-			return res.status(201).json({ _id: result.id });
+
+			const usuario = resultCriar.usuario;
+
+			return res.status(201).json({
+				id: usuario.id,
+				nome: usuario.nome,
+				email: usuario.email,
+				biografia: usuario.biografia,
+				fotoPerfil: usuario.fotoPerfil
+			});
 		} catch (err) {
 			if (err.name === "ValidationError") {
 				let errors = {};

@@ -1,5 +1,6 @@
 import express from "express";
-import UsuarioControler from "../controller/UsuarioController.js";
+import UsuarioControler from "../controllers/UsuarioController.js";
+import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 
 const router = express.Router();
 
@@ -55,6 +56,8 @@ const router = express.Router();
  *   get:
  *     summary: Retorna uma lista de usuários
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de usuários
@@ -80,6 +83,8 @@ const router = express.Router();
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -95,8 +100,9 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Usuario'       
  */    
 
-router.get("/usuarios", UsuarioControler.listarUsuarios);
-router.get("/usuarios/:id", UsuarioControler.listarUsuarioPorId);
-router.post("/usuarios", UsuarioControler.cadastrarUsuario);
+router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
+router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);
+router.post("/usuarios", AuthMiddleware, UsuarioControler.cadastrarUsuario);
+
 
 export default router;
