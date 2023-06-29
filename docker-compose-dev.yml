@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:4.4.6
+    volumes:
+      - vol-db:/data/db
+  backend:
+    build:
+      context: ./backend
+      args:
+        NODE_ENV: "development"
+    entrypoint: "/bin/sh -c 'npm install && npm run dev'"
+    volumes:
+      - ./backend:/node-app/:rw
+      - nodemodules:/node-app/node_modules:rw
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - DB_URL=mongodb://mongo:27017
+volumes:
+  vol-db:
+  nodemodules:

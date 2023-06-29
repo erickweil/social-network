@@ -1,10 +1,10 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 
-import routes from "./routes/index.js";
+// TEM QUE SER O PRIMEIRO IMPORT PARA FAZER O DOTENV FUNCIONAR
+import db from "./config/dbConnect.js";
 
-dotenv.config();
+import routes from "./routes/index.js";
 
 const app = express();
 

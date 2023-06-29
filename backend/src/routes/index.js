@@ -4,6 +4,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 import getSwaggerOptions from "../docs/head.js";
 
 import teste from "./testeRoutes.js";
+import usuario from "../routes/usuarioRoutes.js";
 
 export const logRoutes = (req,res,next) => {
 	const timestamp = new Date().toISOString();
@@ -29,8 +30,13 @@ const routes = (app) => {
 	app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(getSwaggerOptions())));
 
 	app.use(
-		teste
+		teste,
+		usuario
 	);
+
+	app.use((req,res,next) => {
+		res.sendStatus(404);
+	});
 };
 
 export default routes;
