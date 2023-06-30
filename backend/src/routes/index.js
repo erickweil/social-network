@@ -20,9 +20,9 @@ export const logRoutes = (req,res,next) => {
 
 const routes = (app) => {
 
-	//if(LOG_ROUTES) {
+	if(process.env.DEBUGLOG === "true") {
 	app.use(logRoutes);
-	//}
+	}
 
 	app.get("/",(req, res) => {
 		res.status(200).redirect("/docs"); // redirecionando para documentação

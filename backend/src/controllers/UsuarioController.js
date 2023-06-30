@@ -63,25 +63,6 @@ export default class UsuarioControler {
 			if(!nome || !email || !senha) {
 				return res.status(400).json({ error: true, message: "Preencha todos os campos" });
 			}
-
-			//Validação da senha
-			//A ideia é que pode fazer senhas sem caracteres especiais só se for uma senha grande
-			let minimo = 8;
-			if(/^[0-9]*$/.test(senha)) {
-				minimo = 22;
-			} else if(/^[A-Z]*$/.test(senha) || /^[a-z]*$/.test(senha) ) {
-				minimo = 18;
-			} else if(/^[a-zA-Z]*$/.test(senha) || /^[A-Z0-9]*$/.test(senha) || /^[a-z0-9]*$/.test(senha)) {
-				minimo = 14;
-			} else if(/^[a-zA-Z0-9]*$/.test(senha)) {
-				minimo = 12;
-			} else {
-				minimo = 8;
-			}
-						
-			if(senha.length < minimo) {
-				return res.status(400).json({ error: true, validation: { senha: "A senha com este padrão deve conter no mínimo "+minimo+" caracteres"}});
-			}
 	
 			let resultCriar = await usuarios.criarUsuario({
 				nome: nome,
@@ -90,21 +71,30 @@ export default class UsuarioControler {
 			});
 	
 			if(!resultCriar.sucesso) {
-				return res.status(500).json({ error: true, message: resultCriar.erro });
+				return res.status(400).json({ error: true, validation: resultCriar.validation });
 			}
 
 			return res.status(201).json(usuarios.publicFields(resultCriar.usuario));
-		} catch (err) {
-			if (err.name === "ValidationError") {
-				let errors = {};
+		} catch (err) {	
+			res.status(500).send("Erro interno inesperado.");
+		}
+	}
+
+	static async atualizarUsuario(req,res) {
+		try {
+			const atualizar = req.body;
+
+			let resultAtualizar = await usuarios.atualizarUsuario(
+				req.usuario.id,
+				atualizar
+			);
 	
-				Object.keys(err.errors).forEach((key) => {
-					errors[key] = err.errors[key].message;
-				});
-	
-				return res.status(400).json({error: true, validation: errors});
+			if(!resultAtualizar.sucesso) {
+				return res.status(400).json({ error: true, validation: resultAtualizar.validation });
 			}
-	
+
+			return res.status(200).json(usuarios.publicFields(resultAtualizar.usuario));
+		} catch (err) {	
 			res.status(500).send("Erro interno inesperado.");
 		}
 	}

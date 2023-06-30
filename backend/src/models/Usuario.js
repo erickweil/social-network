@@ -71,27 +71,93 @@ Usuario.statics.fazerLogin = async function(email,senha) {
 };
 
 Usuario.statics.criarUsuario = async function(usuario_info) {
-	const usuario = await this.findOne({email:usuario_info.email});
+	try {
+		//Validação da senha
+		//A ideia é que pode fazer senhas sem caracteres especiais só se for uma senha grande
+		const senha = usuario_info.senha;
+		let minimo = 8;
+		if(/^[0-9]*$/.test(senha)) {
+			minimo = 22;
+		} else if(/^[A-Z]*$/.test(senha) || /^[a-z]*$/.test(senha) ) {
+			minimo = 18;
+		} else if(/^[a-zA-Z]*$/.test(senha) || /^[A-Z0-9]*$/.test(senha) || /^[a-z0-9]*$/.test(senha)) {
+			minimo = 14;
+		} else if(/^[a-zA-Z0-9]*$/.test(senha)) {
+			minimo = 12;
+		} else {
+			minimo = 8;
+		}
+					
+		if(senha.length < minimo) {
+			return {sucesso: false, validation: {senha: "A senha com este padrão deve conter no mínimo "+minimo+" caracteres"}};
+		}
 
-	if(usuario)
-	{
-		return {sucesso:false,erro:"Usuário já existe"};
+		const usuario = await this.findOne({email:usuario_info.email});
+
+		if(usuario)
+		{
+			return {sucesso:false,validation: {email: "Email já está em uso"}};
+		}
+		// No need to save salt
+		const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
+		const hashedPassword = await bcrypt.hash(usuario_info.senha,salt);
+		
+		// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
+
+		// go and save hashedPassword on db
+		const novoUsuario = await this.create({
+			nome: usuario_info.nome,
+			nomeASCII: anyAscii(usuario_info.nome).toLowerCase(),
+			email: usuario_info.email,
+			senha: hashedPassword
+		});
+
+		return {sucesso:true,usuario:novoUsuario};
+	} catch (err) {
+		if (err.name === "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+
+			return {sucesso: false, validation: errors};
+		} else throw err;
 	}
-	// No need to save salt
-	const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
-	const hashedPassword = await bcrypt.hash(usuario_info.senha,salt);
-	
-	// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
+};
 
-	// go and save hashedPassword on db
-	const novoUsuario = await this.create({
-		nome: usuario_info.nome,
-		nomeASCII: anyAscii(usuario_info.nome).toLowerCase(),
-		email: usuario_info.email,
-		senha: hashedPassword
-	});
+Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
+	try {
+		
+		const usuario = await this.findById(usuario_id);
 
-	return {sucesso:true,usuario:novoUsuario};
+		if(atualizar.nome !== undefined) {
+			usuario.nome = atualizar.nome;
+			usuario.nomeASCII = anyAscii(atualizar.nome).toLowerCase();
+		}
+
+		if(atualizar.fotoPerfil !== undefined) usuario.fotoPerfil = atualizar.fotoPerfil;
+		if(atualizar.biografia !== undefined) usuario.biografia = atualizar.biografia;
+		if(atualizar.preferencias) {
+			if(atualizar.preferencias.notificacao !== undefined) usuario.preferencias.notificacao = atualizar.preferencias.notificacao;
+			if(atualizar.preferencias.exibirEmail !== undefined) usuario.preferencias.exibirEmail = atualizar.preferencias.exibirEmail;
+			if(atualizar.preferencias.contaPrivada !== undefined) usuario.preferencias.contaPrivada = atualizar.preferencias.contaPrivada;
+		}
+
+		await usuario.save();
+
+		return {sucesso:true,usuario:usuario};
+	} catch (err) {
+		if (err.name === "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+
+			return {sucesso: false, validation: errors};
+		} else throw err;
+	}
 };
 
 export default mongoose.model("usuario", Usuario);

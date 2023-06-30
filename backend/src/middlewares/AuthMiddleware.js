@@ -23,7 +23,11 @@ const AuthMiddleware = async (req, res, next) => {
     if (!decoded) { // se não ocorrer a decodificação do token
       return res.status(498).json([{ error: true, message: "O token de autenticação expirou" }]);
     } else { // se o token for válido
-      req.user_id = decoded.id;
+      req.usuario = {
+        id: decoded.id,
+        nome: decoded.nome,
+        email: decoded.email
+      };
       next();
       return;
     }

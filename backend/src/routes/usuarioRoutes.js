@@ -116,7 +116,11 @@ const router = express.Router();
 
 router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
 router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);
-router.post("/usuarios", AuthMiddleware, UsuarioControler.cadastrarUsuario);
+
+router.patch("/usuarios", AuthMiddleware, UsuarioControler.atualizarUsuario);
+
+// Cadastro de usuário não exige autenticação
+router.post("/usuarios", UsuarioControler.cadastrarUsuario);
 
 
 export default router;
