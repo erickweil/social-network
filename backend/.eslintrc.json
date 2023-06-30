@@ -1,11 +1,19 @@
-{
+{ 
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            }
+        }
+    },
     "env": {
         "es2021": true,
         "node": true
     },
     "extends":  [
         "eslint:recommended",
-        "plugin:import/recommended"
+        "plugin:import/recommended",
+        "plugin:import/typescript"
     ],
     "overrides": [
     ],
@@ -29,6 +37,7 @@
         "no-shadow":"error",
         "import/no-absolute-path":"error",
         "import/no-self-import":"error",
-        "import/extensions":["error", "always", { "js": "always" }]
+        "import/extensions":["error", "ignorePackages", { "js": "always", "ts": "never" }],
+        "import/no-unresolved": "off"
     }
 }

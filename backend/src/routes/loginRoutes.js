@@ -22,14 +22,14 @@ const router = express.Router();
  *               email:
  *                 type: string
  *                 description: Email do usuário
- *                 example: "joao4@email.com"
+ *                 example: "joao@email.com"
  *               senha:
  *                 type: string
  *                 description: Senha do usuário
  *                 example: "12345678"
  *     responses:
  *       200:
- *         description: Usuário criado com sucesso
+ *         description: Autenticado
  *         content:
  *           application/json:
  *             schema:

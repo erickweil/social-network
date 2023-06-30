@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { promisify } from "util";
 
 const AuthMiddleware = async (req, res, next) => {
+  // Caso a variável de ambiente esteja definida
+  // A autenticação é desativada.
   if(process.env.DISABLE_AUTH === "true") {
     next();
     return;

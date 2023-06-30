@@ -30,13 +30,7 @@ export default class LoginControler {
                     expiresIn: process.env.EXPIREIN
                 }
             ),
-            usuario: {
-                id: usuario.id,
-				nome: usuario.nome,
-				email: usuario.email,
-				biografia: usuario.biografia,
-				fotoPerfil: usuario.fotoPerfil
-            }
+            usuario: usuarios.publicFields(usuario)
         });
     }
 

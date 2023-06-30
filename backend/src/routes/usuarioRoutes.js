@@ -40,7 +40,6 @@ const router = express.Router();
  *         nome: "João"
  *         email: "joao@email.com"
  *         senha: "12345678"
- *         biografia: Olá, eu sou o João
  */
 
 /**
@@ -55,6 +54,21 @@ const router = express.Router();
  * /usuarios:
  *   get:
  *     summary: Retorna uma lista de usuários
+ *     parameters:
+ *       - name: nome
+ *         in: query
+ *         description: Procura por usuário com o nome que inicia com o valor informado
+ *         required: false
+ *         default: 
+ *         schema:
+ *           type: string
+ *       - name: pagina
+ *         in: query
+ *         description: Pagina
+ *         required: false
+ *         default:
+ *         schema:
+ *           type: integer
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []

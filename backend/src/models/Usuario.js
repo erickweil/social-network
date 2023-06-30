@@ -1,11 +1,19 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import anyAscii from "any-ascii";
 // Usuário da rede social.
 // Nome, email, senha
 const Usuario = new mongoose.Schema({
 	nome: {	
 		type: String, 
 		maxLength: [50, "O máximo de caracteres é 50"],
+		required: [true, "Nome é obrigatório"]
+	},	
+	// Para realizar pesquisa, pré-processado para ser minúsculo e sem acentos
+	// Não pode mudar o nome sem atualizar também este campo
+	nomeASCII: {
+		type: String,
+		index: true,
 		required: [true, "Nome é obrigatório"]
 	},
 	email: { 
@@ -38,6 +46,19 @@ const Usuario = new mongoose.Schema({
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });
 
+// Remapeia para conter apenas campos que podem ser vistos publicamente
+// deste usuário
+Usuario.statics.publicFields = function(usuario) {
+	return {
+		id: usuario.id,
+		nome: usuario.nome,
+		nomeASCII: usuario.nomeASCII,
+		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
+		fotoPerfil: usuario.fotoPerfil,
+		biografia: usuario.biografia
+	};
+};
+
 Usuario.statics.fazerLogin = async function(email,senha) {
     const usuario = await this.findOne({email:email}).select("+senha");
 
@@ -65,6 +86,7 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 	// go and save hashedPassword on db
 	const novoUsuario = await this.create({
 		nome: usuario_info.nome,
+		nomeASCII: anyAscii(usuario_info.nome).toLowerCase(),
 		email: usuario_info.email,
 		senha: hashedPassword
 	});
