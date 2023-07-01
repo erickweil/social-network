@@ -7,10 +7,12 @@ export default class UsuarioControler {
 		const pagina = parseInt(req.query.pagina) || 1;
 		const limite = 16;
 
-		const filtrarNome = req.query.nome || false;
-
+		let filtrarNome = req.query.nome || false;
+		
 		let filtros = {};
 		if(filtrarNome !== false) {
+			//filtrarNome = decodeURIComponent(filtrarNome);
+			//console.log(filtrarNome);
 			// https://github.com/anyascii/anyascii
 			// A ideia é permitir usar index e ainda assim pesquisar de forma case insensitive
 			// e ignorando caracteres especiais

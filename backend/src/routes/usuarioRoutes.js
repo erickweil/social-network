@@ -111,8 +111,62 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
+ *               $ref: '#/components/schemas/Usuario'    
+ *   patch:
+ *     summary: Atualiza o seu usuário
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Usuario'
+ *     responses:
+ *       201:
+ *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
  *               $ref: '#/components/schemas/Usuario'       
- */    
+ */  
+
+/**
+ * @swagger
+ * /usuarios/{id}:
+ *   parameters:
+ *     - name: id
+ *       in: path
+ *       schema: 
+ *         type: string
+ *       required: true
+ *   get:
+ *     summary: Retorna um usuário
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Resposta usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                 type: boolean
+ *                 description: Ocorreu um erro
+ *               example:
+ *                 error: true
+ *                 message: Erro interno      
+ */
 
 router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
 router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);

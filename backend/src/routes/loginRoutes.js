@@ -26,7 +26,7 @@ const router = express.Router();
  *               senha:
  *                 type: string
  *                 description: Senha do usuário
- *                 example: "12345678"
+ *                 example: "ABCDabcd1234"
  *     responses:
  *       200:
  *         description: Autenticado
