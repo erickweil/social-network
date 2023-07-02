@@ -2,12 +2,7 @@ import {jest,describe,expect,test} from "@jest/globals";
 
 import app from "../../src/app.js";
 import request  from "supertest";
-
-const usuarioTeste = {
-    nome: "João da Silva",
-    email: "joao@email.com",
-    senha: "ABCDabcd1234"
-};
+import { usuarioTeste } from "../../src/models/Usuario.js";
 
 describe("Teste Login",() => {
     let token = false;
@@ -88,4 +83,7 @@ describe("Teste Login",() => {
 			.expect(498);
 		}
 	});
+
+	// Outros testes:
+	// teste deletar usuário e tentar usar token do usuário inexistente para acessar algo
 });

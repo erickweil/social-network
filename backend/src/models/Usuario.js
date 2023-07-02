@@ -152,4 +152,10 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 	}
 };
 
+export const usuarioTeste = {
+    nome: "João da Silva",
+    email: "joao@email.com",
+    senha: "ABCDabcd1234"
+};
+
 export default mongoose.model("usuario", Usuario);

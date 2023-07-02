@@ -225,4 +225,26 @@ describe("Usuarios",() => {
         expect(res.body.validation).toBeDefined();
         expect(res.body.validation.nome).toBeDefined();
     });
+
+    test("Deletar Usuário sem confirmar a senha", async () => {
+		const res = await req
+			.delete("/usuarios")
+            .send({
+                senha: "senha errada"
+            })
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(498);
+    });
+
+    test("Deletar Usuário", async () => {
+		const res = await req
+			.delete("/usuarios")
+            .send({
+                senha: novoUsuario.senha
+            })
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(200);
+    });
 });

@@ -124,13 +124,34 @@ const router = express.Router();
  *           schema:
  *             $ref: '#/components/schemas/Usuario'
  *     responses:
- *       201:
+ *       200:
  *         description: Usuário atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Usuario'       
- */  
+ *   delete:
+ *     summary: Deleta o seu usuário
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - senha
+ *             properties:
+ *               senha:
+ *                 type: string
+ *                 description: Senha do usuário
+ *                 example: "ABCDabcd1234"   
+ *     responses:
+ *       200:
+ *         description: Deletado com sucesso
+ */ 
 
 /**
  * @swagger
@@ -171,7 +192,9 @@ const router = express.Router();
 router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
 router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);
 
+// Operações no próprio usuário autenticado
 router.patch("/usuarios", AuthMiddleware, UsuarioControler.atualizarUsuario);
+router.delete("/usuarios", AuthMiddleware, UsuarioControler.deletarUsuario);
 
 // Cadastro de usuário não exige autenticação
 router.post("/usuarios", UsuarioControler.cadastrarUsuario);

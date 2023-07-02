@@ -96,10 +96,6 @@ export default class UsuarioControler {
 		try {
 			const atualizar = req.body;
 
-			if(!req.usuario) {
-				return res.status(400).json({ error: true, message: "É necessário fazer login primeiro" });
-			}
-
 			let resultAtualizar = await usuarios.atualizarUsuario(
 				req.usuario.id,
 				atualizar
@@ -110,6 +106,30 @@ export default class UsuarioControler {
 			}
 
 			return res.status(200).json(usuarios.publicFields(resultAtualizar.usuario));
+		} catch (err) {	
+			console.log(err.stack || err);
+			res.status(500).send("Erro interno inesperado.");
+		}
+	}
+
+	static async deletarUsuario(req,res) {
+		try {
+			const email = req.usuario.email;
+			const senha = req.body.senha;
+	
+			if(!email || !senha) {
+				return res.status(498).json({ error: true, message: "É necessário confirmar a senha" });
+			}
+	
+			const usuario = await usuarios.fazerLogin(email,senha);
+
+			if(usuario === false) {
+				return res.status(498).json({ error: true, message: "Não irá deletar a conta, senha incorreta" });
+			}
+
+			await usuarios.deleteOne({_id: usuario._id});
+
+			return res.status(200).json({message: "Deletado com sucesso"});
 		} catch (err) {	
 			console.log(err.stack || err);
 			res.status(500).send("Erro interno inesperado.");

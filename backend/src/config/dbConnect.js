@@ -23,7 +23,7 @@ async function conectarBanco() {
 				console.log("Erro no banco de dados:",err);
 			})
 			.on("disconnected", () => {
-				console.log("Desconectou do banco de dados.");
+				if(process.env.DEBUGLOG === "true") console.log("Desconectou do banco de dados.");
 			});
 
 		await mongoose.connect(bancoUrl, {
@@ -39,12 +39,21 @@ async function conectarBanco() {
 
 await conectarBanco();
 
-export async function desconetarBanco() { 
+export async function desconetarBanco() {
+	if(process.env.DEBUGLOG === "true")	console.log("Solicitando encerramento da conexão com banco");
+
 	await mongoose.connection.close();
-	console.log("Mongoose default connection with DB :"+ bancoUrl +" is disconnected through app termination");
+}
+
+async function callbackSigTerm() {
+	try {
+		await desconetarBanco();
+	} finally {
+		process.exit(); // como está interceptando o SIGINT e SIGTERM se não chamar exit o processo não é terminado.
+	}
 }
   
 // If the Node process ends, close the Mongoose connection
-process.on("SIGINT", desconetarBanco).on("SIGTERM", desconetarBanco);
+process.on("SIGINT", callbackSigTerm).on("SIGTERM", callbackSigTerm);
 
 export default mongoose.connection;
