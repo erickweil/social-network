@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import queryparser from "querystring";
 
 // TEM QUE SER O PRIMEIRO IMPORT PARA FAZER O DOTENV FUNCIONAR
 import db from "./config/dbConnect.js";

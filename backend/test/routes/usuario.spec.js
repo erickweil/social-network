@@ -8,26 +8,51 @@ describe("Usuarios",() => {
 	
     const rdn = faker.random.alphaNumeric(8); // Para ser único na pesquisa depois
     const novoUsuario = {
-		nome: rdn+"Tèşt€жぁ書😎⍨.̶̡̨̳̝͓͚̲͇͖̥͓̄͂͆̀̏̑̒̃̄̽̿̍͘͝.",
+		nome: rdn+" Téstê жぁ書😎⍨.̶̡̨̳̝͓͚̲͇͖̥͓̄͂͆̀̏̑̒̃̄̽̿̍͘͝.",
 		email: rdn+"@teste.com",
         senha:"ABCDabcd1234"
 	};
     let token = false;
 	const req = request(app);
 
-    test("Criar usuario senha fraca:", async () => {		
-		const res = await req
+    test("Criar usuario senhas fracas:", async () => {
+        const senhasFracas = [
+            "123456789012345678901",
+            "abcdefghijklmnopq",
+            "QWERTYUqwerty",
+            "ABCDabcd123",
+            "1!bcdBC"
+        ];
+
+        for(let senha of senhasFracas) {
+            const res = await req
+                .post("/usuarios")
+                .set("Authorization", `Bearer ${token}`)  
+                .set("Accept", "aplication/json")
+                .send({...novoUsuario,...{
+                    senha:senha
+                }})
+                .expect(400);
+
+            expect(res.body.validation).toBeDefined();
+            expect(res.body.validation.senha).toBeDefined();
+        }
+	});
+
+    test("Criar usuário Inválido", async () => {
+        const nome = "01234567890123456789012345678901234567890123456789 - Mais de 50 caracteres";
+        const res = await req
             .post("/usuarios")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .send({...novoUsuario,...{
-                senha:"12345678"
+                nome: nome
             }})
             .expect(400);
 
         expect(res.body.validation).toBeDefined();
-        expect(res.body.validation.senha).toBeDefined();
-	});
+        expect(res.body.validation.nome).toBeDefined();
+    });
 
     test("Criar usuário", async () => {
 		const res = await req
@@ -56,6 +81,17 @@ describe("Usuarios",() => {
         expect(res.body.validation.email).toBeDefined();
 	});
 
+    test("Não deve autenticar", async () => {
+        const res = await req
+            .post("/login")
+            .set("Accept", "aplication/json")
+            .send({
+                email: novoUsuario.email,
+                senha: "SENHAERRADA",
+            })
+            .expect(400);
+    });
+
     test("Deve autenticar", async () => {
         const res = await req
             .post("/login")
@@ -79,7 +115,6 @@ describe("Usuarios",() => {
 
         expect(res.body.id).toBe(novoUsuario.id);
         expect(res.body.nome).toBe(novoUsuario.nome);
-        expect(res.body.nomeASCII).toBeDefined();
         expect(res.body.email).toBe(novoUsuario.email);
         expect(res.body.fotoPerfil).toBeDefined();
         expect(res.body.biografia).toBeDefined();
@@ -106,7 +141,7 @@ describe("Usuarios",() => {
 		const res = await req
 			.get("/usuarios")
             .query({
-                nome: rdn+"teste"
+                nome: rdn
             })
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
@@ -115,6 +150,37 @@ describe("Usuarios",() => {
         expect(res.body.resposta.length).toBeGreaterThanOrEqual(1);
 
         expect(res.body.resposta[0].nome).toBe(novoUsuario.nome);
+	});
+
+    test("Encontrar Todos", async () => {
+        let pagina = 1;
+        let resultados = 0;
+        let totalDocumentos = 0;
+        let encontrado = false;
+        do {
+            const res = await req
+                .get("/usuarios")
+                .query({
+                    pagina: pagina
+                })
+                .set("Authorization", `Bearer ${token}`)  
+                .set("Accept", "aplication/json")
+                .expect(200);
+
+            expect(res.body.resposta).toBeDefined();
+
+            resultados = res.body.resposta.length;
+            totalDocumentos += resultados;
+
+            if(res.body.resposta.find(u => u.id === novoUsuario.id)) {
+                encontrado = true;
+            }
+
+            pagina++;
+        } while(resultados > 0 && pagina < 1000);
+
+        expect(totalDocumentos).toBeGreaterThanOrEqual(32); // o seed cria 32
+        expect(encontrado).toBeTruthy(); // Deve ter encontrado o usuário criado ao atravessar todas as páginas
 	});
 
     test("Atualizar Usuário", async () => {
@@ -139,9 +205,24 @@ describe("Usuarios",() => {
             .expect(200);
 
         expect(res.body.nome).toBe(nome);
-        expect(res.body.nomeASCII.startsWith("!")).toBeTruthy(); // verificar que atualizou o nome ASCII também
         expect(res.body.biografia).toBe(biografia);
         expect(res.body.fotoPerfil).toBe(fotoPerfil);
         expect(res.body.email).toBeUndefined(); // exibirEmail false deve não ter email aqui 
+    });
+
+    test("Nome Inválido ao atualizar usuário", async () => {
+        const nome = "01234567890123456789012345678901234567890123456789 - Mais de 50 caracteres";
+
+		const res = await req
+			.patch("/usuarios")
+            .send({
+                nome: nome
+            })
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(400);
+
+        expect(res.body.validation).toBeDefined();
+        expect(res.body.validation.nome).toBeDefined();
     });
 });

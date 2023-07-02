@@ -1,6 +1,5 @@
 import usuarios from "../models/Usuario.js";
 import mongoose from "mongoose";
-import anyAscii from "any-ascii";
 
 export default class UsuarioControler {
 	static async listarUsuarios(req,res) {
@@ -9,19 +8,29 @@ export default class UsuarioControler {
 
 		let filtrarNome = req.query.nome || false;
 		
-		let filtros = {};
+		let listagem = false;
 		if(filtrarNome !== false) {
 			//filtrarNome = decodeURIComponent(filtrarNome);
 			//console.log(filtrarNome);
 			// https://github.com/anyascii/anyascii
 			// A ideia é permitir usar index e ainda assim pesquisar de forma case insensitive
 			// e ignorando caracteres especiais
-			filtros["nomeASCII"] = {
-				$regex: new RegExp("^"+anyAscii(filtrarNome).toLowerCase())
-			};
-		}
+			//filtros["nome"] = {
+				//$regex: new RegExp(filtrarNome, "i")
+			//};
 
-		let listagem = usuarios.find(filtros);
+			listagem = usuarios.find({
+				$text: {
+					$search: filtrarNome,
+					$caseSensitive: false,
+					$diacriticSensitive: false,
+					$language: "pt"
+				}
+			});
+		}
+		else {
+			listagem = usuarios.find({});
+		}
 
 		if(pagina > 1) {
 			listagem.skip(limite * (pagina - 1));
@@ -77,7 +86,8 @@ export default class UsuarioControler {
 			}
 
 			return res.status(201).json(usuarios.publicFields(resultCriar.usuario));
-		} catch (err) {	
+		} catch (err) {
+			console.log(err.stack || err);
 			res.status(500).send("Erro interno inesperado.");
 		}
 	}
@@ -85,6 +95,10 @@ export default class UsuarioControler {
 	static async atualizarUsuario(req,res) {
 		try {
 			const atualizar = req.body;
+
+			if(!req.usuario) {
+				return res.status(400).json({ error: true, message: "É necessário fazer login primeiro" });
+			}
 
 			let resultAtualizar = await usuarios.atualizarUsuario(
 				req.usuario.id,
@@ -97,6 +111,7 @@ export default class UsuarioControler {
 
 			return res.status(200).json(usuarios.publicFields(resultAtualizar.usuario));
 		} catch (err) {	
+			console.log(err.stack || err);
 			res.status(500).send("Erro interno inesperado.");
 		}
 	}

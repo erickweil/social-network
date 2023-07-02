@@ -1,5 +1,4 @@
 import usuarios from "../models/Usuario.js";
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 export default class LoginControler {

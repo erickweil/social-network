@@ -1,14 +1,17 @@
 import faker from "faker-br";
 import Usuario from "../models/Usuario.js";
 
+// Deve se manter igual ao do arquivo backend/test/routes/usuario.spec.js
+const usuarioTeste = {
+    nome: "João da Silva",
+    email: "joao@email.com",
+    senha: "ABCDabcd1234"
+};
+
 export default async function usuariosSeed(quantidade) {
     await Usuario.deleteMany();
 
-    await Usuario.criarUsuario({
-        nome: "João da Silva",
-        email: "joao@email.com",
-        senha: "ABCDabcd1234",
-    });
+    await Usuario.criarUsuario(usuarioTeste );
 
     for(let i = 0; i < quantidade; i++) {
         let resultado = await Usuario.criarUsuario({

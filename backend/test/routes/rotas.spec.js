@@ -1,9 +1,9 @@
 import {jest,describe,expect,test} from "@jest/globals";
 
-import app from "../src/app.js";
+import app from "../../src/app.js";
 import request from "supertest";
 
-describe("Teste",() => {
+describe("Teste Rotas",() => {
 
 	const req = request(app);
 
@@ -27,4 +27,7 @@ describe("Teste",() => {
 		expect(resp.header["location"]).toBe("/docs");
 	});
 
+	test("Deve Não encontrar", async () => {
+		const resp = await req.get("/rota-inexistente").expect(404);
+	});
 });
