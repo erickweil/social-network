@@ -33,7 +33,9 @@ const Usuario = new mongoose.Schema({
 		notificacao: { type: Boolean, default: true },
 		exibirEmail: { type: Boolean, default: true },
 		contaPrivada: { type: Boolean, default: false }
-	}
+	},
+	seguidores: { type: Number, default: 0 },
+	seguindo: { type: Number, default: 0 }
 }, {
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });
@@ -49,7 +51,9 @@ Usuario.statics.publicFields = function(usuario) {
 		nome: usuario.nome,
 		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
 		fotoPerfil: usuario.fotoPerfil,
-		biografia: usuario.biografia
+		biografia: usuario.biografia,
+		seguidores: usuario.seguidores,
+		seguindo: usuario.seguindo
 	};
 };
 

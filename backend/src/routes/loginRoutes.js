@@ -1,5 +1,6 @@
 import express from "express";
 import LoginControler from "../controllers/LoginController.js";
+import { wrapException } from "./testeRoutes.js";
 
 const router = express.Router();
 
@@ -36,6 +37,6 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Usuario'     
  */    
 
-router.post("/login", LoginControler.fazerLogin);
+router.post("/login", wrapException(LoginControler.fazerLogin));
 
 export default router;

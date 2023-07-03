@@ -1,6 +1,7 @@
 import express from "express";
 import UsuarioControler from "../controllers/UsuarioController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
+import { wrapException } from "./testeRoutes.js";
 
 const router = express.Router();
 
@@ -189,15 +190,15 @@ const router = express.Router();
  *                 message: Erro interno      
  */
 
-router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
-router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);
+router.get("/usuarios", AuthMiddleware, wrapException(UsuarioControler.listarUsuarios));
+router.get("/usuarios/:id", AuthMiddleware, wrapException(UsuarioControler.listarUsuarioPorId));
 
 // Operações no próprio usuário autenticado
-router.patch("/usuarios", AuthMiddleware, UsuarioControler.atualizarUsuario);
-router.delete("/usuarios", AuthMiddleware, UsuarioControler.deletarUsuario);
+router.patch("/usuarios", AuthMiddleware, wrapException(UsuarioControler.atualizarUsuario));
+router.delete("/usuarios", AuthMiddleware, wrapException(UsuarioControler.deletarUsuario));
 
 // Cadastro de usuário não exige autenticação
-router.post("/usuarios", UsuarioControler.cadastrarUsuario);
+router.post("/usuarios", wrapException(UsuarioControler.cadastrarUsuario));
 
 
 export default router;

@@ -15,6 +15,20 @@ describe("Usuarios",() => {
     let token = false;
 	const req = request(app);
 
+    let usuarioQualquer = false;
+    let usuariosQuaisquer = [];
+
+    // função ajudadora
+    const getUsuarioPorID = async (id) => {
+        const res = await req
+        .get("/usuarios/"+id)
+        .set("Authorization", `Bearer ${token}`)  
+        .set("Accept", "aplication/json")
+        .expect(200);
+
+        return res.body;
+    };
+
     test("Criar usuario senhas fracas:", async () => {
         const senhasFracas = [
             "123456789012345678901",
@@ -118,6 +132,8 @@ describe("Usuarios",() => {
         expect(res.body.email).toBe(novoUsuario.email);
         expect(res.body.fotoPerfil).toBeDefined();
         expect(res.body.biografia).toBeDefined();
+        expect(res.body.seguidores).toBe(0);
+        expect(res.body.seguindo).toBe(0);
         expect(res.body.senha).toBeUndefined();
     });
 
@@ -172,12 +188,19 @@ describe("Usuarios",() => {
             resultados = res.body.resposta.length;
             totalDocumentos += resultados;
 
-            if(res.body.resposta.find(u => u.id === novoUsuario.id)) {
-                encontrado = true;
+            for(let usuario of res.body.resposta) {
+                if(usuario.id === novoUsuario.id) {
+                    encontrado = true;
+                } else {
+                    if(usuariosQuaisquer.length < 10)
+                    usuariosQuaisquer.push(usuario);
+                }
             }
 
             pagina++;
         } while(resultados > 0 && pagina < 1000);
+
+        usuarioQualquer = usuariosQuaisquer[0];
 
         expect(totalDocumentos).toBeGreaterThanOrEqual(32); // o seed cria 32
         expect(encontrado).toBeTruthy(); // Deve ter encontrado o usuário criado ao atravessar todas as páginas
@@ -224,6 +247,72 @@ describe("Usuarios",() => {
 
         expect(res.body.validation).toBeDefined();
         expect(res.body.validation.nome).toBeDefined();
+    });
+
+    test("Seguir vários usuários", async () => {
+        const seguidoresAntes = usuarioQualquer.seguidores;
+
+        for(let usuario of usuariosQuaisquer) {
+            const res = await req
+                .post("/usuarios/"+usuario.id+"/seguir")
+                .set("Authorization", `Bearer ${token}`)  
+                .set("Accept", "aplication/json")
+                .expect(200);
+        }
+
+        const seguidoresDepois = parseInt((await getUsuarioPorID(usuarioQualquer.id)).seguidores);
+        const seguindo = parseInt((await getUsuarioPorID(novoUsuario.id)).seguindo);
+
+        expect(seguidoresDepois).toBe(seguidoresAntes+1);
+        expect(seguindo).toBe(usuariosQuaisquer.length);
+    });
+
+    test("Tentando seguir usuário inexistente", async () => {
+        const res = await req
+            .post("/usuarios/551137c2f9e1fac808a5f572/seguir")
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(404);
+    });
+
+    test("Deve ter 0 seguidores", async () => {
+        const res = await req
+			.get("/usuarios/"+novoUsuario.id+"/seguidores")
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(200);
+
+        expect(res.body.resposta).toBeDefined();
+        expect(res.body.resposta.length).toBe(0);
+    });
+
+    test("Deve estar seguindo vários", async () => {
+        const res = await req
+			.get("/usuarios/"+novoUsuario.id+"/seguindo")
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(200);
+
+        expect(res.body.resposta).toBeDefined();
+        expect(res.body.resposta.length).toBe(usuariosQuaisquer.length);
+
+        expect(res.body.resposta[0].id).toBe(usuarioQualquer.id);
+    });
+
+    test("Deixar de seguir um usuário", async () => {
+        const seguidoresAntes = usuarioQualquer.seguidores;
+
+        const res = await req
+			.delete("/usuarios/"+usuarioQualquer.id+"/seguir")
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(200);
+
+        const seguidoresDepois = parseInt((await getUsuarioPorID(usuarioQualquer.id)).seguidores);
+        const seguindo = parseInt((await getUsuarioPorID(novoUsuario.id)).seguindo);
+
+        expect(seguidoresDepois).toBe(seguidoresAntes);
+        expect(seguindo).toBe(usuariosQuaisquer.length - 1);
     });
 
     test("Deletar Usuário sem confirmar a senha", async () => {

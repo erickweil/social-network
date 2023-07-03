@@ -52,11 +52,23 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/TesteResposta'
  */
-router.get("/teste", (req,res) => {
+
+export const wrapException = (fn) => {
+	return async (req,res,next) => {
+		try {
+			await fn(req,res,next);
+		} catch (err) {	
+			console.log(err.stack || err);
+			res.status(500).send("Erro interno inesperado.");
+		}
+	};
+};
+
+router.get("/teste", wrapException((req,res) => {
 	res.status(200).json({ 
 		message: "Recebido",
 		body: req.query 
 	});
-});
+}));
 
 export default router;

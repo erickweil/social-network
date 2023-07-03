@@ -1,22 +1,23 @@
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
-import usuarios, { usuarioTeste } from "../models/Usuario.js";
+import Usuario, { usuarioTeste } from "../models/Usuario.js";
 
 const AuthMiddleware = async (req, res, next) => {
-  // Caso a variável de ambiente esteja definida
-  // A autenticação é desativada.
-  if(process.env.DISABLE_AUTH === "true") {
-    const usuario = await usuarios.findOne({email: usuarioTeste.email});
-    req.usuario = {
-      id: usuario.id,
-      nome: usuario.nome,
-      email: usuario.email
-    };
-    next();
-    return;
-  }
 
   try {
+    // Caso a variável de ambiente esteja definida
+    // A autenticação é desativada.
+    if(process.env.DISABLE_AUTH === "true") {
+      const usuario = await Usuario.findOne({email: usuarioTeste.email});
+      req.usuario = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email
+      };
+      next();
+      return;
+    }
+
     const auth = req.headers.authorization;
 
     if (!auth) {

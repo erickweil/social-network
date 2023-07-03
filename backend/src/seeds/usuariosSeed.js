@@ -1,7 +1,9 @@
 import faker from "faker-br";
 import Usuario, { usuarioTeste } from "../models/Usuario.js";
+import Seguidor from "../models/Seguidor.js";
 
 export default async function usuariosSeed(quantidade) {
+    await Seguidor.deleteMany();
     await Usuario.deleteMany();
 
     let resultado = await Usuario.criarUsuario(usuarioTeste );
@@ -21,7 +23,8 @@ export default async function usuariosSeed(quantidade) {
             throw new Error(JSON.stringify(resultado));
         }
 
-        resultado = await Usuario.atualizarUsuario(resultado.usuario.id,{
+        const idUsuario = resultado.usuario.id;
+        resultado = await Usuario.atualizarUsuario(idUsuario,{
             fotoPerfil: faker.internet.avatar(),
             biografia: faker.name.jobTitle(),
             preferencias: {
