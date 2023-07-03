@@ -41,6 +41,28 @@ export default class SeguidorControler {
 		});
     }
 
+    // Pode ser bastante lento caso o usuário possua quantia alta de seguidores/seguindo
+    // Opção 1: Cache (Contagem pode ficar desatualizada)
+    // Opção 3: Pré-calcular de tempo em tempo (Contagem pode ficar desatualizada)
+    // Opção 2: Guardar contagem no model Usuario, atualizar quando necessário
+    //          2.1: Atualizar por incrementar e decrementar em 1 a cada operação (lento deletar usuário, como evitar inconsistência quando houver erros?)
+    //          2.2: Atualizar por contar tudo (Será MUITO lento deletar usuário com muito seguidores/seguindo)
+    static async contarSeguidores(req,res) {
+        const id = req.params.id;
+
+		if(mongoose.Types.ObjectId.isValid(id) === false)
+        return res.status(400).json({ error: true, message: "ID inválido" });
+
+        let countSeguidores = await Seguidor.countDocuments({seguido:id});
+        let countSeguindo = await Seguidor.countDocuments({usuario:id});
+        
+        // Está certo isso, retorna OK para usuários inexistentes?
+		return res.status(200).json({
+			seguidores: countSeguidores,
+			seguindo: countSeguindo
+		});
+    }
+
 	static async seguirUsuario(req,res) {
         const idUsuario = req.usuario.id;
         const idUsuarioSeguido = req.params.id;
@@ -54,21 +76,13 @@ export default class SeguidorControler {
         const usuarioExiste = await Usuario.findById(idUsuarioSeguido);
         if(!usuarioExiste) return res.status(404).json({ error: true, message: "Usuário não encontrado" });
 
-        const jaEstaSeguindo = await Seguidor.findOne({ usuario: idUsuario, seguido: idUsuarioSeguido });
+        const doc = { usuario: idUsuario, seguido: idUsuarioSeguido };
+        const resultado = await Seguidor.replaceOne(doc,doc,{ upsert: true }); // substitui se existir.
 
-        if (jaEstaSeguindo)
-        return res.status(200).json({ message: "Já estava seguindo" });
-
-        const registro = await Seguidor.create({
-            usuario: idUsuario,
-            seguido: idUsuarioSeguido
-        });
-
-        // Atualizar contagem de 'seguidores' e 'seguindo' dos usuários
-        await Usuario.updateOne({_id: idUsuario},        { $inc: { seguindo: 1 } });
-        await Usuario.updateOne({_id: idUsuarioSeguido}, { $inc: { seguidores: 1 } });
-
-		return res.status(200).json({message: "Seguindo"});
+        if(resultado.matchedCount == 1)
+		return res.status(200).json({message: "Já estava Seguindo"});
+        else
+        return res.status(200).json({message: "Está seguindo"});
     }
 
     static async deixarSeguirUsuario(req,res) {
@@ -78,18 +92,11 @@ export default class SeguidorControler {
 		if(mongoose.Types.ObjectId.isValid(idUsuarioSeguido) === false)
         return res.status(400).json({ error: true, message: "ID inválido" });
 
-        if(idUsuario == idUsuarioSeguido)
-        return res.status(400).json({ error: true, message: "Não pode deixar de seguir você mesmo" });
-
         const deletado = await Seguidor.deleteOne({ usuario: idUsuario, seguido: idUsuarioSeguido });
 
         if(deletado.deletedCount != 1)
-        return res.status(200).json({ error: true, message: "Já tinha deixado de seguir" });
-
-        // Atualizar contagem de 'seguidores' e 'seguindo' dos usuários (-1 para decrementar)
-        await Usuario.updateOne({_id: idUsuario},        { $inc: { seguindo: -1 } });
-        await Usuario.updateOne({_id: idUsuarioSeguido}, { $inc: { seguidores: -1 } });
-
+        return res.status(200).json({message: "Já tinha deixado de seguir" });
+        else
 		return res.status(200).json({message: "Deixou de seguir"});
     }
 }

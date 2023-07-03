@@ -68,7 +68,7 @@ describe("Teste Login",() => {
 			undefined,
 			"",
 			"token invalido",	
-			// vai expirar "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YTA4YjM5ZDI4NDY5YjBkZDA2OTA4NSIsIm5vbWUiOiJKb8OjbyBkYSBTaWx2YSIsImVtYWlsIjoiam9hb0BlbWFpbC5jb20iLCJpYXQiOjE2ODgzMDI4MDksImV4cCI6MTY4ODMxMDAwOX0.AvO7gRoXITdxHinc8-1eUTYE_1dq30UqtcU45dj0TBQ",
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YTA4YjM5ZDI4NDY5YjBkZDA2OTA4NSIsIm5vbWUiOiJKb8OjbyBkYSBTaWx2YSIsImVtYWlsIjoiam9hb0BlbWFpbC5jb20iLCJpYXQiOjE2ODgzMDI4MDksImV4cCI6MTY4ODMxMDAwOX0.AvO7gRoXITdxHinc8-1eUTYE_1dq30UqtcU45dj0TBQ",
 			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YTA4YjM5ZDI4NDY5YjBkZDA2OTA4NSIsIm5vbWUiOiJKb8OjbyIsImVtYWlsIjoiam9hb0BlbWFpbC5jb20iLCJpYXQiOjE2ODgzMDU4NzQsImV4cCI6MTY4ODMxMzA3NH0.ZV-bM6snJvSqqWZ7TLAIj_EMOae8gofw3bF7aiJ2G9o",
 			token+"a",
 			"a"+token,
@@ -83,7 +83,4 @@ describe("Teste Login",() => {
 			.expect(498);
 		}
 	});
-
-	// Outros testes:
-	// teste deletar usuário e tentar usar token do usuário inexistente para acessar algo
 });

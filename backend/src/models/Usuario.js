@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import validator from "validator";
 // Usuário da rede social.
 // Nome, email, senha
 const Usuario = new mongoose.Schema({
@@ -11,6 +12,10 @@ const Usuario = new mongoose.Schema({
 	email: { 
 		type: String, 
 		maxLength: [320, "O máximo de caracteres é 320"],
+		validate: {
+			validator: validator.isEmail,
+			message: "Email inválido",
+		},
 		index: true,
 		unique: true,
 		required: [true, "Email é obrigatório"]
@@ -33,9 +38,7 @@ const Usuario = new mongoose.Schema({
 		notificacao: { type: Boolean, default: true },
 		exibirEmail: { type: Boolean, default: true },
 		contaPrivada: { type: Boolean, default: false }
-	},
-	seguidores: { type: Number, default: 0 },
-	seguindo: { type: Number, default: 0 }
+	}
 }, {
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });
@@ -51,9 +54,7 @@ Usuario.statics.publicFields = function(usuario) {
 		nome: usuario.nome,
 		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
 		fotoPerfil: usuario.fotoPerfil,
-		biografia: usuario.biografia,
-		seguidores: usuario.seguidores,
-		seguindo: usuario.seguindo
+		biografia: usuario.biografia
 	};
 };
 
@@ -73,22 +74,26 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		//Validação da senha
 		//A ideia é que pode fazer senhas sem caracteres especiais só se for uma senha grande
 		const senha = usuario_info.senha;
-		let minimo = 8;
-		if(/^[0-9]*$/.test(senha)) {
-			minimo = 22;
-		} else if(/^[A-Z]*$/.test(senha) || /^[a-z]*$/.test(senha) ) {
-			minimo = 18;
-		} else if(/^[a-zA-Z]*$/.test(senha) || /^[A-Z0-9]*$/.test(senha) || /^[a-z0-9]*$/.test(senha)) {
-			minimo = 14;
-		} else if(/^[a-zA-Z0-9]*$/.test(senha)) {
-			minimo = 12;
-		} else {
-			minimo = 8;
-		}
-					
-		if(senha.length < minimo) {
-			return {sucesso: false, validation: {senha: "A senha com este padrão deve conter no mínimo "+minimo+" caracteres"}};
-		}
+
+		const passwdOptions = {
+			returnScore: true, 
+			pointsPerUnique: 2, 
+			pointsPerRepeat: 1, 
+			pointsForContainingLower: 10, 
+			pointsForContainingUpper: 10, 
+			pointsForContainingNumber: 10, 
+			pointsForContainingSymbol: 15 
+		};
+		// abcdABCD1234 -> 24 + 10 + 10 + 10 = 54
+		
+		if(senha.length < 8)
+		return {sucesso: false, validation: {senha: "O mínimo são 8 caracteres"}};
+
+		const forcaSenha = validator.isStrongPassword(senha,passwdOptions);
+		const minimoForca = 40 + 10;
+		if(forcaSenha < minimoForca) // mínimo de 8 caracteres únicos contendo minusculas, maiusculas, numeros e simbolos
+		return {sucesso: false, validation: {senha: "A senha não atingiu o mínimo de força "+forcaSenha+"/"+minimoForca}};
+		
 
 		const usuario = await this.findOne({email:usuario_info.email});
 
@@ -98,7 +103,7 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		}
 		// No need to save salt
 		const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
-		const hashedPassword = await bcrypt.hash(usuario_info.senha,salt);
+		const hashedPassword = await bcrypt.hash(senha,salt);
 		
 		// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
 
@@ -162,4 +167,4 @@ export const usuarioTeste = {
     senha: "ABCDabcd1234"
 };
 
-export default mongoose.model("usuario", Usuario);
+export default mongoose.model("usuarios", Usuario);

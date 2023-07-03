@@ -29,12 +29,22 @@ describe("Usuarios",() => {
         return res.body;
     };
 
+    const getSeguidoresUsuario = async (id) => {
+        const res = await req
+        .get("/usuarios/"+id+"/contar-seguidores")
+        .set("Authorization", `Bearer ${token}`)  
+        .set("Accept", "aplication/json")
+        .expect(200);
+
+        return res.body;
+    };
+
     test("Criar usuario senhas fracas:", async () => {
         const senhasFracas = [
             "123456789012345678901",
             "abcdefghijklmnopq",
             "QWERTYUqwerty",
-            "ABCDabcd123",
+            "ABCabc123",
             "1!bcdBC"
         ];
 
@@ -121,20 +131,14 @@ describe("Usuarios",() => {
     });
 
     test("Usuário por ID", async () => {
-		const res = await req
-			.get("/usuarios/"+novoUsuario.id)
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
+		const usuario = await getUsuarioPorID(novoUsuario.id);
 
-        expect(res.body.id).toBe(novoUsuario.id);
-        expect(res.body.nome).toBe(novoUsuario.nome);
-        expect(res.body.email).toBe(novoUsuario.email);
-        expect(res.body.fotoPerfil).toBeDefined();
-        expect(res.body.biografia).toBeDefined();
-        expect(res.body.seguidores).toBe(0);
-        expect(res.body.seguindo).toBe(0);
-        expect(res.body.senha).toBeUndefined();
+        expect(usuario.id).toBe(novoUsuario.id);
+        expect(usuario.nome).toBe(novoUsuario.nome);
+        expect(usuario.email).toBe(novoUsuario.email);
+        expect(usuario.fotoPerfil).toBeDefined();
+        expect(usuario.biografia).toBeDefined();
+        expect(usuario.senha).toBeUndefined();
     });
 
     test("Usuário inexistente Por ID:", async () => {		
@@ -250,7 +254,7 @@ describe("Usuarios",() => {
     });
 
     test("Seguir vários usuários", async () => {
-        const seguidoresAntes = usuarioQualquer.seguidores;
+        const seguidoresAntes = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
 
         for(let usuario of usuariosQuaisquer) {
             const res = await req
@@ -260,8 +264,8 @@ describe("Usuarios",() => {
                 .expect(200);
         }
 
-        const seguidoresDepois = parseInt((await getUsuarioPorID(usuarioQualquer.id)).seguidores);
-        const seguindo = parseInt((await getUsuarioPorID(novoUsuario.id)).seguindo);
+        const seguidoresDepois = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
+        const seguindo = (await getSeguidoresUsuario(novoUsuario.id)).seguindo;
 
         expect(seguidoresDepois).toBe(seguidoresAntes+1);
         expect(seguindo).toBe(usuariosQuaisquer.length);
@@ -275,7 +279,17 @@ describe("Usuarios",() => {
             .expect(404);
     });
 
-    test("Deve ter 0 seguidores", async () => {
+    test("Deixando de seguir usuário inexistente", async () => {
+        const res = await req
+            .delete("/usuarios/551137c2f9e1fac808a5f572/seguir")
+            .set("Authorization", `Bearer ${token}`)  
+            .set("Accept", "aplication/json")
+            .expect(200);
+        
+        expect(res.body.message).toBe("Já tinha deixado de seguir");
+    });
+
+    test("Listar seguidores, deve ter 0", async () => {
         const res = await req
 			.get("/usuarios/"+novoUsuario.id+"/seguidores")
             .set("Authorization", `Bearer ${token}`)  
@@ -286,7 +300,7 @@ describe("Usuarios",() => {
         expect(res.body.resposta.length).toBe(0);
     });
 
-    test("Deve estar seguindo vários", async () => {
+    test("Listar seguindo, Deve estar seguindo vários", async () => {
         const res = await req
 			.get("/usuarios/"+novoUsuario.id+"/seguindo")
             .set("Authorization", `Bearer ${token}`)  
@@ -300,7 +314,7 @@ describe("Usuarios",() => {
     });
 
     test("Deixar de seguir um usuário", async () => {
-        const seguidoresAntes = usuarioQualquer.seguidores;
+        const seguidoresAntes = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
 
         const res = await req
 			.delete("/usuarios/"+usuarioQualquer.id+"/seguir")
@@ -308,10 +322,10 @@ describe("Usuarios",() => {
             .set("Accept", "aplication/json")
             .expect(200);
 
-        const seguidoresDepois = parseInt((await getUsuarioPorID(usuarioQualquer.id)).seguidores);
-        const seguindo = parseInt((await getUsuarioPorID(novoUsuario.id)).seguindo);
+        const seguidoresDepois = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
+        const seguindo = (await getSeguidoresUsuario(novoUsuario.id)).seguindo;
 
-        expect(seguidoresDepois).toBe(seguidoresAntes);
+        expect(seguidoresDepois).toBe(seguidoresAntes-1);
         expect(seguindo).toBe(usuariosQuaisquer.length - 1);
     });
 
@@ -335,5 +349,13 @@ describe("Usuarios",() => {
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(200);
+    });
+
+    test("Tentando utilizar o mesmo token após deletar conta", async () => {
+        const res = await req
+        .get("/usuarios")
+        .set("Authorization", `Bearer ${token}`)  
+        .set("Accept", "aplication/json")
+        .expect(498);
     });
 });

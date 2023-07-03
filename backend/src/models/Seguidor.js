@@ -2,8 +2,17 @@ import mongoose from "mongoose";
 
 // 'usuario' segue 'seguido'
 const Seguidor = new mongoose.Schema({
-    usuario: { type: mongoose.Schema.Types.ObjectId, ref: "usuario" },
-    seguido: { type: mongoose.Schema.Types.ObjectId, ref: "usuario" }
+    usuario: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "usuarios" 
+    },
+    seguido: { 
+        type: mongoose.Schema.Types.ObjectId,
+        index: true,
+        ref: "usuarios" 
+    }
 });
 
-export default mongoose.model("seguidor", Seguidor);
+Seguidor.index({usuario: 1, seguido: 1}, { unique: true });
+
+export default mongoose.model("seguidores", Seguidor);

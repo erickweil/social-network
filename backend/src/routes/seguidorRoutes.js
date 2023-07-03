@@ -49,10 +49,8 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Sucesso
- *       401:
- *         description: Não autorizado
- *       404:
- *         description: Usuário não encontrado
+ *       500:
+ *         description: Erro interno
  */
 /** 
  * @swagger
@@ -72,10 +70,8 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Sucesso
- *       401:
- *         description: Não autorizado
- *       404:
- *         description: Usuário não encontrado
+ *       500:
+ *         description: Erro interno
  */
 /** 
  * @swagger
@@ -95,16 +91,50 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Sucesso
- *       401:
- *         description: Não autorizado
- *       404:
- *         description: Usuário não encontrado
+ *       500:
+ *         description: Erro interno
 */
-
+/** 
+ * @swagger
+ * /usuarios/{id}/contar-seguidores:
+ *   get:
+ *     summary: Contar o número de seguidores e seguindo de um usuário
+ *     tags: [Seguidor]
+ *     security:
+ *       - bearerAuth: []
+ *     description: Retorna a contagem de seguindo e seguidores
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID do usuário
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 seguidores:
+ *                   type: integer
+ *                   description: Número de seguidores
+ *                 seguindo:
+ *                   type: integer
+ *                   description: Número de seguindo
+ *               example:
+ *                 seguidores: 0
+ *                 seguindo: 0
+ *       500:
+ *         description: Erro interno
+*/
 router.post("/usuarios/:id/seguir", AuthMiddleware, wrapException(SeguidorControler.seguirUsuario));
 router.delete("/usuarios/:id/seguir", AuthMiddleware, wrapException(SeguidorControler.deixarSeguirUsuario));
 
 router.get("/usuarios/:id/seguidores", AuthMiddleware, wrapException(SeguidorControler.listarSeguidores));
 router.get("/usuarios/:id/seguindo", AuthMiddleware, wrapException(SeguidorControler.listarSeguindo));
+
+router.get("/usuarios/:id/contar-seguidores", AuthMiddleware, wrapException(SeguidorControler.contarSeguidores));
 
 export default router;

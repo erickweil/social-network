@@ -118,29 +118,9 @@ export default class UsuarioControler {
 		}
 
 		// Deletar todos os seguidores e seguindo deste usuário
-
-		// 1. [LENTO] Subtrair em 1 a contagem de seguidores de todos os que seguem o usuário
-		const seguidores = await Seguidor.find({seguido:usuario._id});
-		if(seguidores.length > 0) {
-			const id_seguidor = seguidores.map(e => e.usuario);
-			await Usuario.updateMany(
-				{_id: {$in: id_seguidor}},
-				{$inc: {seguindo: -1}}
-			);
-		}
 		
-		// 2. [LENTO] Subtrair em 1 a contagem de seguindo de todos os que este usuário segue
-		const seguindo = await Seguidor.find({usuario:usuario._id});
-		if(seguindo.length > 0) {
-			const id_seguido = seguindo.map(e => e.seguido);
-			await Usuario.updateMany(
-				{_id: {$in: id_seguido}},
-				{$inc: {seguidores: -1}}
-			);
-		}
-
-		// 3. Deletar todas as entradas de seguidores
-		await Seguidor.deleteMany({ 
+		// 1. Deletar todas as entradas de seguidores
+		const resultadoDeletarSeguidor = await Seguidor.deleteMany({ 
 			$or: [{
 			usuario: usuario._id
 			}, {
@@ -148,9 +128,12 @@ export default class UsuarioControler {
 			}]
 		});
 
-		// 4. Deletar o usuário
-		await Usuario.deleteOne({_id: usuario._id});
+		// 2. Deletar o usuário
+		const resultadoDeletarUsuario = await Usuario.deleteOne({_id: usuario._id});
 
+		if(resultadoDeletarUsuario.deletedCount == 1)
 		return res.status(200).json({message: "Deletado com sucesso"});
+		else
+		return res.status(500).json({error: true, message: "Erro ao deletar usuário: "+JSON.stringify(resultadoDeletarUsuario)});
 	}
 }
