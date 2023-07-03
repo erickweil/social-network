@@ -3,6 +3,8 @@ import {jest,describe,expect,test} from "@jest/globals";
 import app from "../../src/app.js";
 import request  from "supertest";
 import { usuarioTeste } from "../../src/models/Usuario.js";
+import { postLogin } from "../common.js";
+
 
 describe("Teste Login",() => {
     let token = false;
@@ -12,7 +14,14 @@ describe("Teste Login",() => {
 		const rotas = [
 			{method:"get", path:"/usuarios"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572"},
-			{method:"patch", path:"/usuarios"}
+			{method:"patch", path:"/usuarios"},
+			{method:"delete", path:"/usuarios"},
+
+			{method:"post", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
+			{method:"delete", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
+			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/seguidores"},
+			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/seguindo"},
+			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/contar-seguidores"},
 		];
 
 		for(let rota of rotas) {
@@ -38,10 +47,7 @@ describe("Teste Login",() => {
         ];
 
         for(let logins of invalidos) {
-			const res = await req
-				.post("/login")
-				.set("Accept", "aplication/json")
-				.send({
+			await postLogin(req,{
 					email: logins[0],
 					senha: logins[1],
 				})
@@ -50,17 +56,9 @@ describe("Teste Login",() => {
     });
 
     test("Deve autenticar", async () => {
-        const res = await req
-            .post("/login")
-            .set("Accept", "aplication/json")
-            .send({
-                email: usuarioTeste.email,
-                senha: usuarioTeste.senha,
-            })
-            .expect(200);
-
-        token = res.body.token;
-        expect(token).toBeTruthy();
+        const res = await postLogin(req,usuarioTeste).expect(200);
+        expect(res.body.token).toBeTruthy();
+		token = res.body.token;
     });
 
 	test("Não permitir acessar com token inválido/expirado", async () => {

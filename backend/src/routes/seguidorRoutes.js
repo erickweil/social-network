@@ -1,5 +1,5 @@
 import express from "express";
-import { wrapException } from "./testeRoutes.js";
+import { wrapException } from "./common.js";
 import SeguidorControler from "../controllers/SeguidorController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 const router = express.Router();

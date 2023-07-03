@@ -1,4 +1,5 @@
 import express from "express";
+import { wrapException } from "./common.js";
 const router = express.Router();
 
 /**
@@ -52,17 +53,6 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/TesteResposta'
  */
-
-export const wrapException = (fn) => {
-	return async (req,res,next) => {
-		try {
-			await fn(req,res,next);
-		} catch (err) {	
-			console.log(err.stack || err);
-			res.status(500).send("Erro interno inesperado.");
-		}
-	};
-};
 
 router.get("/teste", wrapException((req,res) => {
 	res.status(200).json({ 

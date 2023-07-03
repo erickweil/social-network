@@ -29,6 +29,10 @@ const Usuario = new mongoose.Schema({
 		type: String,
 		default: "/img/usuario-default.png"
 	},
+	fotoCapa: {
+		type: String,
+		default: "/img/usuario-default.png"
+	},
 	biografia: {
 		type: String,
 		maxLength: [160, "sua biografia não pode passar de 160 caracteres"],
@@ -54,6 +58,7 @@ Usuario.statics.publicFields = function(usuario) {
 		nome: usuario.nome,
 		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
 		fotoPerfil: usuario.fotoPerfil,
+		fotoCapa: usuario.fotoCapa,
 		biografia: usuario.biografia
 	};
 };
@@ -138,6 +143,7 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 		}
 
 		if(atualizar.fotoPerfil !== undefined) usuario.fotoPerfil = atualizar.fotoPerfil;
+		if(atualizar.fotoCapa !== undefined) usuario.fotoCapa = atualizar.fotoCapa;
 		if(atualizar.biografia !== undefined) usuario.biografia = atualizar.biografia;
 		if(atualizar.preferencias) {
 			if(atualizar.preferencias.notificacao !== undefined) usuario.preferencias.notificacao = atualizar.preferencias.notificacao;

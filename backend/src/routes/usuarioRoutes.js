@@ -1,7 +1,7 @@
 import express from "express";
 import UsuarioControler from "../controllers/UsuarioController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
-import { wrapException } from "./testeRoutes.js";
+import { upload, wrapException } from "./common.js";
 
 const router = express.Router();
 
@@ -189,6 +189,8 @@ router.get("/usuarios/:id", AuthMiddleware, wrapException(UsuarioControler.lista
 // Operações no próprio usuário autenticado
 router.patch("/usuarios", AuthMiddleware, wrapException(UsuarioControler.atualizarUsuario));
 router.delete("/usuarios", AuthMiddleware, wrapException(UsuarioControler.deletarUsuario));
+router.post("/usuarios/foto-perfil", AuthMiddleware, wrapException(upload.single("foto_perfil")), wrapException(UsuarioControler.atualizarFotoPerfil));
+router.post("/usuarios/foto-capa", AuthMiddleware, wrapException(upload.single("foto_capa")), wrapException(UsuarioControler.atualizarFotoCapa));
 
 // Cadastro de usuário não exige autenticação
 router.post("/usuarios", wrapException(UsuarioControler.cadastrarUsuario));

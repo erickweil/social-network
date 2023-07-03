@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        https://blog.logrocket.com/multer-nodejs-express-upload-file/
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload</title>
+    <style>
+    /* style.css */
+    body {
+        background-color: rgb(6, 26, 27);
+    }
+    * {
+        box-sizing: border-box;
+    }
+    .container {
+        max-width: 500px;
+        margin: 60px auto;
+    }
+    .container h1 {
+        text-align: center;
+        color: white;
+    }
+    form {
+        background-color: white;
+        padding: 30px;
+    }
+    form .input-group {
+        margin-bottom: 15px;
+    }
+    form label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    form input {
+        padding: 12px 20px;
+        width: 100%;
+        border: 1px solid #ccc;
+    }
+    .submit-btn {
+        width: 100%;
+        border: none;
+        background: rgb(37, 83, 3);
+        font-size: 18px;
+        color: white;
+        border-radius: 3px;
+        padding: 20px;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Upload</h1>
+        <form id='form'>
+            <div class="input-group">
+                <label for='name'>Your name</label>
+                <input name='name' id='name' placeholder="Enter your name" />
+            </div>
+            <div class="input-group">
+                <label for='foto_perfil'>Select files</label>
+                <input id='foto_perfil' type="file">
+            </div>
+            <button class="submit-btn" type='submit'>Upload</button>
+        </form>
+    </div>
+    <script>
+        // script.js
+        const form = document.getElementById("form");
+
+        form.addEventListener("submit", submitForm);
+
+        function submitForm(e) {
+            e.preventDefault();
+            const name = document.getElementById("name");
+            const file = document.getElementById("foto_perfil");
+            const formData = new FormData();
+            formData.append("name", name.value);
+            formData.append("foto_perfil", file.files[0]);
+            //for(let i =0; i < files.files.length; i++) {
+            //        formData.append("files", files.files[i]);
+            //}
+            fetch("https://erick.fslab.dev/proxy/3000/usuarios/foto-perfil", {
+                method: 'POST',
+                body: formData,
+            })
+                .then((res) => console.log(res))
+                .catch((err) => ("Error occured", err));
+        }
+    </script>
+</body>
+</html>

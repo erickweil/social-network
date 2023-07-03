@@ -1,4 +1,5 @@
-import faker from "faker-br";
+import fakerbr from "faker-br";
+import { faker } from "@faker-js/faker";
 import Usuario, { usuarioTeste } from "../models/Usuario.js";
 import Seguidor from "../models/Seguidor.js";
 
@@ -14,8 +15,8 @@ export default async function usuariosSeed(quantidade) {
 
     for(let i = 0; i < quantidade; i++) {
         resultado = await Usuario.criarUsuario({
-            nome: faker.name.findName(),
-            email: faker.internet.email(),
+            nome: fakerbr.name.findName(),
+            email: fakerbr.internet.email(),
             senha: "ABCDabcd1234",
         });
 
@@ -26,11 +27,12 @@ export default async function usuariosSeed(quantidade) {
         const idUsuario = resultado.usuario.id;
         resultado = await Usuario.atualizarUsuario(idUsuario,{
             fotoPerfil: faker.internet.avatar(),
-            biografia: faker.name.jobTitle(),
+            fotoCapa: faker.image.urlLoremFlickr(),
+            biografia: fakerbr.name.jobTitle(),
             preferencias: {
-                notificacao: faker.random.boolean(),
-                exibirEmail: faker.random.boolean(),
-                contaPrivada: faker.random.boolean()
+                notificacao: fakerbr.random.boolean(),
+                exibirEmail: fakerbr.random.boolean(),
+                contaPrivada: fakerbr.random.boolean()
             }
         });
 

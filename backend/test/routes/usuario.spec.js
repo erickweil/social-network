@@ -3,6 +3,7 @@ import {jest,describe,expect,test} from "@jest/globals";
 import faker from "faker-br";
 import app from "../../src/app.js";
 import request  from "supertest";
+import { deletarUsuario, getUsuarioPorID, postCriarUsuario, postLogin } from "../common.js";
 
 describe("Usuarios",() => {
 	
@@ -15,30 +16,6 @@ describe("Usuarios",() => {
     let token = false;
 	const req = request(app);
 
-    let usuarioQualquer = false;
-    let usuariosQuaisquer = [];
-
-    // função ajudadora
-    const getUsuarioPorID = async (id) => {
-        const res = await req
-        .get("/usuarios/"+id)
-        .set("Authorization", `Bearer ${token}`)  
-        .set("Accept", "aplication/json")
-        .expect(200);
-
-        return res.body;
-    };
-
-    const getSeguidoresUsuario = async (id) => {
-        const res = await req
-        .get("/usuarios/"+id+"/contar-seguidores")
-        .set("Authorization", `Bearer ${token}`)  
-        .set("Accept", "aplication/json")
-        .expect(200);
-
-        return res.body;
-    };
-
     test("Criar usuario senhas fracas:", async () => {
         const senhasFracas = [
             "123456789012345678901",
@@ -49,11 +26,7 @@ describe("Usuarios",() => {
         ];
 
         for(let senha of senhasFracas) {
-            const res = await req
-                .post("/usuarios")
-                .set("Authorization", `Bearer ${token}`)  
-                .set("Accept", "aplication/json")
-                .send({...novoUsuario,...{
+            const res = await postCriarUsuario(req,{...novoUsuario,...{
                     senha:senha
                 }})
                 .expect(400);
@@ -65,11 +38,7 @@ describe("Usuarios",() => {
 
     test("Criar usuário Inválido", async () => {
         const nome = "01234567890123456789012345678901234567890123456789 - Mais de 50 caracteres";
-        const res = await req
-            .post("/usuarios")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .send({...novoUsuario,...{
+        const res = await postCriarUsuario(req,{...novoUsuario,...{
                 nome: nome
             }})
             .expect(400);
@@ -79,11 +48,7 @@ describe("Usuarios",() => {
     });
 
     test("Criar usuário", async () => {
-		const res = await req
-            .post("/usuarios")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .send(novoUsuario)
+		const res = await postCriarUsuario(req,novoUsuario)
             .expect(201);
 
         expect(res.body.nome).toBe(novoUsuario.nome);
@@ -94,11 +59,7 @@ describe("Usuarios",() => {
     });
 
     test("Criar usuario duplicado:", async () => {		
-		const res = await req
-            .post("/usuarios")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .send(novoUsuario)
+		const res = await postCriarUsuario(req,novoUsuario)
             .expect(400);
 
         expect(res.body.validation).toBeDefined();
@@ -106,10 +67,7 @@ describe("Usuarios",() => {
 	});
 
     test("Não deve autenticar", async () => {
-        const res = await req
-            .post("/login")
-            .set("Accept", "aplication/json")
-            .send({
+        const res = await postLogin(req,{
                 email: novoUsuario.email,
                 senha: "SENHAERRADA",
             })
@@ -117,10 +75,7 @@ describe("Usuarios",() => {
     });
 
     test("Deve autenticar", async () => {
-        const res = await req
-            .post("/login")
-            .set("Accept", "aplication/json")
-            .send({
+        const res = await postLogin(req,{
                 email: novoUsuario.email,
                 senha: novoUsuario.senha,
             })
@@ -131,30 +86,24 @@ describe("Usuarios",() => {
     });
 
     test("Usuário por ID", async () => {
-		const usuario = await getUsuarioPorID(novoUsuario.id);
-
+		const res = await getUsuarioPorID(req,token,novoUsuario.id).expect(200);
+        
+        const usuario = res.body;
         expect(usuario.id).toBe(novoUsuario.id);
         expect(usuario.nome).toBe(novoUsuario.nome);
         expect(usuario.email).toBe(novoUsuario.email);
         expect(usuario.fotoPerfil).toBeDefined();
+        expect(usuario.fotoCapa).toBeDefined();
         expect(usuario.biografia).toBeDefined();
         expect(usuario.senha).toBeUndefined();
     });
 
     test("Usuário inexistente Por ID:", async () => {		
-		const res = await req
-			.get("/usuarios/551137c2f9e1fac808a5f572")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(404);
+		const res = await getUsuarioPorID(req,token,"551137c2f9e1fac808a5f572").expect(404);
 	});
 
-    test("Usuário ID inválido:", async () => {		
-		const res = await req
-			.get("/usuarios/id-invalido")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(400);
+    test("Usuário ID inválido:", async () => {	
+		const res = await getUsuarioPorID(req,token,"id-invalido").expect(400);
 	});
 
     test("Encontrar pelo nome:", async () => {		
@@ -195,16 +144,11 @@ describe("Usuarios",() => {
             for(let usuario of res.body.resposta) {
                 if(usuario.id === novoUsuario.id) {
                     encontrado = true;
-                } else {
-                    if(usuariosQuaisquer.length < 10)
-                    usuariosQuaisquer.push(usuario);
                 }
             }
 
             pagina++;
         } while(resultados > 0 && pagina < 1000);
-
-        usuarioQualquer = usuariosQuaisquer[0];
 
         expect(totalDocumentos).toBeGreaterThanOrEqual(32); // o seed cria 32
         expect(encontrado).toBeTruthy(); // Deve ter encontrado o usuário criado ao atravessar todas as páginas
@@ -213,7 +157,6 @@ describe("Usuarios",() => {
     test("Atualizar Usuário", async () => {
         const nome = "!"+novoUsuario.nome;
         const biografia = "Teste de Biografia";
-        const fotoPerfil = "/img/usuario-outra.png";
         const preferencias = {
             notificacao: false,
             exibirEmail: false,
@@ -224,7 +167,6 @@ describe("Usuarios",() => {
             .send({
                 nome: nome,
                 biografia: biografia,
-                fotoPerfil: fotoPerfil,
                 preferencias: preferencias
             })
             .set("Authorization", `Bearer ${token}`)  
@@ -233,7 +175,6 @@ describe("Usuarios",() => {
 
         expect(res.body.nome).toBe(nome);
         expect(res.body.biografia).toBe(biografia);
-        expect(res.body.fotoPerfil).toBe(fotoPerfil);
         expect(res.body.email).toBeUndefined(); // exibirEmail false deve não ter email aqui 
     });
 
@@ -253,82 +194,6 @@ describe("Usuarios",() => {
         expect(res.body.validation.nome).toBeDefined();
     });
 
-    test("Seguir vários usuários", async () => {
-        const seguidoresAntes = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
-
-        for(let usuario of usuariosQuaisquer) {
-            const res = await req
-                .post("/usuarios/"+usuario.id+"/seguir")
-                .set("Authorization", `Bearer ${token}`)  
-                .set("Accept", "aplication/json")
-                .expect(200);
-        }
-
-        const seguidoresDepois = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
-        const seguindo = (await getSeguidoresUsuario(novoUsuario.id)).seguindo;
-
-        expect(seguidoresDepois).toBe(seguidoresAntes+1);
-        expect(seguindo).toBe(usuariosQuaisquer.length);
-    });
-
-    test("Tentando seguir usuário inexistente", async () => {
-        const res = await req
-            .post("/usuarios/551137c2f9e1fac808a5f572/seguir")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(404);
-    });
-
-    test("Deixando de seguir usuário inexistente", async () => {
-        const res = await req
-            .delete("/usuarios/551137c2f9e1fac808a5f572/seguir")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
-        
-        expect(res.body.message).toBe("Já tinha deixado de seguir");
-    });
-
-    test("Listar seguidores, deve ter 0", async () => {
-        const res = await req
-			.get("/usuarios/"+novoUsuario.id+"/seguidores")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
-
-        expect(res.body.resposta).toBeDefined();
-        expect(res.body.resposta.length).toBe(0);
-    });
-
-    test("Listar seguindo, Deve estar seguindo vários", async () => {
-        const res = await req
-			.get("/usuarios/"+novoUsuario.id+"/seguindo")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
-
-        expect(res.body.resposta).toBeDefined();
-        expect(res.body.resposta.length).toBe(usuariosQuaisquer.length);
-
-        expect(res.body.resposta[0].id).toBe(usuarioQualquer.id);
-    });
-
-    test("Deixar de seguir um usuário", async () => {
-        const seguidoresAntes = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
-
-        const res = await req
-			.delete("/usuarios/"+usuarioQualquer.id+"/seguir")
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
-
-        const seguidoresDepois = (await getSeguidoresUsuario(usuarioQualquer.id)).seguidores;
-        const seguindo = (await getSeguidoresUsuario(novoUsuario.id)).seguindo;
-
-        expect(seguidoresDepois).toBe(seguidoresAntes-1);
-        expect(seguindo).toBe(usuariosQuaisquer.length - 1);
-    });
-
     test("Deletar Usuário sem confirmar a senha", async () => {
 		const res = await req
 			.delete("/usuarios")
@@ -341,14 +206,7 @@ describe("Usuarios",() => {
     });
 
     test("Deletar Usuário", async () => {
-		const res = await req
-			.delete("/usuarios")
-            .send({
-                senha: novoUsuario.senha
-            })
-            .set("Authorization", `Bearer ${token}`)  
-            .set("Accept", "aplication/json")
-            .expect(200);
+		const res = await deletarUsuario(req,token,novoUsuario.senha).expect(200);
     });
 
     test("Tentando utilizar o mesmo token após deletar conta", async () => {

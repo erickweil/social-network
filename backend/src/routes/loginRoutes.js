@@ -1,6 +1,6 @@
 import express from "express";
 import LoginControler from "../controllers/LoginController.js";
-import { wrapException } from "./testeRoutes.js";
+import { wrapException } from "./common.js";
 
 const router = express.Router();
 

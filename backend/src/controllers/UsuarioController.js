@@ -1,5 +1,6 @@
 import Seguidor from "../models/Seguidor.js";
 import Usuario from "../models/Usuario.js";
+import path from "node:path";
 import mongoose from "mongoose";
 
 export default class UsuarioControler {
@@ -88,11 +89,10 @@ export default class UsuarioControler {
 		return res.status(201).json(Usuario.publicFields(resultCriar.usuario));
 	}
 
-	static async atualizarUsuario(req,res) {
-		const atualizar = req.body;
 
+	static async _atualizarUsuario(idUsuario,atualizar,res) {
 		let resultAtualizar = await Usuario.atualizarUsuario(
-			req.usuario.id,
+			idUsuario,
 			atualizar
 		);
 
@@ -101,6 +101,38 @@ export default class UsuarioControler {
 		}
 
 		return res.status(200).json(Usuario.publicFields(resultAtualizar.usuario));
+	}
+
+	static async atualizarUsuario(req,res) {
+		const atualizar = req.body;
+
+		if(atualizar.fotoPerfil || atualizar.fotoCapa) {
+			return res.status(400).json({ error: true, message: "Não é possível atualizar a foto assim, utilize a rota dedicada" });
+		}
+
+		return await UsuarioControler._atualizarUsuario(req.usuario.id,atualizar,res);
+	}
+
+	static async atualizarFotoPerfil(req,res) {
+		if(!req.file) {
+			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
+		}
+		//console.log(req.file);
+
+		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
+			fotoPerfil: req.file.path.replace("public","")
+		},res);
+	}
+
+	static async atualizarFotoCapa(req,res) {		
+		if(!req.file) {
+			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
+		}
+		//console.log(req.file);
+
+		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
+			fotoCapa: req.file.path.replace("public","")
+		},res);
 	}
 
 	static async deletarUsuario(req,res) {

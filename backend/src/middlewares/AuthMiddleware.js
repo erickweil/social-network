@@ -9,11 +9,8 @@ const AuthMiddleware = async (req, res, next) => {
     // A autenticação é desativada.
     if(process.env.DISABLE_AUTH === "true") {
       const usuario = await Usuario.findOne({email: usuarioTeste.email});
-      req.usuario = {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email
-      };
+      
+      req.usuario = usuario;
       next();
       return;
     }
