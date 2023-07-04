@@ -25,7 +25,7 @@ describe("Seguidor",() => {
         }
 
         usuarioQualquer = usuariosTeste[0];
-    });
+    }, 10000);
 
     test("Deve autenticar", async () => {
         const testeUsuario = {

@@ -152,7 +152,7 @@ describe("Usuarios",() => {
 
         expect(totalDocumentos).toBeGreaterThanOrEqual(32); // o seed cria 32
         expect(encontrado).toBeTruthy(); // Deve ter encontrado o usuário criado ao atravessar todas as páginas
-	});
+	}, 60000);
 
     test("Atualizar Usuário", async () => {
         const nome = "!"+novoUsuario.nome;

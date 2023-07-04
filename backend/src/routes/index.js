@@ -17,7 +17,7 @@ export const logRoutes = (req,res,next) => {
 
 	console.log(timestamp+" "+ip+" "+req.protocol + "://" + req.get("host") + req.originalUrl);
 	// TEMP Log Headers
-	console.log(JSON.stringify(req.headers));
+	//console.log(JSON.stringify(req.headers));
 	next();
 };
 

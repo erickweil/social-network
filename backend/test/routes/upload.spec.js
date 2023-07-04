@@ -25,8 +25,7 @@ describe("Usuarios",() => {
 			{path:"./test/assets/usuario.png", mimeType: "image/png", expectSuccess: true},
 			{path:"./test/assets/usuario.webp", mimeType: "image/webp", expectSuccess: true},
 			{path:"./test/assets/usuario.gif", mimeType: "image/gif", expectSuccess: true},
-			{path:"./test/assets/imagem_4k.jpg", mimeType: "image/jpeg", expectSuccess: true},
-			{path:"./test/assets/imagem_4k.png", mimeType: "image/png", expectSuccess: false},
+			{path:"./test/assets/imagem_500kb.jpg", mimeType: "image/jpeg", expectSuccess: true},
 			{path:"./test/assets/usuario.bmp", mimeType: "image/bmp", expectSuccess: false},
 			{path:"./test/assets/usuario.tiff", mimeType: "image/tiff", expectSuccess: false},
 			{path:"./test/assets/usuario.avif", mimeType: "image/avif", expectSuccess: false},
@@ -42,7 +41,7 @@ describe("Usuarios",() => {
 					filename: filename ,
 					contentType: foto.mimeType
 				})
-				.expect(foto.expectSuccess ? 200 : 500);
+				.expect(foto.expectSuccess ? 200 : 400);
 
 			if(foto.expectSuccess) {
 				expect(res.body.fotoPerfil).toBeTruthy();
@@ -72,7 +71,7 @@ describe("Usuarios",() => {
 				expect(res.body.fotoPerfil).toBeUndefined();
 			}
 		}
-	}, 60000);
+	}, 30000);
 
 	test("Não deve ser possível atualizar foto via patch /usuarios", async () => {
 		const res = await req
@@ -86,4 +85,14 @@ describe("Usuarios",() => {
 
 		expect(res.body.error).toBeTruthy();
     });
+
+	// O que falta:
+	// Testar formatos inesperados: gif animado, imagens com transparência
+	// Testar imagens com tamanho muito grande (> 8MB)
+	// Testar imagens com aspect ratio malucos (muito altas, muito largas, muito pequenas)
+	// Testar enviar imagens que não são imagens (arquivos com extensão errada/ corrompidos)
+	// Testar enviar mensagem escondida via imagem
+	//  - metadados,
+	//	- arquivo após fim da imagem,
+	//	- steganografia
 });

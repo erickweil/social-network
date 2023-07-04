@@ -1,7 +1,7 @@
 import Seguidor from "../models/Seguidor.js";
 import Usuario from "../models/Usuario.js";
 import mongoose from "mongoose";
-import { deletarFotoUsuario, salvarFotoUsuario } from "../utils/multer.js";
+import { deletarFotoUsuario, salvarFotoUsuario } from "../utils/foto.js";
 
 export default class UsuarioControler {
 	static async listarUsuarios(req,res) {
@@ -127,8 +127,7 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
 		
-		const mimeType = req.headers["content-type"];
-		const filepath = await salvarFotoUsuario(req.file,mimeType,req.usuario);
+		const filepath = await salvarFotoUsuario(req.file,req.usuario);
 
 		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
 			fotoPerfil: filepath
@@ -140,8 +139,7 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
 
-		const mimeType = req.headers["content-type"];
-		const filepath = await salvarFotoUsuario(req.file,mimeType,req.usuario);
+		const filepath = await salvarFotoUsuario(req.file,req.usuario);
 
 		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
 			fotoCapa: filepath

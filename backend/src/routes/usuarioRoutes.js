@@ -2,7 +2,7 @@ import express from "express";
 import UsuarioControler from "../controllers/UsuarioController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 import { wrapException } from "./common.js";
-import { upload } from "../utils/multer.js";
+import { upload } from "../utils/foto.js";
 
 const router = express.Router();
 
