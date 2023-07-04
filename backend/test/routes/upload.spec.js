@@ -26,6 +26,11 @@ describe("Usuarios",() => {
 			{path:"./test/assets/usuario.webp", mimeType: "image/webp", expectSuccess: true},
 			{path:"./test/assets/usuario.gif", mimeType: "image/gif", expectSuccess: true},
 			{path:"./test/assets/imagem_500kb.jpg", mimeType: "image/jpeg", expectSuccess: true},
+			{path:"./test/assets/usuario_wide.jpg", mimeType: "image/jpeg", expectSuccess: true},
+			{path:"./test/assets/usuario_tall.jpg", mimeType: "image/jpeg", expectSuccess: true},
+			{path:"./test/assets/usuario_big.jpg", mimeType: "image/jpeg", expectSuccess: true},
+			{path:"./test/assets/usuario_small.jpg", mimeType: "image/jpeg", expectSuccess: true},
+			{path:"./test/assets/usuario_errado.png", mimeType: "image/png", expectSuccess: true},
 			{path:"./test/assets/usuario.bmp", mimeType: "image/bmp", expectSuccess: false},
 			{path:"./test/assets/usuario.tiff", mimeType: "image/tiff", expectSuccess: false},
 			{path:"./test/assets/usuario.avif", mimeType: "image/avif", expectSuccess: false},
@@ -34,6 +39,7 @@ describe("Usuarios",() => {
 		let fotoAnterior = false;
 		for(const foto of fotos) {
 			const filename = foto.path.substring(foto.path.lastIndexOf("/")+1);
+			//console.log(filename);
 			const res = await req
 				.post("/usuarios/foto-perfil")
 				.set("Authorization", `Bearer ${token}`)
