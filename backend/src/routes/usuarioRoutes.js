@@ -1,7 +1,8 @@
 import express from "express";
 import UsuarioControler from "../controllers/UsuarioController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
-import { upload, wrapException } from "./common.js";
+import { wrapException } from "./common.js";
+import { upload } from "../utils/multer.js";
 
 const router = express.Router();
 

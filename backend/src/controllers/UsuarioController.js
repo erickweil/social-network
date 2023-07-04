@@ -1,7 +1,7 @@
 import Seguidor from "../models/Seguidor.js";
 import Usuario from "../models/Usuario.js";
-import path from "node:path";
 import mongoose from "mongoose";
+import { deletarFotoUsuario, salvarFotoUsuario } from "../utils/multer.js";
 
 export default class UsuarioControler {
 	static async listarUsuarios(req,res) {
@@ -100,13 +100,22 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, validation: resultAtualizar.validation });
 		}
 
+		// Deletar as fotos antigas caso tenham sido atualizadas
+		if(atualizar.fotoPerfil !== undefined) {
+			await deletarFotoUsuario(idUsuario,resultAtualizar.usuarioAntes.fotoPerfil);
+		}
+
+		if(atualizar.fotoCapa !== undefined) {			
+			await deletarFotoUsuario(idUsuario,resultAtualizar.usuarioAntes.fotoCapa);
+		}
+
 		return res.status(200).json(Usuario.publicFields(resultAtualizar.usuario));
 	}
 
 	static async atualizarUsuario(req,res) {
 		const atualizar = req.body;
 
-		if(atualizar.fotoPerfil || atualizar.fotoCapa) {
+		if(atualizar.fotoPerfil !== undefined || atualizar.fotoCapa !== undefined) {
 			return res.status(400).json({ error: true, message: "Não é possível atualizar a foto assim, utilize a rota dedicada" });
 		}
 
@@ -117,10 +126,12 @@ export default class UsuarioControler {
 		if(!req.file) {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
-		//console.log(req.file);
+		
+		const mimeType = req.headers["content-type"];
+		const filepath = await salvarFotoUsuario(req.file,mimeType,req.usuario);
 
 		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
-			fotoPerfil: req.file.path.replace("public","")
+			fotoPerfil: filepath
 		},res);
 	}
 
@@ -128,10 +139,12 @@ export default class UsuarioControler {
 		if(!req.file) {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
-		//console.log(req.file);
+
+		const mimeType = req.headers["content-type"];
+		const filepath = await salvarFotoUsuario(req.file,mimeType,req.usuario);
 
 		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
-			fotoCapa: req.file.path.replace("public","")
+			fotoCapa: filepath
 		},res);
 	}
 
@@ -160,7 +173,11 @@ export default class UsuarioControler {
 			}]
 		});
 
-		// 2. Deletar o usuário
+		// 2. Deletar fotos do usuário
+		await deletarFotoUsuario(usuario.id,usuario.fotoPerfil);
+		await deletarFotoUsuario(usuario.id,usuario.fotoCapa);
+
+		// 3. Deletar o usuário
 		const resultadoDeletarUsuario = await Usuario.deleteOne({_id: usuario._id});
 
 		if(resultadoDeletarUsuario.deletedCount == 1)

@@ -137,7 +137,7 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 	try {
 		
 		const usuario = await this.findById(usuario_id);
-
+		const antes = this.publicFields(usuario);
 		if(atualizar.nome !== undefined) {
 			usuario.nome = atualizar.nome;
 		}
@@ -153,7 +153,7 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 
 		await usuario.save();
 
-		return {sucesso:true,usuario:usuario};
+		return {sucesso:true,usuario:usuario,usuarioAntes:antes};
 	} catch (err) {
 		if (err.name === "ValidationError") {
 			let errors = {};
