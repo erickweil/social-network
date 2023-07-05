@@ -1,5 +1,4 @@
-import usuarios from "../models/Usuario.js";
-import mongoose from "mongoose";
+import Usuario from "../models/Usuario.js";
 import jwt from "jsonwebtoken";
 
 export default class LoginControler {
@@ -12,7 +11,7 @@ export default class LoginControler {
 			return res.status(400).json({ error: true, message: "Preencha todos os campos" });
 		}
 
-        const usuario = await usuarios.fazerLogin(email,senha);
+        const usuario = await Usuario.fazerLogin(email,senha);
 
         if(usuario === false) {
 			return res.status(400).json({ error: true, message: "Email ou senha incorretos" });
@@ -30,7 +29,7 @@ export default class LoginControler {
                     expiresIn: process.env.EXPIREIN
                 }
             ),
-            usuario: usuarios.publicFields(usuario)
+            usuario: Usuario.publicFields(usuario)
         });
     }
 

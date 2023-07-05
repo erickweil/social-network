@@ -1,6 +1,8 @@
 import express from "express";
 import UsuarioControler from "../controllers/UsuarioController.js";
 import AuthMiddleware from "../middlewares/AuthMiddleware.js";
+import { wrapException } from "./common.js";
+import { upload } from "../utils/foto.js";
 
 const router = express.Router();
 
@@ -10,36 +12,28 @@ const router = express.Router();
  *   schemas:
  *     Usuario:
  *       type: object
- *       required:
- *         - nome
- *         - email
- *         - senha
  *       properties:
+ *         id:
+ *           type: string
+ *           description: ID do usuário
  *         nome:
  *           type: string
  *           description: Nome do usuário
  *         email:
  *           type: string
- *           description: Email do usuário
- *         senha:
- *           type: string
- *           description: Senha do usuário
+ *           description: Email do usuário (Apenas se o usuário permitir exibir)
  *         fotoPerfil:
  *           type: string
  *           description: Foto de perfil do usuário
  *         biografia:
  *           type: string
  *           description: Biografia do usuário
- *         created_at:
- *           type: string
- *           description: Data de criação do usuário
- *         updated_at:
- *           type: string
- *           description: Data de atualização do usuário
  *       example:
+ *         id: "551137c2f9e1fac808a5f572"
  *         nome: "João"
  *         email: "joao@email.com"
- *         senha: "12345678"
+ *         fotoPerfil: "/img/usuario-default.png"
+ *         biografia: "Oi eu sou o João"
  */
 
 /**
@@ -83,17 +77,6 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Usuario'
  *       500:
  *         description: Erro interno
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                 type: boolean
- *                 description: Ocorreu um erro
- *               example:
- *                 error: true
- *                 message: Erro interno
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Usuarios]
@@ -104,14 +87,33 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Usuario'
+ *             type: object
+ *             required:
+ *               - nome
+ *               - email
+ *               - senha
+ *             properties:
+ *               nome:
+ *                 type: string
+ *                 description: Nome do usuário
+ *                 example: "Usuário Teste"  
+ *               email:
+ *                 type: string
+ *                 description: Email do usuário
+ *                 example: "teste@teste.com.br"  
+ *               senha:
+ *                 type: string
+ *                 description: Senha do usuário
+ *                 example: "ABCDabcd1234"  
  *     responses:
  *       201:
  *         description: Usuário criado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Usuario'    
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
  *   patch:
  *     summary: Atualiza o seu usuário
  *     tags: [Usuarios]
@@ -124,13 +126,38 @@ const router = express.Router();
  *           schema:
  *             $ref: '#/components/schemas/Usuario'
  *     responses:
- *       201:
+ *       200:
  *         description: Usuário atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Usuario'       
- */  
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
+ *   delete:
+ *     summary: Deleta o seu usuário
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - senha
+ *             properties:
+ *               senha:
+ *                 type: string
+ *                 description: Senha do usuário
+ *                 example: "ABCDabcd1234"   
+ *     responses:
+ *       200:
+ *         description: Deletado com sucesso
+ *       500:
+ *         description: Erro interno
+ */ 
 
 /**
  * @swagger
@@ -154,27 +181,76 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Usuario'
  *       500:
- *         description: Erro interno
+ *         description: Erro interno      
+ */
+
+/**
+ * @swagger
+ * /usuarios/foto-perfil:
+ *   post:
+ *     summary: Atualiza a foto de perfil
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_perfil:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagem de perfil atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                 type: boolean
- *                 description: Ocorreu um erro
- *               example:
- *                 error: true
- *                 message: Erro interno      
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
  */
 
-router.get("/usuarios", AuthMiddleware, UsuarioControler.listarUsuarios);
-router.get("/usuarios/:id", AuthMiddleware, UsuarioControler.listarUsuarioPorId);
+/**
+ * @swagger
+ * /usuarios/foto-capa:
+ *   post:
+ *     summary: Atualiza a foto de capa
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_capa:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagem de capa atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
+ */
 
-router.patch("/usuarios", AuthMiddleware, UsuarioControler.atualizarUsuario);
+router.get("/usuarios", AuthMiddleware, wrapException(UsuarioControler.listarUsuarios));
+router.get("/usuarios/:id", AuthMiddleware, wrapException(UsuarioControler.listarUsuarioPorId));
+
+// Operações no próprio usuário autenticado
+router.patch("/usuarios", AuthMiddleware, wrapException(UsuarioControler.atualizarUsuario));
+router.delete("/usuarios", AuthMiddleware, wrapException(UsuarioControler.deletarUsuario));
+router.post("/usuarios/foto-perfil", AuthMiddleware, wrapException(upload.single("foto_perfil")), wrapException(UsuarioControler.atualizarFotoPerfil));
+router.post("/usuarios/foto-capa", AuthMiddleware, wrapException(upload.single("foto_capa")), wrapException(UsuarioControler.atualizarFotoCapa));
 
 // Cadastro de usuário não exige autenticação
-router.post("/usuarios", UsuarioControler.cadastrarUsuario);
+router.post("/usuarios", wrapException(UsuarioControler.cadastrarUsuario));
 
 
 export default router;

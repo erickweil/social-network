@@ -8,28 +8,35 @@
     "seed": "node src/seeds/seed.js",
     "dev": "nodemon -L server.js",
     "lint": "npx eslint ./",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --verbose",
-    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "jest": {
     "setupFiles": [
-      "<rootDir>/test/setup.js"
+      "<rootDir>/test/setupenv.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setupjest.js"
     ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "any-ascii": "^0.3.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "faker-br": "^0.4.1",
+    "formidable": "^3.5.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
+    "sharp": "^0.32.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^4.6.3"
+    "swagger-ui-express": "^4.6.3",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.22.5",

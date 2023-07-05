@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import anyAscii from "any-ascii";
+import validator from "validator";
 // Usuário da rede social.
 // Nome, email, senha
 const Usuario = new mongoose.Schema({
@@ -8,17 +8,14 @@ const Usuario = new mongoose.Schema({
 		type: String, 
 		maxLength: [50, "O máximo de caracteres é 50"],
 		required: [true, "Nome é obrigatório"]
-	},	
-	// Para realizar pesquisa, pré-processado para ser minúsculo e sem acentos
-	// Não pode mudar o nome sem atualizar também este campo
-	nomeASCII: {
-		type: String,
-		index: true,
-		required: [true, "Nome é obrigatório"]
 	},
 	email: { 
 		type: String, 
 		maxLength: [320, "O máximo de caracteres é 320"],
+		validate: {
+			validator: validator.isEmail,
+			message: "Email inválido",
+		},
 		index: true,
 		unique: true,
 		required: [true, "Email é obrigatório"]
@@ -30,7 +27,11 @@ const Usuario = new mongoose.Schema({
 	},
 	fotoPerfil: {
 		type: String,
-		default: "/img/usuario-default.png"
+		default: "/img/usuario-default.jpg"
+	},
+	fotoCapa: {
+		type: String,
+		default: "/img/usuario-capa-default.jpg"
 	},
 	biografia: {
 		type: String,
@@ -46,15 +47,18 @@ const Usuario = new mongoose.Schema({
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 });
 
+// Se mudar isso tem que deletar o anterior e criar um novo
+Usuario.index({nome: "text"}, {default_language: "pt"});
+
 // Remapeia para conter apenas campos que podem ser vistos publicamente
 // deste usuário
 Usuario.statics.publicFields = function(usuario) {
 	return {
 		id: usuario.id,
 		nome: usuario.nome,
-		nomeASCII: usuario.nomeASCII,
 		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
 		fotoPerfil: usuario.fotoPerfil,
+		fotoCapa: usuario.fotoCapa,
 		biografia: usuario.biografia
 	};
 };
@@ -75,22 +79,26 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		//Validação da senha
 		//A ideia é que pode fazer senhas sem caracteres especiais só se for uma senha grande
 		const senha = usuario_info.senha;
-		let minimo = 8;
-		if(/^[0-9]*$/.test(senha)) {
-			minimo = 22;
-		} else if(/^[A-Z]*$/.test(senha) || /^[a-z]*$/.test(senha) ) {
-			minimo = 18;
-		} else if(/^[a-zA-Z]*$/.test(senha) || /^[A-Z0-9]*$/.test(senha) || /^[a-z0-9]*$/.test(senha)) {
-			minimo = 14;
-		} else if(/^[a-zA-Z0-9]*$/.test(senha)) {
-			minimo = 12;
-		} else {
-			minimo = 8;
-		}
-					
-		if(senha.length < minimo) {
-			return {sucesso: false, validation: {senha: "A senha com este padrão deve conter no mínimo "+minimo+" caracteres"}};
-		}
+
+		const passwdOptions = {
+			returnScore: true, 
+			pointsPerUnique: 2, 
+			pointsPerRepeat: 1, 
+			pointsForContainingLower: 10, 
+			pointsForContainingUpper: 10, 
+			pointsForContainingNumber: 10, 
+			pointsForContainingSymbol: 15 
+		};
+		// abcdABCD1234 -> 24 + 10 + 10 + 10 = 54
+		
+		if(senha.length < 8)
+		return {sucesso: false, validation: {senha: "O mínimo são 8 caracteres"}};
+
+		const forcaSenha = validator.isStrongPassword(senha,passwdOptions);
+		const minimoForca = 40 + 10;
+		if(forcaSenha < minimoForca) // mínimo de 8 caracteres únicos contendo minusculas, maiusculas, numeros e simbolos
+		return {sucesso: false, validation: {senha: "A senha não atingiu o mínimo de força "+forcaSenha+"/"+minimoForca}};
+		
 
 		const usuario = await this.findOne({email:usuario_info.email});
 
@@ -100,14 +108,13 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		}
 		// No need to save salt
 		const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
-		const hashedPassword = await bcrypt.hash(usuario_info.senha,salt);
+		const hashedPassword = await bcrypt.hash(senha,salt);
 		
 		// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
 
 		// go and save hashedPassword on db
 		const novoUsuario = await this.create({
 			nome: usuario_info.nome,
-			nomeASCII: anyAscii(usuario_info.nome).toLowerCase(),
 			email: usuario_info.email,
 			senha: hashedPassword
 		});
@@ -130,13 +137,13 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 	try {
 		
 		const usuario = await this.findById(usuario_id);
-
+		const antes = this.publicFields(usuario);
 		if(atualizar.nome !== undefined) {
 			usuario.nome = atualizar.nome;
-			usuario.nomeASCII = anyAscii(atualizar.nome).toLowerCase();
 		}
 
 		if(atualizar.fotoPerfil !== undefined) usuario.fotoPerfil = atualizar.fotoPerfil;
+		if(atualizar.fotoCapa !== undefined) usuario.fotoCapa = atualizar.fotoCapa;
 		if(atualizar.biografia !== undefined) usuario.biografia = atualizar.biografia;
 		if(atualizar.preferencias) {
 			if(atualizar.preferencias.notificacao !== undefined) usuario.preferencias.notificacao = atualizar.preferencias.notificacao;
@@ -146,7 +153,7 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 
 		await usuario.save();
 
-		return {sucesso:true,usuario:usuario};
+		return {sucesso:true,usuario:usuario,usuarioAntes:antes};
 	} catch (err) {
 		if (err.name === "ValidationError") {
 			let errors = {};
@@ -160,4 +167,10 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 	}
 };
 
-export default mongoose.model("usuario", Usuario);
+export const usuarioTeste = {
+    nome: "João da Silva",
+    email: "joao@email.com",
+    senha: "ABCDabcd1234"
+};
+
+export default mongoose.model("usuarios", Usuario);
