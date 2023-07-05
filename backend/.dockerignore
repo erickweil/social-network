@@ -1,4 +1,9 @@
 node_modules
+coverage
+test
+img
+tmpimg
+public
 .git
 .dockerignore
 npm-debug.log

@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:4.4.6
+    volumes:
+      - vol-db:/data/db
+  backend:
+    build: ./backend
+    ports:
+      - 3000:3000
+    environment:
+      - DEBUGLOG=true
+      - DISABLE_AUTH=false
+      - SUBPATH=/
+      - PORT=3000
+      - IMG_PATH=./data
+      - DB_URL=mongodb://mongo:27017
+    volumes:
+      - vol-img:/node-app/data
+
+volumes:
+  vol-db:
+  vol-img:

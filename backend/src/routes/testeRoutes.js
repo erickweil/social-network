@@ -1,4 +1,5 @@
 import express from "express";
+import { wrapException } from "./common.js";
 const router = express.Router();
 
 /**
@@ -52,11 +53,12 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/TesteResposta'
  */
-router.get("/teste", (req,res) => {
+
+router.get("/teste", wrapException((req,res) => {
 	res.status(200).json({ 
 		message: "Recebido",
 		body: req.query 
 	});
-});
+}));
 
 export default router;
