@@ -24,7 +24,7 @@ describe("Teste Rotas",() => {
 		const resp = await req.get("/")
 			.expect(302);
 
-		expect(resp.header["location"]).toBe("/docs");
+		expect(resp.header["location"]).toBe("docs");
 	});
 
 	test("Deve Não encontrar", async () => {

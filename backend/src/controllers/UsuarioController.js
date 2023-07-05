@@ -127,7 +127,11 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
 		
-		const filepath = await salvarFotoUsuario(req.file,req.usuario);
+		const filepath = await salvarFotoUsuario(req.file,req.usuario,{
+			// Foto de perfil é quadrada
+			minAspectRatio: 1.0,
+			maxAspectRatio: 1.0,
+		});
 
 		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
 			fotoPerfil: filepath

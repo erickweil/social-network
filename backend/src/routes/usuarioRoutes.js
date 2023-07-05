@@ -184,6 +184,62 @@ const router = express.Router();
  *         description: Erro interno      
  */
 
+/**
+ * @swagger
+ * /usuarios/foto-perfil:
+ *   post:
+ *     summary: Atualiza a foto de perfil
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_perfil:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagem de perfil atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
+ */
+
+/**
+ * @swagger
+ * /usuarios/foto-capa:
+ *   post:
+ *     summary: Atualiza a foto de capa
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_capa:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Imagem de capa atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       500:
+ *         description: Erro interno
+ */
+
 router.get("/usuarios", AuthMiddleware, wrapException(UsuarioControler.listarUsuarios));
 router.get("/usuarios/:id", AuthMiddleware, wrapException(UsuarioControler.listarUsuarioPorId));
 

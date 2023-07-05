@@ -13,6 +13,9 @@ const getSwaggerOptions = () => {
 			},
 			servers: [
 				{
+					url: "https://erick.fslab.dev/absproxy/3000",
+				},
+				{
 					url: "https://erick.fslab.dev/proxy/3000",
 				},
 				{

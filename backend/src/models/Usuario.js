@@ -27,11 +27,11 @@ const Usuario = new mongoose.Schema({
 	},
 	fotoPerfil: {
 		type: String,
-		default: "/img/usuario-default.png"
+		default: "/img/usuario-default.jpg"
 	},
 	fotoCapa: {
 		type: String,
-		default: "/img/usuario-capa-default.png"
+		default: "/img/usuario-capa-default.jpg"
 	},
 	biografia: {
 		type: String,

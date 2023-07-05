@@ -16,6 +16,8 @@ describe("Teste Login",() => {
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572"},
 			{method:"patch", path:"/usuarios"},
 			{method:"delete", path:"/usuarios"},
+			{method:"post", path:"/usuarios/foto-perfil"},
+			{method:"post", path:"/usuarios/foto-capa"},
 
 			{method:"post", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
 			{method:"delete", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},

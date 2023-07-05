@@ -7,6 +7,7 @@ import teste from "./testeRoutes.js";
 import usuario from "./usuarioRoutes.js";
 import login from "./loginRoutes.js";
 import seguidor from "./seguidorRoutes.js";
+import img from "./imgRoutes.js";
 
 export const logRoutes = (req,res,next) => {
 	const timestamp = new Date().toISOString();
@@ -28,7 +29,7 @@ const routes = (app) => {
 	}
 
 	app.get("/",(req, res) => {
-		res.status(200).redirect("/docs"); // redirecionando para documentação
+		res.status(200).redirect("docs"); // redirecionando para documentação
 	});
 
 	app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(getSwaggerOptions())));
@@ -37,7 +38,8 @@ const routes = (app) => {
 		teste,
 		usuario,
 		login,
-		seguidor
+		seguidor,
+		img
 	);
 
 	app.use((req,res,next) => {
