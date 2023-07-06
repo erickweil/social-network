@@ -16,7 +16,6 @@ describe("Teste Rotas",() => {
 			.expect(200);
 
 		let mensagemRecebida = resp.body.body.msg;
-
 		expect(mensagemRecebida).toBe(mensagemEnviada);
 	});
 

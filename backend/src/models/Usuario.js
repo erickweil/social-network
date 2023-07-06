@@ -27,11 +27,11 @@ const Usuario = new mongoose.Schema({
 	},
 	fotoPerfil: {
 		type: String,
-		default: "/img/usuario-default.jpg"
+		default: ""
 	},
 	fotoCapa: {
 		type: String,
-		default: "/img/usuario-capa-default.jpg"
+		default: ""
 	},
 	biografia: {
 		type: String,
@@ -106,9 +106,16 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		{
 			return {sucesso:false,validation: {email: "Email já está em uso"}};
 		}
-		// No need to save salt
-		const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
-		const hashedPassword = await bcrypt.hash(senha,salt);
+
+		let hashedPassword = false;
+		// para teste apenas
+		if(usuario_info.hashedPassword) {
+			hashedPassword = usuario_info.hashedPassword;
+		} else {
+			// No need to save salt
+			const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
+			hashedPassword = await bcrypt.hash(senha,salt);
+		}
 		
 		// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
 

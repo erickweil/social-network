@@ -3,14 +3,14 @@ import {jest,describe,expect,test} from "@jest/globals";
 import app from "../../src/app.js";
 import request  from "supertest";
 import { usuarioTeste } from "../../src/models/Usuario.js";
-import { postLogin } from "../common.js";
+import { postLogin, wrapExpectError } from "../common.js";
 
 
-describe("Teste Login",() => {
+describe("Teste Login", () => {
     let token = false;
 	const req = request(app);
 
-	test("Não permitir acessar sem autenticação", async () => {
+	test("Não permitir acessar sem autenticação", wrapExpectError(async (status) => {
 		const rotas = [
 			{method:"get", path:"/usuarios"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572"},
@@ -27,13 +27,14 @@ describe("Teste Login",() => {
 		];
 
 		for(let rota of rotas) {
+			status.msg = "Testando "+rota.method+" "+rota.path;
 			const res = await req[rota.method](rota.path)
 			.set("Accept", "aplication/json")
 			.expect(498);
 		}
-	});
+	}));
 
-	test("Não deve autenticar", async () => {
+	test("Não deve autenticar", wrapExpectError(async (status) => {
 		const invalidos = [
 			[undefined,undefined],
 			["",""],
@@ -49,13 +50,14 @@ describe("Teste Login",() => {
         ];
 
         for(let logins of invalidos) {
+			status.msg = "Testando email:"+logins[0]+" senha:"+logins[1];
 			await postLogin(req,{
 					email: logins[0],
 					senha: logins[1],
 				})
 				.expect(400);
 		}
-    });
+    }));
 
     test("Deve autenticar", async () => {
         const res = await postLogin(req,usuarioTeste).expect(200);
@@ -63,7 +65,7 @@ describe("Teste Login",() => {
 		token = res.body.token;
     });
 
-	test("Não permitir acessar com token inválido/expirado", async () => {
+	test("Não permitir acessar com token inválido/expirado", wrapExpectError(async (status) => {
 		const tokens = [
 			undefined,
 			"",
@@ -77,10 +79,11 @@ describe("Teste Login",() => {
 		];
 
 		for(let t of tokens) {
+			status.msg = "Testando token:'"+t+"'";
 			const res = await req.get("/usuarios")
 			.set("Accept", "aplication/json")
             .set("Authorization", `Bearer ${t}`)  
 			.expect(498);
 		}
-	});
+	}));
 });

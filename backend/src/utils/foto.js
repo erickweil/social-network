@@ -125,14 +125,12 @@ export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
 
 // Não produz erro, apenas retorna verdadeiro se tiver deletado
 export const deletarFotoUsuario = async (idUsuario,filepath) => {
-	if(!filepath) {console.log("Arquivo não existe"); return false;}
+	if(!filepath) {return false;} // não há arquivo a ser deletado
 	try{
 		// Verificar se o caminho é uma foto de perfil/capa do usuário informado
 		// Não é possível deletar algo que não é do usuário
 		const matches = filepath.match(fotoPathRegex);
 		if(!matches || !matches[1] || idUsuario != matches[1]) {
-            // só fazer log quando for importante
-            if(filepath != "/img/usuario-default.jpg" && filepath != "/img/usuario-capa-default.jpg")
 			console.log("Usuário não tem permissão para deletar: "+filepath);
 
 			return false;

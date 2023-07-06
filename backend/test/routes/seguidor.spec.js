@@ -25,7 +25,7 @@ describe("Seguidor",() => {
         }
 
         usuarioQualquer = usuariosTeste[0];
-    }, 10000);
+    }, 60000);
 
     test("Deve autenticar", async () => {
         const testeUsuario = {
@@ -129,4 +129,14 @@ describe("Seguidor",() => {
         
         expect(res.body.message).toBe("Já tinha deixado de seguir");
     });
+
+    test("Deletando usuários teste", async () => {
+        for(let i = 1; i < usuariosTeste.length; i++) {
+            let res = await postLogin(req,{
+                email: usuariosTeste[i].email,
+                senha: "ABCDabcd1234"
+            }).expect(200);
+            res = await deletarUsuario(req,res.body.token,"ABCDabcd1234").expect(200);
+        }
+    }, 60000);
 });

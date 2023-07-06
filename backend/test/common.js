@@ -40,3 +40,18 @@ export const deletarUsuario = (req,token,senha) => {
     .set("Authorization", `Bearer ${token}`)  
     .set("Accept", "aplication/json");
 };
+
+// Para ser possível saber qual dos trocentos casos de teste falharam
+export const wrapExpectError = (fn) => {
+    return async () => {
+        const statusObj = {};
+        try {
+            await fn(statusObj);
+        } catch(err) {
+            if(statusObj.msg) {
+                throw new Error(statusObj.msg, {cause: err});
+            }
+            else throw err;
+        }
+    };
+};

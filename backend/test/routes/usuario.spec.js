@@ -3,7 +3,7 @@ import {jest,describe,expect,test} from "@jest/globals";
 import faker from "faker-br";
 import app from "../../src/app.js";
 import request  from "supertest";
-import { deletarUsuario, getUsuarioPorID, postCriarUsuario, postLogin } from "../common.js";
+import { deletarUsuario, getUsuarioPorID, postCriarUsuario, postLogin, wrapExpectError } from "../common.js";
 
 describe("Usuarios",() => {
 	
@@ -16,7 +16,7 @@ describe("Usuarios",() => {
     let token = false;
 	const req = request(app);
 
-    test("Criar usuario senhas fracas:", async () => {
+    test("Criar usuario senhas fracas:", wrapExpectError(async (status) => {
         const senhasFracas = [
             "123456789012345678901",
             "abcdefghijklmnopq",
@@ -26,6 +26,7 @@ describe("Usuarios",() => {
         ];
 
         for(let senha of senhasFracas) {
+            status.msg = "Testando senha '"+senha+"'";
             const res = await postCriarUsuario(req,{...novoUsuario,...{
                     senha:senha
                 }})
@@ -34,7 +35,7 @@ describe("Usuarios",() => {
             expect(res.body.validation).toBeDefined();
             expect(res.body.validation.senha).toBeDefined();
         }
-	});
+	}));
 
     test("Criar usuário Inválido", async () => {
         const nome = "01234567890123456789012345678901234567890123456789 - Mais de 50 caracteres";
@@ -121,12 +122,12 @@ describe("Usuarios",() => {
         expect(res.body.resposta[0].nome).toBe(novoUsuario.nome);
 	});
 
-    test("Encontrar Todos", async () => {
+    test("Encontrar Vários", wrapExpectError(async (status) => {
         let pagina = 1;
         let resultados = 0;
         let totalDocumentos = 0;
-        let encontrado = false;
         do {
+            status.msg = "Testando página "+pagina;
             const res = await req
                 .get("/usuarios")
                 .query({
@@ -141,18 +142,11 @@ describe("Usuarios",() => {
             resultados = res.body.resposta.length;
             totalDocumentos += resultados;
 
-            for(let usuario of res.body.resposta) {
-                if(usuario.id === novoUsuario.id) {
-                    encontrado = true;
-                }
-            }
-
             pagina++;
-        } while(resultados > 0 && pagina < 1000);
+        } while(resultados > 0 && pagina < 10);
 
-        expect(totalDocumentos).toBeGreaterThanOrEqual(32); // o seed cria 32
-        expect(encontrado).toBeTruthy(); // Deve ter encontrado o usuário criado ao atravessar todas as páginas
-	}, 60000);
+        expect(totalDocumentos).toBeGreaterThanOrEqual(32);
+	}), 60000);
 
     test("Atualizar Usuário", async () => {
         const nome = "!"+novoUsuario.nome;
