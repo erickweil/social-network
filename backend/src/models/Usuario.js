@@ -27,11 +27,11 @@ const Usuario = new mongoose.Schema({
 	},
 	fotoPerfil: {
 		type: String,
-		default: "/img/usuario-default.jpg"
+		default: ""
 	},
 	fotoCapa: {
 		type: String,
-		default: "/img/usuario-capa-default.jpg"
+		default: ""
 	},
 	biografia: {
 		type: String,
@@ -39,9 +39,9 @@ const Usuario = new mongoose.Schema({
 		default: ""
 	},
 	preferencias: {
-		notificacao: { type: Boolean, default: true },
-		exibirEmail: { type: Boolean, default: true },
-		contaPrivada: { type: Boolean, default: false }
+		notificacao: { type: Boolean, select: false, default: true },
+		exibirEmail: { type: Boolean, select: false, default: true }, // não funciona de fato
+		contaPrivada: { type: Boolean, select: false, default: false }
 	}
 }, {
 	timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
@@ -49,19 +49,6 @@ const Usuario = new mongoose.Schema({
 
 // Se mudar isso tem que deletar o anterior e criar um novo
 Usuario.index({nome: "text"}, {default_language: "pt"});
-
-// Remapeia para conter apenas campos que podem ser vistos publicamente
-// deste usuário
-Usuario.statics.publicFields = function(usuario) {
-	return {
-		id: usuario.id,
-		nome: usuario.nome,
-		email: usuario.preferencias.exibirEmail ? usuario.email : undefined,
-		fotoPerfil: usuario.fotoPerfil,
-		fotoCapa: usuario.fotoCapa,
-		biografia: usuario.biografia
-	};
-};
 
 Usuario.statics.fazerLogin = async function(email,senha) {
     const usuario = await this.findOne({email:email}).select("+senha");
@@ -71,6 +58,7 @@ Usuario.statics.fazerLogin = async function(email,senha) {
     const hashMatched = await bcrypt.compare(senha, usuario.senha);
     if(!hashMatched) return false;
 
+	usuario.senha = undefined;
     return usuario;
 };
 
@@ -106,9 +94,16 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 		{
 			return {sucesso:false,validation: {email: "Email já está em uso"}};
 		}
-		// No need to save salt
-		const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
-		const hashedPassword = await bcrypt.hash(senha,salt);
+
+		let hashedPassword = false;
+		// para teste apenas
+		if(usuario_info.hashedPassword) {
+			hashedPassword = usuario_info.hashedPassword;
+		} else {
+			// No need to save salt
+			const salt = await bcrypt.genSalt(); // defaault is 10 that takes under a second, 30 takes days
+			hashedPassword = await bcrypt.hash(senha,salt);
+		}
 		
 		// The two lines above could be: const hashedPassword = await bcrypt.hash(password,10)
 
@@ -119,6 +114,8 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 			senha: hashedPassword
 		});
 
+		novoUsuario.senha = undefined; // remove do resultado
+		novoUsuario.preferencias = undefined; // remove do resultado
 		return {sucesso:true,usuario:novoUsuario};
 	} catch (err) {
 		if (err.name === "ValidationError") {
@@ -136,8 +133,10 @@ Usuario.statics.criarUsuario = async function(usuario_info) {
 Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 	try {
 		
-		const usuario = await this.findById(usuario_id);
-		const antes = this.publicFields(usuario);
+		const usuario = await this.findById(usuario_id).select("+preferencias.notificacao +preferencias.exibirEmail +preferencias.contaPrivada");
+		const fotoPerfil = usuario.fotoPerfil;
+		const fotoCapa = usuario.fotoCapa;
+
 		if(atualizar.nome !== undefined) {
 			usuario.nome = atualizar.nome;
 		}
@@ -153,7 +152,8 @@ Usuario.statics.atualizarUsuario = async function(usuario_id,atualizar) {
 
 		await usuario.save();
 
-		return {sucesso:true,usuario:usuario,usuarioAntes:antes};
+		usuario.preferencias = undefined; // remove do resultado
+		return {sucesso:true, usuario:usuario, fotoPerfil:fotoPerfil, fotoCapa:fotoCapa};
 	} catch (err) {
 		if (err.name === "ValidationError") {
 			let errors = {};
