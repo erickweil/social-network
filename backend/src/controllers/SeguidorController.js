@@ -19,19 +19,18 @@ export default class SeguidorControler {
         let quemProcurar = listarSeguindo === true ? "usuario" : "seguido";
         let quemEncontrar = listarSeguindo === true ? "seguido" : "usuario";
 
-        let listagem = Seguidor.find({[quemProcurar]:id});
+        let listagem = Seguidor.find({[quemProcurar]:id}).sort({createdAt: -1 });
         
 		if(pagina > 1) {
-			listagem.skip(limite * (pagina - 1));
+			listagem = listagem.skip(limite * (pagina - 1));
 		}
 
 		const resultado = await listagem.limit(limite).populate(quemEncontrar);
 
-		// Remapeia o resultado da pesquisa para conter apenas os campos permitidos
 		// Não é um problema porque o limite de documentos por request é um valor baixo
 		let resposta = [];
 		for(let seguidor of resultado) {
-			resposta.push(Usuario.publicFields(seguidor[quemEncontrar]));
+			resposta.push(seguidor[quemEncontrar]);
 		}
 
 		return res.status(200).json({
@@ -64,13 +63,14 @@ export default class SeguidorControler {
     }
 
 	static async seguirUsuario(req,res) {
-        const idUsuario = req.usuario.id;
+        const idUsuario = req.usuario._id;
         const idUsuarioSeguido = req.params.id;
 
 		if(mongoose.Types.ObjectId.isValid(idUsuarioSeguido) === false)
         return res.status(400).json({ error: true, message: "ID inválido" });
 
-		if(idUsuario == idUsuarioSeguido)
+        // toString porque precisa converter de ObjectId para string
+		if(idUsuarioSeguido === idUsuario.toString())
         return res.status(400).json({ error: true, message: "Não pode seguir você mesmo" });
 
         const usuarioExiste = await Usuario.findById(idUsuarioSeguido);
@@ -86,7 +86,7 @@ export default class SeguidorControler {
     }
 
     static async deixarSeguirUsuario(req,res) {
-        const idUsuario = req.usuario.id;
+        const idUsuario = req.usuario._id;
         const idUsuarioSeguido = req.params.id;
 
 		if(mongoose.Types.ObjectId.isValid(idUsuarioSeguido) === false)

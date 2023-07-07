@@ -1,6 +1,7 @@
 import express from "express";
 import { wrapException } from "./common.js";
 import { getImagem } from "../utils/foto.js";
+import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 
 const router = express.Router();
 
@@ -29,6 +30,8 @@ const router = express.Router();
  *   get:
  *     summary: Acessar imagem de perfil, capa ou postagem. Sempre é um .jpg
  *     tags: [Imagens]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Respondeu com a imagem
@@ -38,6 +41,6 @@ const router = express.Router();
  *               type: string
  *               format: binary
  */
-router.get("/img/:id/:img", wrapException(getImagem));
+router.get("/img/:id/:img", AuthMiddleware, wrapException(getImagem));
 
 export default router;

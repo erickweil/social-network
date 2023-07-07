@@ -13,7 +13,7 @@ export default class LoginControler {
 
         const usuario = await Usuario.fazerLogin(email,senha);
 
-        if(usuario === false) {
+        if(!usuario) {
 			return res.status(400).json({ error: true, message: "Email ou senha incorretos" });
         }
 
@@ -29,7 +29,7 @@ export default class LoginControler {
                     expiresIn: process.env.EXPIREIN
                 }
             ),
-            usuario: Usuario.publicFields(usuario)
+            usuario: usuario
         });
     }
 

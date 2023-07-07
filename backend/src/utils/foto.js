@@ -99,10 +99,10 @@ async function copiarSanitizandoImagem(filepath,outfilepath,opcoes) {
 }
 
 // Produz erro se não salvar, retorna caminho no formato /img/<ObjectID>/<UUID>.jpg
-export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
+export const salvarFotoUsuario = async (imgFile, idUsuario, opcoes) => {
     try {
         const uuid = randomUUID();
-        const filedir = fotoDir+"/img/"+usuario.id;
+        const filedir = fotoDir+"/img/"+idUsuario;
         await mkdir(filedir,{recursive: true});
 
         // Sempre será salvo como jpg, 
@@ -113,7 +113,7 @@ export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
         await copiarSanitizandoImagem(imgFile.filepath,filedir+"/"+filename,opcoes);
 
         // retorna caminho relativo à pasta public
-        return "/img/"+usuario.id+"/"+filename;
+        return "/img/"+idUsuario+"/"+filename;
     } finally {
         try {
             await unlink(imgFile.filepath); // deleta arquivo temporário
@@ -125,14 +125,14 @@ export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
 
 // Não produz erro, apenas retorna verdadeiro se tiver deletado
 export const deletarFotoUsuario = async (idUsuario,filepath) => {
-	if(!filepath) {console.log("Arquivo não existe"); return false;}
+	if(!filepath) {return false;} // não há arquivo a ser deletado
 	try{
+        // precisa converter de ObjectId para string
+        const strIdUsuario = idUsuario.toString();
 		// Verificar se o caminho é uma foto de perfil/capa do usuário informado
 		// Não é possível deletar algo que não é do usuário
 		const matches = filepath.match(fotoPathRegex);
-		if(!matches || !matches[1] || idUsuario != matches[1]) {
-            // só fazer log quando for importante
-            if(filepath != "/img/usuario-default.jpg" && filepath != "/img/usuario-capa-default.jpg")
+		if(!matches || !matches[1] || strIdUsuario !== matches[1]) {
 			console.log("Usuário não tem permissão para deletar: "+filepath);
 
 			return false;
@@ -180,25 +180,45 @@ if(fotoDir != ".")
 await mkdir(fotoDir,{recursive: true});
 if(tmpFotoDir != ".")
 await mkdir(tmpFotoDir,{recursive: true});
+
+const filterMimeType = ({name, originalFilename, mimetype}) => {
+    if(!mimetype || !acceptableFormats[mimetype]) {
+        //form.emit("error", new formidableErrors.default("invalid type", 0, 400)); // optional make form.parse error
+        return false;
+    }
+    return true;
+};
+
+const defaultFormidableOptions = { 
+    maxFiles: 8,
+    maxFileSize: 8 * 1024 * 1024, // 8MB
+    uploadDir: tmpFotoDir,
+    filter: filterMimeType
+};
+
 export const upload = { 
 	single: (key) => async (req,res,next) => {
-        const form = formidable({ 
-            maxFiles: 1,
-            maxFileSize: 8 * 1024 * 1024, // 8MB
-            uploadDir: tmpFotoDir,
-            filter: function ({name, originalFilename, mimetype}) {
-                if(!mimetype || !acceptableFormats[mimetype]) {
-                    //form.emit("error", new formidableErrors.default("invalid type", 0, 400)); // optional make form.parse error
-                    return false;
-                }
-                return true;
-            }
-        });
+        const form = formidable({...defaultFormidableOptions,...{maxFiles: 1}});
         const [fields, files] = await form.parse(req);
         // Verificar se key está em files
         if(files && files[key] !== undefined && files[key].length === 1) {
             req.file = files[key][0];
         }
+        req.fields = fields;
+        next();
+	},
+
+    multiple: (key) => async (req,res,next) => {
+        const form = formidable(defaultFormidableOptions);
+        const [fields, files] = await form.parse(req);
+        // Verificar se key está em files
+        if(files && files[key] !== undefined && files[key].length > 0) {
+            req.files = files[key];
+        }
+        req.fields = fields;
+
+        //console.log(req.files);
+        //console.log(req.fields);
         next();
 	}
 };
