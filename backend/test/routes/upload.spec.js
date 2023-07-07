@@ -2,7 +2,7 @@ import {jest,describe,expect,test} from "@jest/globals";
 
 import app from "../../src/app.js";
 import request  from "supertest";
-import { deletarUsuario, getUsuarioPorID, postCriarUsuario, postLogin, wrapExpectError } from "../common.js";
+import { checarArquivoExiste, checarArquivoNaoExiste, deletarUsuario, getUsuarioPorID, postCriarUsuario, postLogin, wrapExpectError } from "../common.js";
 import { stat } from "fs/promises";
 
 describe("Usuarios",() => {
@@ -17,28 +17,6 @@ describe("Usuarios",() => {
 		usuarioAutenticado = res.body.usuario;
         expect(token).toBeTruthy();
     });
-
-	const expectArquivoExiste = async (filepath) => {
-		//checar se caminho existe
-		const fotoStat = await stat(filepath);
-		expect(fotoStat.isFile()).toBeTruthy();
-
-		// Verificar se tamanho é maior que 0
-		expect(fotoStat.size).toBeGreaterThan(0);
-	};
-
-	const expectArquivoNaoExiste = async (filepath) => {
-		// verificar que não existe mais
-		let err = undefined;
-		try {
-			await stat(filepath);
-		} catch(e) {
-			err = e;
-		}
-		expect(err).toBeTruthy();
-		expect(err.code).toBe("ENOENT");
-	};
-
 
 	const checarUploadCorreto = async (foto,fotoAnterior,perfil) => {
 		const filename = foto.path.substring(foto.path.lastIndexOf("/")+1);
@@ -56,11 +34,11 @@ describe("Usuarios",() => {
 			expect(res.body.fotoPerfil).toBeTruthy();
 			const fotoPerfil = res.body.fotoPerfil;
 
-			await expectArquivoExiste("."+fotoPerfil);
+			expect(await checarArquivoExiste("."+fotoPerfil)).toBeTruthy();
 
 			// Verificar se foto anterior foi deletada
 			if(fotoAnterior) {
-				expectArquivoNaoExiste("."+fotoAnterior);
+				expect(await checarArquivoNaoExiste("."+fotoAnterior)).toBeTruthy();
 			}
 
 			return fotoPerfil;

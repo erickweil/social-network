@@ -19,11 +19,25 @@ describe("Teste Login", () => {
 			{method:"post", path:"/usuarios/foto-perfil"},
 			{method:"post", path:"/usuarios/foto-capa"},
 
+			{method:"get", path:"/img/551137c2f9e1fac808a5f572/3c0fb6b5-6bf8-475b-ae72-320a4957055c.jpg"},
+
 			{method:"post", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
 			{method:"delete", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/seguidores"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/seguindo"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/contar-seguidores"},
+
+			{method:"get", path:"/postagens"},
+			{method:"get", path:"/postagens/551137c2f9e1fac808a5f572"},
+			{method:"get", path:"/postagens/551137c2f9e1fac808a5f572/respostas"},
+			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/postagens"},
+			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/respostas"},
+			{method:"post", path:"/postagens"},
+			{method:"delete", path:"/postagens/551137c2f9e1fac808a5f572"},
+
+			{method:"post", path:"/postagens/551137c2f9e1fac808a5f572/curtidas"},
+			{method:"delete", path:"/postagens/551137c2f9e1fac808a5f572/curtidas"},
+			{method:"get", path:"/usuarios/curtidas"},
 		];
 
 		for(let rota of rotas) {
@@ -32,7 +46,7 @@ describe("Teste Login", () => {
 			.set("Accept", "aplication/json")
 			.expect(498);
 		}
-	}));
+	}), 60000);
 
 	test("Não deve autenticar", wrapExpectError(async (status) => {
 		const invalidos = [
