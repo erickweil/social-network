@@ -99,10 +99,10 @@ async function copiarSanitizandoImagem(filepath,outfilepath,opcoes) {
 }
 
 // Produz erro se não salvar, retorna caminho no formato /img/<ObjectID>/<UUID>.jpg
-export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
+export const salvarFotoUsuario = async (imgFile, idUsuario, opcoes) => {
     try {
         const uuid = randomUUID();
-        const filedir = fotoDir+"/img/"+usuario.id;
+        const filedir = fotoDir+"/img/"+idUsuario;
         await mkdir(filedir,{recursive: true});
 
         // Sempre será salvo como jpg, 
@@ -113,7 +113,7 @@ export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
         await copiarSanitizandoImagem(imgFile.filepath,filedir+"/"+filename,opcoes);
 
         // retorna caminho relativo à pasta public
-        return "/img/"+usuario.id+"/"+filename;
+        return "/img/"+idUsuario+"/"+filename;
     } finally {
         try {
             await unlink(imgFile.filepath); // deleta arquivo temporário
@@ -127,10 +127,12 @@ export const salvarFotoUsuario = async (imgFile, usuario, opcoes) => {
 export const deletarFotoUsuario = async (idUsuario,filepath) => {
 	if(!filepath) {return false;} // não há arquivo a ser deletado
 	try{
+        // precisa converter de ObjectId para string
+        const strIdUsuario = idUsuario.toString();
 		// Verificar se o caminho é uma foto de perfil/capa do usuário informado
 		// Não é possível deletar algo que não é do usuário
 		const matches = filepath.match(fotoPathRegex);
-		if(!matches || !matches[1] || idUsuario != matches[1]) {
+		if(!matches || !matches[1] || strIdUsuario !== matches[1]) {
 			console.log("Usuário não tem permissão para deletar: "+filepath);
 
 			return false;

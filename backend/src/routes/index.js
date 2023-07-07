@@ -9,6 +9,7 @@ import login from "./loginRoutes.js";
 import seguidor from "./seguidorRoutes.js";
 import img from "./imgRoutes.js";
 import postagem from "./postagemRoutes.js";
+import curtida from "./curtidaRoutes.js";
 
 export const logRoutes = (req,res,next) => {
 	const timestamp = new Date().toISOString();
@@ -37,11 +38,12 @@ const routes = (app) => {
 
 	app.use(
 		teste,
+		curtida,
+		postagem,
+		seguidor,
 		usuario,
 		login,
-		seguidor,
 		img,
-		postagem
 	);
 
 	app.use((req,res,next) => {

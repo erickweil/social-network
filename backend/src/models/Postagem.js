@@ -38,6 +38,10 @@ const Postagem = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    deletado: { 
+        type: Boolean, 
+        default: false
+    },
 
     // --------------------------------------------------------------------------
     // Atributos contidos apenas em Postagens que são respostas a outra postagem:
@@ -56,9 +60,12 @@ const Postagem = new mongoose.Schema({
 	timestamps: { createdAt: "created_at", updatedAt: false }
 });
 
+Postagem.index({createdAt: 1}); // Para ficar rápido o sort
+
 Postagem.index({conteudo: "text"}, {default_language: "pt"}); // Ver depois se não é lento demais índice de texto em campo de texto tão grande
 // Postagem.index({postagemPai: 1, nivel: 1});
-Postagem.index({postagemPai: 1, nivel: 1, posicao: 1}); // Ver depois se isso é um problema índice composto de 3 campos
+//Postagem.index({postagemPai: 1, nivel: 1, posicao: 1}); // Ver depois se isso é um problema índice composto de 3 campos
+Postagem.index({postagemPai: 1, posicao: 1});
 
 // https://stackoverflow.com/questions/25538860/extracting-hashtags-out-of-a-string
 const extractHashtags = (txt) => {
@@ -106,7 +113,7 @@ Postagem.statics.criarPostagem = async function(postagem_info) {
                 conteudo: conteudo,
                 hashtags: hashtags,
                 imagens: postagem_info.imagens,
-                postagemPai: postagemPai.id,
+                postagemPai: postagemPai._id,
                 nivel: postagemPai.nivel + 1,
                 posicao: postagemPai.numRespostas,
             });

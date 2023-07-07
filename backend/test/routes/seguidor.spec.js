@@ -82,7 +82,8 @@ describe("Seguidor",() => {
         expect(res.body.resposta).toBeDefined();
         expect(res.body.resposta.length).toBe(usuariosTeste.length);
 
-        expect(res.body.resposta[0]._id).toBe(usuarioQualquer._id);
+        // aqui pode usar == porque _id é uma string que veio da resposta da requisição
+        expect(res.body.resposta.find((doc) => doc._id == usuarioQualquer._id)).toBeTruthy();
     });
 
     test("Deixar de seguir um usuário", async () => {

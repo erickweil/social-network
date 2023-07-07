@@ -47,12 +47,13 @@ const router = express.Router();
  * @swagger
  * /usuarios:
  *   get:
- *     summary: Retorna uma lista de usuários
+ *     summary: Retorna uma lista de usuários baseado na pesquisa. 
+ *     description: "Retorna a lista de usuários, permitindo pesquisar por termos específicos no nome. Obs: não tem como pesquisar sem especificar uma pesquisa"
  *     parameters:
  *       - name: nome
  *         in: query
  *         description: Procura por usuário com nome que atende aos termos pesquisados
- *         required: false
+ *         required: true
  *         default: 
  *         schema:
  *           type: string

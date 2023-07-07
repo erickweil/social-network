@@ -19,10 +19,10 @@ export default class SeguidorControler {
         let quemProcurar = listarSeguindo === true ? "usuario" : "seguido";
         let quemEncontrar = listarSeguindo === true ? "seguido" : "usuario";
 
-        let listagem = Seguidor.find({[quemProcurar]:id});
+        let listagem = Seguidor.find({[quemProcurar]:id}).sort({createdAt: -1 });
         
 		if(pagina > 1) {
-			listagem.skip(limite * (pagina - 1));
+			listagem = listagem.skip(limite * (pagina - 1));
 		}
 
 		const resultado = await listagem.limit(limite).populate(quemEncontrar);
@@ -63,13 +63,14 @@ export default class SeguidorControler {
     }
 
 	static async seguirUsuario(req,res) {
-        const idUsuario = req.usuario.id;
+        const idUsuario = req.usuario._id;
         const idUsuarioSeguido = req.params.id;
 
 		if(mongoose.Types.ObjectId.isValid(idUsuarioSeguido) === false)
         return res.status(400).json({ error: true, message: "ID inválido" });
 
-		if(idUsuario == idUsuarioSeguido)
+        // toString porque precisa converter de ObjectId para string
+		if(idUsuarioSeguido === idUsuario.toString())
         return res.status(400).json({ error: true, message: "Não pode seguir você mesmo" });
 
         const usuarioExiste = await Usuario.findById(idUsuarioSeguido);
@@ -85,7 +86,7 @@ export default class SeguidorControler {
     }
 
     static async deixarSeguirUsuario(req,res) {
-        const idUsuario = req.usuario.id;
+        const idUsuario = req.usuario._id;
         const idUsuarioSeguido = req.params.id;
 
 		if(mongoose.Types.ObjectId.isValid(idUsuarioSeguido) === false)

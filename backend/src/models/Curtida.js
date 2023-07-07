@@ -20,6 +20,8 @@ const Curtida = new mongoose.Schema({
   timestamps: { createdAt: "created_at", updatedAt: false }
 });
 
+Curtida.index({createdAt: 1}); // Para ficar rápido o sort
+
 // Um usuário só pode curtir uma postagem uma vez
 Curtida.index({usuario: 1, postagem: 1}, { unique: true });
 

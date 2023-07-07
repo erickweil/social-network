@@ -10,23 +10,21 @@ export default class UsuarioControler {
 
 		let filtrarNome = req.query.nome || false;
 		
-		let listagem = false;
-		if(filtrarNome !== false) {
-			listagem = Usuario.find({
-				$text: {
-					$search: filtrarNome,
-					$caseSensitive: false,
-					$diacriticSensitive: false,
-					$language: "pt"
-				}
-			});
-		}
-		else {
-			listagem = Usuario.find({});
+		if(!filtrarNome) {
+			return res.status(400).json({ error: true, message: "É necessário especificar uma pesquisa pelo nome do usuário" });
 		}
 
+		let listagem = Usuario.find({
+			$text: {
+				$search: filtrarNome,
+				$caseSensitive: false,
+				$diacriticSensitive: false,
+				$language: "pt"
+			}
+		});
+		
 		if(pagina > 1) {
-			listagem.skip(limite * (pagina - 1));
+			listagem = listagem.skip(limite * (pagina - 1));
 		}
 
 		const resultado = await listagem.limit(limite);
@@ -103,21 +101,23 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, message: "Não é possível atualizar a foto assim, utilize a rota dedicada" });
 		}
 
-		return await UsuarioControler._atualizarUsuario(req.usuario.id,atualizar,res);
+		return await UsuarioControler._atualizarUsuario(req.usuario._id,atualizar,res);
 	}
 
 	static async atualizarFotoPerfil(req,res) {
 		if(!req.file) {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
+
+		const idUsuario = req.usuario._id;
 		
-		const filepath = await salvarFotoUsuario(req.file,req.usuario,{
+		const filepath = await salvarFotoUsuario(req.file,idUsuario,{
 			// Foto de perfil é quadrada
 			minAspectRatio: 1.0,
 			maxAspectRatio: 1.0,
 		});
 
-		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
+		return await UsuarioControler._atualizarUsuario(idUsuario,{
 			fotoPerfil: filepath
 		},res);
 	}
@@ -127,12 +127,14 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, message: "Não enviou nenhuma imagem" });
 		}
 
-		const filepath = await salvarFotoUsuario(req.file,req.usuario,{
+		const idUsuario = req.usuario._id;
+
+		const filepath = await salvarFotoUsuario(req.file,idUsuario,{
 			// Foto de de capa é no mínimo quadrada e idealmente paisagem
 			minAspectRatio: 1.0
 		});
 
-		return await UsuarioControler._atualizarUsuario(req.usuario.id,{
+		return await UsuarioControler._atualizarUsuario(idUsuario,{
 			fotoCapa: filepath
 		},res);
 	}
@@ -146,8 +148,9 @@ export default class UsuarioControler {
 		}
 
 		const usuario = await Usuario.fazerLogin(email,senha);
+		const idUsuario = usuario._id;
 
-		if(usuario === false) {
+		if(!usuario) {
 			return res.status(498).json({ error: true, message: "Não irá deletar a conta, senha incorreta" });
 		}
 
@@ -156,18 +159,18 @@ export default class UsuarioControler {
 		// 1. Deletar todas as entradas de seguidores
 		const resultadoDeletarSeguidor = await Seguidor.deleteMany({ 
 			$or: [{
-			usuario: usuario._id
+			usuario: idUsuario
 			}, {
-			seguido: usuario._id
+			seguido: idUsuario
 			}]
 		});
 
 		// 2. Deletar fotos do usuário
-		await deletarFotoUsuario(usuario.id,usuario.fotoPerfil);
-		await deletarFotoUsuario(usuario.id,usuario.fotoCapa);
+		await deletarFotoUsuario(idUsuario,usuario.fotoPerfil);
+		await deletarFotoUsuario(idUsuario,usuario.fotoCapa);
 
 		// 3. Deletar o usuário
-		const resultadoDeletarUsuario = await Usuario.deleteOne({_id: usuario._id});
+		const resultadoDeletarUsuario = await Usuario.deleteOne({_id: idUsuario});
 
 		if(resultadoDeletarUsuario.deletedCount == 1)
 		return res.status(200).json({message: "Deletado com sucesso"});

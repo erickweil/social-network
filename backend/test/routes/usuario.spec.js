@@ -122,32 +122,6 @@ describe("Usuarios",() => {
         expect(res.body.resposta[0].nome).toBe(novoUsuario.nome);
 	});
 
-    test("Encontrar Vários", wrapExpectError(async (status) => {
-        let pagina = 1;
-        let resultados = 0;
-        let totalDocumentos = 0;
-        do {
-            status.msg = "Testando página "+pagina;
-            const res = await req
-                .get("/usuarios")
-                .query({
-                    pagina: pagina
-                })
-                .set("Authorization", `Bearer ${token}`)  
-                .set("Accept", "aplication/json")
-                .expect(200);
-
-            expect(res.body.resposta).toBeDefined();
-
-            resultados = res.body.resposta.length;
-            totalDocumentos += resultados;
-
-            pagina++;
-        } while(resultados > 0 && pagina < 10);
-
-        expect(totalDocumentos).toBeGreaterThanOrEqual(32);
-	}), 60000);
-
     test("Atualizar Usuário", async () => {
         const nome = "!"+novoUsuario.nome;
         const biografia = "Teste de Biografia";
