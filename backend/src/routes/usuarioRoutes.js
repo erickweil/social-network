@@ -51,7 +51,7 @@ const router = express.Router();
  *     parameters:
  *       - name: nome
  *         in: query
- *         description: Procura por usuário com o nome que inicia com o valor informado
+ *         description: Procura por usuário com nome que atende aos termos pesquisados
  *         required: false
  *         default: 
  *         schema:
@@ -80,8 +80,6 @@ const router = express.Router();
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Usuarios]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

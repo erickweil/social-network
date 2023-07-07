@@ -44,18 +44,18 @@ describe("Seguidor",() => {
 
 
     test("Seguir vários usuários", async () => {
-        const seguidoresAntes = (await getSeguidoresUsuario(req,token,usuarioQualquer.id).expect(200)).body;
+        const seguidoresAntes = (await getSeguidoresUsuario(req,token,usuarioQualquer._id).expect(200)).body;
 
         for(let usuario of usuariosTeste) {
             const res = await req
-                .post("/usuarios/"+usuario.id+"/seguir")
+                .post("/usuarios/"+usuario._id+"/seguir")
                 .set("Authorization", `Bearer ${token}`)  
                 .set("Accept", "aplication/json")
                 .expect(200);
         }
 
-        const seguidoresDepois = (await getSeguidoresUsuario(req,token,usuarioQualquer.id).expect(200)).body;
-        const seguindoDepois = (await getSeguidoresUsuario(req,token,usuarioAutenticado.id).expect(200)).body;
+        const seguidoresDepois = (await getSeguidoresUsuario(req,token,usuarioQualquer._id).expect(200)).body;
+        const seguindoDepois = (await getSeguidoresUsuario(req,token,usuarioAutenticado._id).expect(200)).body;
 
         expect(seguidoresDepois.seguidores).toBe(seguidoresAntes.seguidores+1);
         expect(seguindoDepois.seguindo).toBe(usuariosTeste.length);
@@ -63,7 +63,7 @@ describe("Seguidor",() => {
 
     test("Listar seguidores, deve ter 0", async () => {
         const res = await req
-			.get("/usuarios/"+usuarioAutenticado.id+"/seguidores")
+			.get("/usuarios/"+usuarioAutenticado._id+"/seguidores")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(200);
@@ -74,7 +74,7 @@ describe("Seguidor",() => {
 
     test("Listar seguindo, Deve estar seguindo vários", async () => {
         const res = await req
-			.get("/usuarios/"+usuarioAutenticado.id+"/seguindo")
+			.get("/usuarios/"+usuarioAutenticado._id+"/seguindo")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(200);
@@ -82,20 +82,20 @@ describe("Seguidor",() => {
         expect(res.body.resposta).toBeDefined();
         expect(res.body.resposta.length).toBe(usuariosTeste.length);
 
-        expect(res.body.resposta[0].id).toBe(usuarioQualquer.id);
+        expect(res.body.resposta[0]._id).toBe(usuarioQualquer._id);
     });
 
     test("Deixar de seguir um usuário", async () => {
-        const seguidoresAntes = (await getSeguidoresUsuario(req,token,usuarioQualquer.id).expect(200)).body;
+        const seguidoresAntes = (await getSeguidoresUsuario(req,token,usuarioQualquer._id).expect(200)).body;
 
         const res = await req
-			.delete("/usuarios/"+usuarioQualquer.id+"/seguir")
+			.delete("/usuarios/"+usuarioQualquer._id+"/seguir")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(200);
 
-        const seguidoresDepois = (await getSeguidoresUsuario(req,token,usuarioQualquer.id).expect(200)).body;
-        const seguindoDepois = (await getSeguidoresUsuario(req,token,usuarioAutenticado.id).expect(200)).body;
+        const seguidoresDepois = (await getSeguidoresUsuario(req,token,usuarioQualquer._id).expect(200)).body;
+        const seguindoDepois = (await getSeguidoresUsuario(req,token,usuarioAutenticado._id).expect(200)).body;
 
         expect(seguidoresDepois.seguidores).toBe(seguidoresAntes.seguidores-1);
         expect(seguindoDepois.seguindo).toBe(usuariosTeste.length - 1);
@@ -107,14 +107,14 @@ describe("Seguidor",() => {
         res = await postLogin(req).expect(200);
         token = res.body.token;
 
-        res = await getSeguidoresUsuario(req,token,usuarioAutenticado.id).expect(200);
+        res = await getSeguidoresUsuario(req,token,usuarioAutenticado._id).expect(200);
         expect(res.body.seguidores).toBe(0);
         expect(res.body.seguindo).toBe(0);
     });
 
     test("Tentando seguir usuário inexistente", async () => {
         const res = await req
-            .post("/usuarios/"+usuarioAutenticado.id+"/seguir")
+            .post("/usuarios/"+usuarioAutenticado._id+"/seguir")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(404);
@@ -122,7 +122,7 @@ describe("Seguidor",() => {
 
     test("Deixando de seguir usuário inexistente", async () => {
         const res = await req
-            .delete("/usuarios/"+usuarioAutenticado.id+"/seguir")
+            .delete("/usuarios/"+usuarioAutenticado._id+"/seguir")
             .set("Authorization", `Bearer ${token}`)  
             .set("Accept", "aplication/json")
             .expect(200);

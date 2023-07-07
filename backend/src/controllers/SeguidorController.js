@@ -27,11 +27,10 @@ export default class SeguidorControler {
 
 		const resultado = await listagem.limit(limite).populate(quemEncontrar);
 
-		// Remapeia o resultado da pesquisa para conter apenas os campos permitidos
 		// Não é um problema porque o limite de documentos por request é um valor baixo
 		let resposta = [];
 		for(let seguidor of resultado) {
-			resposta.push(Usuario.publicFields(seguidor[quemEncontrar]));
+			resposta.push(seguidor[quemEncontrar]);
 		}
 
 		return res.status(200).json({

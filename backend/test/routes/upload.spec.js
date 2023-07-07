@@ -105,7 +105,7 @@ describe("Usuarios",() => {
 		const res = await req
 			.patch("/usuarios")
 			.send({
-				fotoCapa: "/img/"+usuarioAutenticado.id+"/4d095a193e563ded.gif"
+				fotoCapa: "/img/"+usuarioAutenticado._id+"/4d095a193e563ded.gif"
 			})
 			.set("Authorization", `Bearer ${token}`)  
 			.set("Accept", "aplication/json")

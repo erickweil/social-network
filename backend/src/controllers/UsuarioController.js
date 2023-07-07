@@ -12,15 +12,6 @@ export default class UsuarioControler {
 		
 		let listagem = false;
 		if(filtrarNome !== false) {
-			//filtrarNome = decodeURIComponent(filtrarNome);
-			//console.log(filtrarNome);
-			// https://github.com/anyascii/anyascii
-			// A ideia é permitir usar index e ainda assim pesquisar de forma case insensitive
-			// e ignorando caracteres especiais
-			//filtros["nome"] = {
-				//$regex: new RegExp(filtrarNome, "i")
-			//};
-
 			listagem = Usuario.find({
 				$text: {
 					$search: filtrarNome,
@@ -40,15 +31,8 @@ export default class UsuarioControler {
 
 		const resultado = await listagem.limit(limite);
 
-		// Remapeia o resultado da pesquisa para conter apenas os campos permitidos
-		// Não é um problema porque o limite de documentos por request é um valor baixo
-		let resposta = [];
-		for(let usuario of resultado) {
-			resposta.push(Usuario.publicFields(usuario));
-		}
-
 		return res.status(200).json({
-			resposta: resposta,
+			resposta: resultado,
 			pagina: pagina,
 			limite: limite
 		});
@@ -64,7 +48,7 @@ export default class UsuarioControler {
 		if(!usuario)
 			return res.status(404).json({ error: true, message: "Usuário não encontrado" });
 	
-		return res.status(200).json(Usuario.publicFields(usuario));
+		return res.status(200).json(usuario);
 	}
 	
 	static async cadastrarUsuario(req,res) {
@@ -86,7 +70,7 @@ export default class UsuarioControler {
 			return res.status(400).json({ error: true, validation: resultCriar.validation });
 		}
 
-		return res.status(201).json(Usuario.publicFields(resultCriar.usuario));
+		return res.status(201).json(resultCriar.usuario);
 	}
 
 
@@ -102,14 +86,14 @@ export default class UsuarioControler {
 
 		// Deletar as fotos antigas caso tenham sido atualizadas
 		if(atualizar.fotoPerfil !== undefined) {
-			await deletarFotoUsuario(idUsuario,resultAtualizar.usuarioAntes.fotoPerfil);
+			await deletarFotoUsuario(idUsuario,resultAtualizar.fotoPerfil);
 		}
 
 		if(atualizar.fotoCapa !== undefined) {			
-			await deletarFotoUsuario(idUsuario,resultAtualizar.usuarioAntes.fotoCapa);
+			await deletarFotoUsuario(idUsuario,resultAtualizar.fotoCapa);
 		}
 
-		return res.status(200).json(Usuario.publicFields(resultAtualizar.usuario));
+		return res.status(200).json(resultAtualizar.usuario);
 	}
 
 	static async atualizarUsuario(req,res) {

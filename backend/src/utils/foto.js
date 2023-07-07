@@ -178,25 +178,45 @@ if(fotoDir != ".")
 await mkdir(fotoDir,{recursive: true});
 if(tmpFotoDir != ".")
 await mkdir(tmpFotoDir,{recursive: true});
+
+const filterMimeType = ({name, originalFilename, mimetype}) => {
+    if(!mimetype || !acceptableFormats[mimetype]) {
+        //form.emit("error", new formidableErrors.default("invalid type", 0, 400)); // optional make form.parse error
+        return false;
+    }
+    return true;
+};
+
+const defaultFormidableOptions = { 
+    maxFiles: 8,
+    maxFileSize: 8 * 1024 * 1024, // 8MB
+    uploadDir: tmpFotoDir,
+    filter: filterMimeType
+};
+
 export const upload = { 
 	single: (key) => async (req,res,next) => {
-        const form = formidable({ 
-            maxFiles: 1,
-            maxFileSize: 8 * 1024 * 1024, // 8MB
-            uploadDir: tmpFotoDir,
-            filter: function ({name, originalFilename, mimetype}) {
-                if(!mimetype || !acceptableFormats[mimetype]) {
-                    //form.emit("error", new formidableErrors.default("invalid type", 0, 400)); // optional make form.parse error
-                    return false;
-                }
-                return true;
-            }
-        });
+        const form = formidable({...defaultFormidableOptions,...{maxFiles: 1}});
         const [fields, files] = await form.parse(req);
         // Verificar se key está em files
         if(files && files[key] !== undefined && files[key].length === 1) {
             req.file = files[key][0];
         }
+        req.fields = fields;
+        next();
+	},
+
+    multiple: (key) => async (req,res,next) => {
+        const form = formidable(defaultFormidableOptions);
+        const [fields, files] = await form.parse(req);
+        // Verificar se key está em files
+        if(files && files[key] !== undefined && files[key].length > 0) {
+            req.files = files[key];
+        }
+        req.fields = fields;
+
+        //console.log(req.files);
+        //console.log(req.fields);
         next();
 	}
 };

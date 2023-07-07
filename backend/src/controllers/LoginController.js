@@ -29,7 +29,7 @@ export default class LoginControler {
                     expiresIn: process.env.EXPIREIN
                 }
             ),
-            usuario: Usuario.publicFields(usuario)
+            usuario: usuario
         });
     }
 
