@@ -13,7 +13,7 @@ const router = express.Router();
  *     Usuario:
  *       type: object
  *       properties:
- *         id:
+ *         _id:
  *           type: string
  *           description: ID do usuário
  *         nome:
@@ -21,19 +21,52 @@ const router = express.Router();
  *           description: Nome do usuário
  *         email:
  *           type: string
- *           description: Email do usuário (Apenas se o usuário permitir exibir)
+ *           description: Email do usuário
  *         fotoPerfil:
  *           type: string
  *           description: Foto de perfil do usuário
+ *         fotoCapa:
+ *           type: string
+ *           description: Foto de capa do usuário
  *         biografia:
  *           type: string
  *           description: Biografia do usuário
+ *         created_at:
+ *           type: string
+ *           description: Data que foi criado
+ *         updated_at:
+ *           type: string
+ *           description: Data que foi atualizado
  *       example:
- *         id: "551137c2f9e1fac808a5f572"
- *         nome: "João"
+ *         _id: "64a632209885d8e8378ee590"
+ *         nome: "João da Silva"
  *         email: "joao@email.com"
- *         fotoPerfil: "/img/usuario-default.png"
+ *         fotoPerfil: "/img/64a632209885d8e8378ee590/b63a5067-961c-47f2-9756-1c3211a8ce8a.jpg"
+ *         fotoCapa: "/img/64a632209885d8e8378ee590/1dd9c3d2-1843-40b3-8e65-c003a341959a.jpg"
  *         biografia: "Oi eu sou o João"
+ *         created_at: "2023-07-06T03:16:48.722Z"
+ *         updated_at: "2023-07-07T18:51:04.015Z"
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ListagemUsuario:
+ *       type: object
+ *       properties:
+ *         resposta:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Usuario'
+ *         pagina:
+ *           type: integer
+ *           description: Página atual da pesquisa
+ *           example: 1
+ *         limite:
+ *           type: integer
+ *           description: Número máximo de elementos a serem exibidos na listagem
+ *           example: 16
  */
 
 /**
@@ -48,7 +81,12 @@ const router = express.Router();
  * /usuarios:
  *   get:
  *     summary: Retorna uma lista de usuários baseado na pesquisa. 
- *     description: "Retorna a lista de usuários, permitindo pesquisar por termos específicos no nome. Obs: não tem como pesquisar sem especificar uma pesquisa"
+ *     description: |
+ *       Retorna a lista de usuários, permitindo pesquisar por termos específicos no nome. 
+ *       **Obs:** não tem como pesquisar sem especificar uma pesquisa
+ * 
+ *       Detalhes sobre como a pesquisa por texto funciona:
+ *       [https://github.com/erickweil/social-network#pesquisa-por-texto](https://github.com/erickweil/social-network#pesquisa-por-texto)
  *     parameters:
  *       - name: nome
  *         in: query
@@ -73,13 +111,16 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *             items:
- *               $ref: '#/components/schemas/Usuario'
+ *               $ref: '#/components/schemas/ListagemUsuario'
  *       500:
  *         description: Erro interno
  *   post:
  *     summary: Cria um novo usuário
+ *     description: |
+ *       Deve informar o **nome**, **email** e **senha** do usuário a ser criado
+ * 
+ *       Detalhes sobre como a força da senha é calculada:
+ *       [https://github.com/erickweil/social-network#criar-conta](https://github.com/erickweil/social-network#criar-conta)
  *     tags: [Usuarios]
  *     requestBody:
  *       required: true
@@ -115,6 +156,10 @@ const router = express.Router();
  *         description: Erro interno
  *   patch:
  *     summary: Atualiza o seu usuário
+ *     description: |
+ *       Esta rota permite atualizar os campos de seu **próprio usuário**:
+ *       - nome
+ *       - biografia
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -123,7 +168,16 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Usuario'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *                 description: Nome do usuário
+ *                 example: "Outro Nome"  
+ *               biografia:
+ *                 type: string
+ *                 description: Biografia
+ *                 example: "Oi eu sou o João"
  *     responses:
  *       200:
  *         description: Usuário atualizado com sucesso
@@ -135,6 +189,13 @@ const router = express.Router();
  *         description: Erro interno
  *   delete:
  *     summary: Deleta o seu usuário
+ *     description: |
+ *       Esta rota deleta o **seu próprio usuário**.
+ * 
+ *       Veja que é necessário enviar sua senha como confirmação
+ * 
+ *       Detalhes sobre o quê é deletado:
+ *       [https://github.com/erickweil/social-network#deletar-elementos](https://github.com/erickweil/social-network#deletar-elementos)
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -188,7 +249,13 @@ const router = express.Router();
  * /usuarios/foto-perfil:
  *   post:
  *     summary: Atualiza a foto de perfil
- *     tags: [Usuarios]
+ *     description: |
+ *       Para enviar a imagem deve ela deve ser enviada por meio de formulário multipart/form-data
+ *       com o nome **foto_perfil**
+ *       
+ *       Detalhes sobre como upload de imagens funciona:
+ *       [https://github.com/erickweil/social-network#upload-de-imagens](https://github.com/erickweil/social-network#upload-de-imagens)
+ *     tags: [Imagens]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -216,7 +283,13 @@ const router = express.Router();
  * /usuarios/foto-capa:
  *   post:
  *     summary: Atualiza a foto de capa
- *     tags: [Usuarios]
+ *     description: |
+ *       Esta rota atualiza a foto de capa do **seu próprio usuário**.
+ *       O a imagem deve ser enviada por meio de formulário multipart/form-data com o nome **foto_capa**
+ *       
+ *       Detalhes sobre como upload de imagens funciona:
+ *       [https://github.com/erickweil/social-network#upload-de-imagens](https://github.com/erickweil/social-network#upload-de-imagens)
+ *     tags: [Imagens]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
