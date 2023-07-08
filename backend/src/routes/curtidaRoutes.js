@@ -51,6 +51,9 @@ const router = express.Router();
  * /usuarios/curtidas:
  *   get:
  *     summary: Listar postagens curtidas por você
+ *     description: |
+ *       Listagem simples mais recentes primeiro das postagens/respostas que você curtiu.
+ *       Não é possível realizar nenhum tipo de filtragem por texto e/ou hashtags.
  *     parameters:
  *       - name: pagina
  *         in: query
@@ -68,9 +71,7 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Postagem'
+ *               $ref: '#/components/schemas/ListagemPostagem'
  */
 
 // Curtir postagem

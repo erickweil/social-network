@@ -69,7 +69,11 @@ const router = express.Router();
  *         type: string
  *     responses:
  *       200:
- *         description: Sucesso
+ *         description: Lista de usuários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ListagemUsuario'
  *       500:
  *         description: Erro interno
  */
@@ -90,7 +94,11 @@ const router = express.Router();
  *         type: string
  *     responses:
  *       200:
- *         description: Sucesso
+ *         description: Lista de usuários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ListagemUsuario'
  *       500:
  *         description: Erro interno
 */
