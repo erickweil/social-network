@@ -19,6 +19,9 @@ const router = express.Router();
  *    Postagem:
  *      type: object
  *      properties:
+ *        _id:
+ *          type: string
+ *          description: ID da postagem
  *        usuario:
  *          $ref: '#/components/schemas/Usuario'
  *        conteudo:
@@ -43,16 +46,61 @@ const router = express.Router();
  *        nivel:
  *          type: integer
  *          description: Nível da postagem
- *        _id:
- *          type: string
- *          description: ID da postagem
  *        created_at:
  *          type: string
  *          format: date-time
  *          description: Data e hora de criação da postagem
- *        __v:
- *          type: integer
- *          description: Algo a ver com o mongoose, ignore este campo
+ *    PostagemComResposta:
+ *      allOf:
+ *      - $ref: '#/components/schemas/Postagem'
+ *      - type: object
+ *        properties:
+ *          respostas:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Postagem'
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ListagemPostagem:
+ *       type: object
+ *       properties:
+ *         resposta:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Postagem'
+ *         pagina:
+ *           type: integer
+ *           description: Página atual da pesquisa
+ *           example: 1
+ *         limite:
+ *           type: integer
+ *           description: Número máximo de elementos a serem exibidos na listagem
+ *           example: 16
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ListagemResposta:
+ *       type: object
+ *       properties:
+ *         resposta:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/PostagemComResposta'
+ *         pagina:
+ *           type: integer
+ *           description: Página atual da pesquisa
+ *           example: 1
+ *         limite:
+ *           type: integer
+ *           description: Número máximo de elementos a serem exibidos na listagem
+ *           example: 16
  */
 
 /**
@@ -60,6 +108,12 @@ const router = express.Router();
  * /postagens:
  *   get:
  *     summary: Listar postagens recomendadas (For You)
+ *     description: |
+ *       É possível pesquisar pelo conteúdo dos posts especificando o parâmetro **pesquisa**, e pesquisar por hashtag via
+ *       o parâmetro **hashtag**
+ * 
+ *       Detalhes sobre como a pesquisa por texto funciona:
+ *       [https://github.com/erickweil/social-network#pesquisa-por-texto](https://github.com/erickweil/social-network#pesquisa-por-texto)
  *     parameters:
  *       - name: pesquisa
  *         in: query
@@ -91,11 +145,19 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Postagem'
+ *               $ref: '#/components/schemas/ListagemPostagem'
  *   post:
  *     summary: Criar uma nova postagem
+ *     description: |
+ *       Realiza uma postagem com texto e/ou até 8 imagens. Caso especifique postagemPai irá ser uma resposta a esta postagem 
+ * 
+ *       Deve enviar os campos **conteudo** e **postagemPai** como **multipart/form-data**
+ * 
+ *       As imagens deve ser enviadas no campo **fotos_post** do formulário na mesma requisição
+ *     
+ *       Detalhes sobre como upload de imagens funciona:
+ *       [https://github.com/erickweil/social-network#upload-de-imagens](https://github.com/erickweil/social-network#upload-de-imagens)
+ *     
  *     tags: [Postagens]
  *     security:
  *       - bearerAuth: []
@@ -150,6 +212,11 @@ const router = express.Router();
  *         description: Postagem não encontrada
  *   delete:
  *     summary: Deletar uma postagem
+ *     description: |
+ *       Esta rota deleta uma postagem que você fez (Não é possível deletar postagens de outros usuários).
+ * 
+ *       Detalhes sobre o quê é deletado:
+ *       [https://github.com/erickweil/social-network#deletar-elementos](https://github.com/erickweil/social-network#deletar-elementos)
  *     tags: [Postagens]
  *     security:
  *       - bearerAuth: []
@@ -173,7 +240,16 @@ const router = express.Router();
  * @swagger
  * /postagens/{id}/respostas:
  *   get:
- *     summary: Listar Postagem, suas respostas e a postagem pai
+ *     summary: Listar Respostas de uma postagem.
+ *     description: |
+ *       Lista as respostas de uma postagem, bem como as respostas delas. Basicamente irá pesquisar até 16 posts
+ *       que são respostas diretas ao post com **id** especificado, e cada resultado terá expandido até 5 respostas diretas
+ * 
+ *       É possível pesquisar pelo conteúdo dos posts especificando o parâmetro **pesquisa**, e pesquisar por hashtag via
+ *       o parâmetro **hashtag** (A filtragem se aplica apenas às respostas imediatas, não às respostas das respostas que são expandidas)
+ * 
+ *       Detalhes sobre como a pesquisa por texto funciona:
+ *       [https://github.com/erickweil/social-network#pesquisa-por-texto](https://github.com/erickweil/social-network#pesquisa-por-texto)
  *     tags: [Postagens]
  *     security:
  *       - bearerAuth: []
@@ -211,48 +287,7 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 usuario:
- *                   $ref: '#/components/schemas/Usuario'
- *                 postagemPai:
- *                   $ref: '#/components/schemas/Postagem'
- *                 conteudo:
- *                   type: string
- *                   description: Conteúdo da postagem
- *                 hashtags:
- *                   type: array
- *                   items:
- *                     type: string
- *                   description: Lista de hashtags relacionadas à postagem
- *                 imagens:
- *                   type: array
- *                   items:
- *                     type: string
- *                   description: Lista de URLs das imagens associadas à postagem
- *                 numCurtidas:
- *                   type: integer
- *                   description: Número de curtidas recebidas pela postagem
- *                 numRespostas:
- *                   type: integer
- *                   description: Número de respostas recebidas pela postagem
- *                 nivel:
- *                   type: integer
- *                   description: Nível da postagem
- *                 respostas:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Postagem'
- *                 _id:
- *                   type: string
- *                   description: ID da postagem
- *                 created_at:
- *                   type: string
- *                   format: date-time
- *                   description: Data e hora de criação da postagem
- *                 __v:
- *                   type: integer
- *                   description: Algo a ver com o mongoose, ignore este campo
+ *               $ref: '#/components/schemas/ListagemResposta'
  *       404:
  *         description: Postagem não encontrada
  */
@@ -262,6 +297,15 @@ const router = express.Router();
  * /usuarios/{id}/postagens:
  *   get:
  *     summary: Listar postagens de um usuário
+ *     description: |
+ *       São listadas todas as postagens de um usuário especificado pelo **id**. Não são listadas respostas à outras postagens,
+ *       para isso veja a rota ** /usuarios/id/respostas**
+ *       
+ *       É possível pesquisar pelo conteúdo dos posts especificando o parâmetro **pesquisa**, e pesquisar por hashtag via
+ *       o parâmetro **hashtag**
+ * 
+ *       Detalhes sobre como a pesquisa por texto funciona:
+ *       [https://github.com/erickweil/social-network#pesquisa-por-texto](https://github.com/erickweil/social-network#pesquisa-por-texto)
  *     tags: [Postagens]
  *     parameters:
  *       - in: path
@@ -299,9 +343,7 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Postagem'
+ *               $ref: '#/components/schemas/ListagemPostagem'
  *       404:
  *         description: Usuário não encontrado
  */
@@ -311,6 +353,15 @@ const router = express.Router();
  * /usuarios/{id}/respostas:
  *   get:
  *     summary: Listar respostas de um usuário
+ *     description: |
+ *       São listadas todas as respostas à postagens feitas por um usuário especificado pelo **id**. Não são listadas postagens que não são respostas à outra postagem,
+ *       para isso veja a rota ** /usuarios/id/postagens**
+ *       
+ *       É possível pesquisar pelo conteúdo dos posts especificando o parâmetro **pesquisa**, e pesquisar por hashtag via
+ *       o parâmetro **hashtag**
+ * 
+ *       Detalhes sobre como a pesquisa por texto funciona:
+ *       [https://github.com/erickweil/social-network#pesquisa-por-texto](https://github.com/erickweil/social-network#pesquisa-por-texto)
  *     tags: [Postagens]
  *     parameters:
  *       - in: path
@@ -348,9 +399,7 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Postagem'
+ *               $ref: '#/components/schemas/ListagemPostagem'
  *       404:
  *         description: Usuário não encontrado
  */

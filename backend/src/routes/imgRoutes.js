@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Imagens
+ *   name: Imagens 
  *   description: Rotas que lidam com imagens
  */
 
@@ -28,7 +28,10 @@ const router = express.Router();
  *         type: string
  *       required: true
  *   get:
- *     summary: Acessar imagem de perfil, capa ou postagem. Sempre é um .jpg
+ *     summary: Acessar imagem
+ *     description: |
+ *       Permite obter as imagens, que podem ser a imagem de perfil, capa ou de uma postagem.
+ *       Sempre é um .jpg
  *     tags: [Imagens]
  *     security:
  *       - bearerAuth: []
