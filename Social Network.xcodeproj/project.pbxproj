@@ -11,6 +11,7 @@
 		A7B5E5DD2A506CC3008D56E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DC2A506CC3008D56E0 /* ContentView.swift */; };
 		A7B5E5DF2A506CC5008D56E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */; };
 		A7B5E5E22A506CC5008D56E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */; };
+		A7FB7EFD2A5AE73900B78214 /* PostagensViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB7EFC2A5AE73900B78214 /* PostagensViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		A7B5E5DC2A506CC3008D56E0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A7FB7EFC2A5AE73900B78214 /* PostagensViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagensViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 				A7B5E5DC2A506CC3008D56E0 /* ContentView.swift */,
 				A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */,
 				A7B5E5E02A506CC5008D56E0 /* Preview Content */,
+				A7FB7EFC2A5AE73900B78214 /* PostagensViewModel.swift */,
 			);
 			path = "Social Network";
 			sourceTree = "<group>";
@@ -139,6 +142,7 @@
 			files = (
 				A7B5E5DD2A506CC3008D56E0 /* ContentView.swift in Sources */,
 				A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */,
+				A7FB7EFD2A5AE73900B78214 /* PostagensViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +273,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Social Network/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Social-Network-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -297,6 +302,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Social Network/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Social-Network-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
