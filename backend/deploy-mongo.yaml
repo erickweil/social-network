@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: socialize-mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: socialize-mongo
+  labels:
+    app: socialize-mongo
+spec:
+  containers:
+    - name: socialize-mongo
+      image: mongo:6.0.7
+      ports:
+      - containerPort: 27017
+      volumeMounts:
+        - mountPath: /data/db
+          name: pv
+  volumes: 
+    - name: pv
+      persistentVolumeClaim:
+        claimName: socialize-mongo-pvc
+        readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: socialize-mongo
+spec:
+  type: ClusterIP
+  selector:
+    app: socialize-mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

@@ -2,6 +2,8 @@ version: '3.8'
 services:
   mongo:
     image: mongo:6.0.7
+    ports: 
+      - 27017:27017
     volumes:
       - vol-db:/data/db
   backend:
@@ -11,7 +13,7 @@ services:
     environment:
       - DEBUGLOG=true
       - DISABLE_AUTH=false
-      - SUBPATH=/
+      - SUBPATH=/absproxy/3000
       - PORT=3000
       - IMG_PATH=./data
       - DB_URL=mongodb://mongo:27017
