@@ -4,8 +4,8 @@ const getSwaggerOptions = () => {
 			openapi: "3.0.0",
 			info: {
 				title: "Rede Social API",
-				version: "1.0.0",
-				description: "API para utilizar a rede social.",
+				version: "1.0-pre3",
+				description: "API para utilizar a rede social.\n\nÉ necessário autenticar com token JWT antes de utilizar a maioria das rotas, faça isso na rota /login com um email e senha válido\n\nMais informações em [https://github.com/erickweil/social-network](https://github.com/erickweil/social-network)",
 				contact: {
 					name: "Erick Leonardo Weil",
 					email: "erick.weil@ifro.edu.br",

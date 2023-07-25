@@ -36,6 +36,7 @@ export default class UsuarioControler {
 		});
 	}
 	
+	// A FAZER: Não deveria mostrar as preferências para o usuário quando é ele próprio solicitando?
 	static async listarUsuarioPorId(req,res) {
 		const id = req.params.id;
 	

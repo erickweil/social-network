@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: socialize-imgs-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: socialize-api-env
+data:
+  DEBUGLOG: "true"
+  DISABLE_AUTH: "false"
+  SUBPATH: "/"
+  PORT: "3000"
+  IMG_PATH: "./data"
+  DB_URL: "mongodb://socialize-mongo:27017"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: socialize-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: socialize-api
+  template:
+    metadata:
+      labels:
+        app: socialize-api
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: socialize-api
+        image: registry.fslab.dev/erickweil/socialize-api
+        resources: {}
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: socialize-api-env
+        volumeMounts:
+          - mountPath: /node-app/data
+            name: pv
+      volumes:
+      - name: pv
+        persistentVolumeClaim:
+          claimName: socialize-imgs-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: socialize-api
+spec:
+  type: ClusterIP
+  selector:
+    app: socialize-api
+  ports:
+  - port: 80
+    targetPort: 3000

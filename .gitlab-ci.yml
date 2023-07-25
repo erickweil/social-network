@@ -1,0 +1,81 @@
+#include: '/templates/padrao.template.yml'
+include: 'https://gitlab.fslab.dev/fslab/modelo-ci-cd/-/raw/master/templates/padrao.template.yml'
+
+variables:
+  IMG_SOCIALIZE_API: registry.fslab.dev/erickweil/socialize-api
+  KUBECTL_CONFIG: $KUBECTL_CONFIG
+
+stages:
+  - test
+  - publish
+  - deploy
+
+test:
+  extends: 
+    - .on-commit-main
+    - .disable-git-clone
+  needs: []
+  stage: test
+  script:
+    - echo $FUNCIONA_VARIAVEIS
+    - ls -lhas
+    - echo "Nome da imagem weilplace-api"
+    - echo $IMG_SOCIALIZE_API
+    - echo "Primeira linha da configuração kubectl"
+    - head -n1 $KUBECTL_CONFIG
+    - echo $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+merge-test-api:
+  image: node:alpine
+  extends: .on-create-merge-main
+  needs: []
+  stage: test
+  script:
+    - mv ./backend/.env.example ./backend/.env
+    - cd ./backend
+    - npm install
+    - npm run test
+#  artifacts:
+#    paths:
+#      - backend/node_modules
+
+build-api:
+  extends: 
+    - .on-commit-main
+    - .build-docker
+  needs: ["test"]
+  stage: publish
+  variables:
+    BUILD_DIR: "./backend"
+    BUILD_TAG: $IMG_SOCIALIZE_API:latest
+  before_script:
+    - mv ./backend/.env.example ./backend/.env
+
+# https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
+deploy-api:
+  extends: .on-commit-main
+  needs: ["build-api"]
+  
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    # Para ter as credenciais do kubectl
+    - cat $KUBECTL_CONFIG > ~/.kube/config
+    #- cat ~/.kube/config
+
+    # Debug
+    - kubectl config get-contexts
+    - kubectl get node
+    - kubectl get pods
+
+    # Pedir para parar (Dependendo do que mudar na configuração não vai funciona só re-aplicar com 'rollout restart')
+    - kubectl delete deployment socialize-api || true
+
+    # Espera 10 segundos para ter certeza que parou tudo
+    - sleep 10
+
+    # Aplicar novamente os deployments 
+    - kubectl apply -f ./backend/deploy-mongo.yaml
+    - kubectl apply -f ./backend/deployment.yaml

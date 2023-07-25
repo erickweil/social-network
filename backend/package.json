@@ -8,8 +8,8 @@
     "seed": "node src/seeds/seed.js",
     "dev": "nodemon -L server.js",
     "lint": "npx eslint ./",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --runInBand"
   },
   "jest": {
     "setupFiles": [
