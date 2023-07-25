@@ -13,6 +13,9 @@ const getSwaggerOptions = () => {
 			},
 			servers: [
 				{
+					url: "https://socialize-api.app.fslab.dev",
+				},
+				{
 					url: "https://erick.fslab.dev/absproxy/3000",
 				},
 				{
