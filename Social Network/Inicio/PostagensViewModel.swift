@@ -41,19 +41,51 @@ struct ListagemPostagem: Hashable, Codable {
     let limite: Int
 }
 
+let APIURL = "https://socialize-api.app.fslab.dev"
+enum ApiRotas: String {
+    case Postagens = "/postagens"
+    
+    static func rota(_ rota: ApiRotas) -> String {
+        APIURL + rota.rawValue
+    }
+}
+
+// https://www.appypie.com/urlsession-swift-networking-how-to
 class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published var postagens: [Postagem] = []
+        
+    // https://stackoverflow.com/questions/52591866/whats-the-correct-usage-of-urlsession-create-new-one-or-reuse-same-one
+    static private var session: URLSession? = nil
+    public static var session_token: String = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzAyNTFlMjI5NmU2MWUwZjUwMWJhNyIsIm5vbWUiOiJKb8OjbyBkYSBTaWx2YSIsImVtYWlsIjoiam9hb0BlbWFpbC5jb20iLCJpYXQiOjE2OTEwODgxMDgsImV4cCI6MTY5MTA5NTMwOH0.Wo42BYzPGiXijhe-lnYjDfxEVAMRKH5r-McGUk6azeo"
+    public static func getSession() -> URLSession {
+        if PostagensViewModel.session == nil {
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForRequest = 30
+            config.timeoutIntervalForResource = 30
+            config.httpShouldSetCookies = true
+            config.httpCookieAcceptPolicy = .always
+            config.httpCookieStorage = HTTPCookieStorage.shared
+            PostagensViewModel.session = URLSession(configuration: config)
+        }
+        
+        return PostagensViewModel.session!
+    }
     
     func fetch() {
-        guard let url = URL(string: "https://erick.fslab.dev/absproxy/3000/postagens") else {
+        guard let url = URL(string: ApiRotas.rota(.Postagens)) else {
             print("Retornou no url...")
             return
         }
         
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(PostagensViewModel.session_token, forHTTPHeaderField: "Authorization")
+        
+        let session = PostagensViewModel.getSession()
         // weak self para não causar memory leak?
         // o que é guard?
-        let task = URLSession.shared.dataTask(with: url) {
+        let task = session.dataTask(with: request) {
             [weak self] data, _, error in
             guard let data = data, error == nil else {
                 print("Retornou no data...")
@@ -61,6 +93,7 @@ class PostagensViewModel: ObservableObject {
             }
             
             do {
+                print(String(decoding:data, as: UTF8.self))
                 // Realiza o parsing do json de acordo com o formato da struct ListagemPostagem
                 let listagem = try JSONDecoder().decode(ListagemPostagem.self, from: data)
                 

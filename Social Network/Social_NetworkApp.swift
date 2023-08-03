@@ -11,7 +11,8 @@ import SwiftUI
 struct Social_NetworkApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            //InicioView()
+            PerfilUsuario()
         }
     }
 }
