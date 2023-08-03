@@ -1,7 +1,7 @@
 # Social-Network
 Exemplo de Aplicação Web que funciona como Rede social.
 
-## Funcionalidades
+<h2> Funcionalidades </h2>
 
 - Usuário
   * **Criar conta** - Possível criar conta utilizando email e senha
@@ -34,7 +34,7 @@ Os pesos são:
 * +10 se conter números
 * +10 se conter maiúsculas
 * +10 se conter minúsculas
-* +10 se conter símbolos
+* +15 se conter símbolos
 
 **A senha deve ter no mínimo 8 caracteres e a força da senha pelo menos 50**
 
