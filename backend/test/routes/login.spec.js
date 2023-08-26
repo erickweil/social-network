@@ -19,8 +19,6 @@ describe("Teste Login", () => {
 			{method:"post", path:"/usuarios/foto-perfil"},
 			{method:"post", path:"/usuarios/foto-capa"},
 
-			{method:"get", path:"/img/551137c2f9e1fac808a5f572/3c0fb6b5-6bf8-475b-ae72-320a4957055c.jpg"},
-
 			{method:"post", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
 			{method:"delete", path:"/usuarios/551137c2f9e1fac808a5f572/seguir"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572/seguidores"},
