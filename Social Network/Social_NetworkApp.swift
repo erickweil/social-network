@@ -11,8 +11,9 @@ import SwiftUI
 struct Social_NetworkApp: App {
     var body: some Scene {
         WindowGroup {
-            //InicioView()
-            PerfilUsuario()
+            InicioView()
+            //PerfilUsuario()
+            .environmentObject(AppDataStore(httpClient: HTTPClient()))
         }
     }
 }

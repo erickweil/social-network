@@ -7,49 +7,70 @@
 
 import SwiftUI
 
-// Diz que no ios 15 para cima não precisaria disso...
-struct URLImage: View {
-    let urlString: String
-    @State var data: Data?
+func defaultPlaceholder(_ name: String = "photo.fill") -> some View {
+    Image(systemName: name)
+        .resizable()
+        .opacity(0.25)
+}
+
+// Lida com Cache e tudo mais...
+struct URLImage<P>: View where P : View {
+    @EnvironmentObject private var store: AppDataStore
+    
+    let url: URL
+    let placeholder: () -> P
+    
+    init(url: URL, placeholder: @escaping () -> P) {
+        self.url = url
+        self.placeholder = placeholder
+    }
+    
     var body: some View {
-        if let data = data, let uiimage = UIImage(data: data) {
-            Image(uiImage: uiimage)
+        if let cached = store.imageCache.getImageCache(url: url) {
+            cached
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .background(Color.gray)
-        } else {
-            Image(systemName: "person.crop.rectangle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .background(Color.gray)
-                .onAppear {
-                    fetchData()
+                .border(.blue)
+        } else {            
+            AsyncImage(url: url) { phase in
+                if let image = phase.image {
+                    cacheAndRender(image)
+                        .resizable()
+                } else if phase.error != nil {
+                    ZStack {
+                        placeholder()
+                        
+                        Spacer().background {
+                            Text("Erro ao carregar imagem")
+                                .font(.title)
+                        }
+                    }
+                } else {
+                    placeholder()
                 }
+            }
+            .aspectRatio(contentMode: .fit)
+            .border(.red)
+            
         }
     }
     
-    // Tem que ver a questão do cache
-    private func fetchData() {
-        print("Carregando \(urlString)")
-        guard let url = URL(string: urlString) else {
-            print("Falhou carregar \(urlString)")
-            return
-        }
+    private func cacheAndRender(_ image: Image) -> Image {
+        store.imageCache.storeImageCache(url: url, image: image)
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue(PostagensViewModel.session_token, forHTTPHeaderField: "Authorization")
-        
-        let task = PostagensViewModel.getSession().dataTask(with: request) {
-            data, _, _ in
-            self.data = data
-        }
-        task.resume()
+        return image
     }
 }
 
 struct URLImage_Previews: PreviewProvider {
     static var previews: some View {
-        URLImage(urlString: APIURL+"/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg")
+        let url = "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg"
+        List {
+            ForEach(0..<50) { i in
+                URLImage(url: APIs.baseURL.appendingPathComponent(url)) {
+                    defaultPlaceholder()
+                }
+            }
+        }.environmentObject(AppDataStore(httpClient: HTTPClient()))
     }
 }

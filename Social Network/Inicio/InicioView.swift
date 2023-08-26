@@ -7,53 +7,51 @@
 
 import SwiftUI
 
-// View que representa uma Postagem
-struct PostagemView: View {
-    let postagem: Postagem
-    
-    var body: some View {
-        VStack {
-            NavigationLink {
-                PerfilUsuario()
-            } label: {
-                Text("Perfil")
-            }
-            HStack {
-                URLImage(
-                    urlString: APIURL+postagem.usuario.fotoPerfil
-                ).frame(width: 60)
-                Text(postagem.usuario.nome)
-            }.frame(maxWidth: .infinity, alignment: Alignment.leading)
-            
-            Text(postagem.conteudo)
-            
-            if postagem.imagens.count >= 1 {
-                URLImage(
-                    urlString: APIURL+postagem.imagens[0]
-                ).frame(height: 250)
-            }
-        }
-        .background(.background)
-    }
-}
-
 // View que lista as postagens
 struct InicioView: View {
+    // Estado global da aplicação
+    @EnvironmentObject private var store: AppDataStore
+    
+    // Estado local desta tela
+    // @StateObject ->  mantém o valor mesmo em redraws
+    // @ObservedObject -> recriado quando acontece um redraw
     @StateObject var viewModel = PostagensViewModel()
+    
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.postagens, id: \.self) { postagem in
-                    PostagemView(postagem: postagem)
+            if let token = store.session.token {
+                List {
+                    ForEach(viewModel.postagens, id: \.self) { postagem in
+                        PostagemView(postagem: postagem)
+                    }
+                }
+                .listStyle(PlainListStyle())
+                .navigationTitle("Postagens")
+                .task {
+                    // Assim que aparecer na tela faz o fetch
+                    do {
+                        try await viewModel.fetchPostagens(
+                            token: token,
+                            session: store.session.session,
+                            httpClient: store.httpClient
+                        )
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            } else {
+                Text("Autenticando...")
+                .task {
+                    // Assim que aparecer na tela faz o fetch
+                    do {
+                        try await store.fazerLogin(email: "joao@email.com", senha: "ABCDabcd1234")
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
             }
-            .listStyle(PlainListStyle())
-            .navigationTitle("Postagens?")
-            .onAppear {
-                // Assim que aparecer na tela faz o fetch
-                viewModel.fetch()
-            }
+            
         }
     }
 }
@@ -61,5 +59,6 @@ struct InicioView: View {
 struct InicioView_Previews: PreviewProvider {
     static var previews: some View {
         InicioView()
+            .environmentObject(AppDataStore(httpClient: HTTPClient()))
     }
 }
