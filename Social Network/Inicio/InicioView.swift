@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // View que representa uma Postagem
 struct PostagemView: View {
     let postagem: Postagem
@@ -50,7 +49,7 @@ struct InicioView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .navigationTitle("Postagens")
+            .navigationTitle("Postagens?")
             .onAppear {
                 // Assim que aparecer na tela faz o fetch
                 viewModel.fetch()
