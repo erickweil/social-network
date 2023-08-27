@@ -12,15 +12,25 @@ class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published var postagens: [Postagem] = []
     
-    func fetchPostagens(token: String, session: URLSession, httpClient: HTTPClient) async throws {
-        let resp = try await httpClient.load(
-            Resource(
-                url: APIs.postagens.url,
-                modelType: ListagemPostagem.self
-            ),
-            session: session,
-            headers: ["Authorization": "Bearer \(token)"]
-        )
+    func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil) async throws {
+        let resp: ListagemPostagem
+        if let postagemPai {
+            resp = try await httpClient.load(
+                Resource(
+                    url: APIs.respostasPostagem(postagemPai._id).url,
+                    modelType: ListagemPostagem.self
+                ),
+                headers: ["Authorization": "Bearer \(token)"]
+            )            
+        } else {
+            resp = try await httpClient.load(
+                Resource(
+                    url: APIs.postagens.url,
+                    modelType: ListagemPostagem.self
+                ),
+                headers: ["Authorization": "Bearer \(token)"]
+            )
+        }
         
         DispatchQueue.main.async {
             self.postagens = resp.resposta

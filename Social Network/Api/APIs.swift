@@ -9,6 +9,7 @@ import Foundation
 
 enum APIs {
     case postagens
+    case respostasPostagem(String)
     case login
     
     public static var baseURL: URL {
@@ -20,6 +21,8 @@ enum APIs {
         switch self {
         case .postagens:
             return APIs.baseURL.appendingPathComponent("/postagens")
+        case .respostasPostagem(let id):
+            return APIs.baseURL.appendingPathComponent("/postagens/\(id)/respostas")
         case .login:
             return APIs.baseURL.appendingPathComponent("/login")
         }

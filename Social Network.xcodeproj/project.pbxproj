@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */; };
 		A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71139222A9A8F4F001BA085 /* PostagemView.swift */; };
+		A738101B2A9AE330001A5983 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A738101A2A9AE330001A5983 /* LoginView.swift */; };
 		A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D023B2A7C34D400215AAE /* PerfilView.swift */; };
 		A79D02412A7C3E1900215AAE /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D02402A7C3E1900215AAE /* URLImage.swift */; };
 		A7A838ED2A9A3D12006FEFF3 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838EC2A9A3D12006FEFF3 /* HTTPClient.swift */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheModel.swift; sourceTree = "<group>"; };
 		A71139222A9A8F4F001BA085 /* PostagemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemView.swift; sourceTree = "<group>"; };
+		A738101A2A9AE330001A5983 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A79D023B2A7C34D400215AAE /* PerfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilView.swift; sourceTree = "<group>"; };
 		A79D02402A7C3E1900215AAE /* URLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLImage.swift; sourceTree = "<group>"; };
 		A7A838EC2A9A3D12006FEFF3 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
@@ -63,6 +65,14 @@
 				A71139222A9A8F4F001BA085 /* PostagemView.swift */,
 			);
 			path = Postagem;
+			sourceTree = "<group>";
+		};
+		A73810192A9AE313001A5983 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				A738101A2A9AE330001A5983 /* LoginView.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 		A79D02392A7C25E900215AAE /* Inicio */ = {
@@ -125,6 +135,7 @@
 		A7B5E5D92A506CC3008D56E0 /* Social Network */ = {
 			isa = PBXGroup;
 			children = (
+				A73810192A9AE313001A5983 /* Login */,
 				A71139212A9A8F3F001BA085 /* Postagem */,
 				A7A838F42A9A4332006FEFF3 /* Models */,
 				A79D023F2A7C3E0900215AAE /* Api */,
@@ -218,6 +229,7 @@
 				A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */,
 				A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */,
 				A7A838F62A9A4354006FEFF3 /* UsuarioModel.swift in Sources */,
+				A738101B2A9AE330001A5983 /* LoginView.swift in Sources */,
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,

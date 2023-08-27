@@ -57,8 +57,19 @@ struct Resource<T: Codable> {
 
 // Seria interessante ter um protocol HttpClient e um MockHttpClient para testes...
 struct HTTPClient {
+    // Função que retorna a sessão ou cria ela caso não exista
+    public var session: URLSession
+    public init() {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 30
+        config.httpShouldSetCookies = true
+        config.httpCookieAcceptPolicy = .always
+        config.httpCookieStorage = HTTPCookieStorage.shared
+        session = URLSession(configuration: config)
+    }
+    
     func load<T: Codable>(_ resource: Resource<T>,
-    session: URLSession = URLSession(configuration: URLSessionConfiguration.default),
     headers: [String: String] = [:]
     ) async throws -> T {
         print(resource.url.absoluteString)

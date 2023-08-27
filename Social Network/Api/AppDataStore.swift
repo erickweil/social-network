@@ -11,7 +11,8 @@ import SwiftUI
 class AppDataStore: ObservableObject {
     let httpClient: HTTPClient
     @Published var session: APISession = APISession()
-    var imageCache: ImageCache = ImageCache()
+    
+    let imageCache: ImageCacheViewModel = ImageCacheViewModel()
     
     init(httpClient: HTTPClient) {
         self.httpClient = httpClient
@@ -26,8 +27,7 @@ class AppDataStore: ObservableObject {
                     "senha": senha
                 ])),
                 modelType: LoginResponse.self
-            ),
-            session: session.session
+            )
         )
         
         session.token = resp.token

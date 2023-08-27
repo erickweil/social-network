@@ -7,17 +7,20 @@
 
 import SwiftUI
 
-struct ImageCache {
-    private var imageCache: [String: Image] = [:]
+class ImageCacheViewModel {
+    var cache: [String: Image]
     
-    mutating func storeImageCache(url: URL, image: Image) {
-        print("Guardou \(url) no cache. Cache possui \(imageCache.count) imagens")
-        imageCache[url.absoluteString] = image
+    init() {
+        self.cache = [:]
+    }
+    
+    func storeImageCache(url: URL, image: Image) {
+        print("Guardou \(url) no cache. Cache possui \(cache.count) imagens")
+        cache[url.absoluteString] = image
     }
     
     func getImageCache(url: URL) -> Image? {
-
-        if let img = imageCache[url.absoluteString] {
+        if let img = cache[url.absoluteString] {
             print("Obtendo do cache: \(url)")
             return img
         } else {
