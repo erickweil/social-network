@@ -10,9 +10,9 @@
 		A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */; };
 		A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71139222A9A8F4F001BA085 /* PostagemView.swift */; };
 		A738101B2A9AE330001A5983 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A738101A2A9AE330001A5983 /* LoginView.swift */; };
+		A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */; };
 		A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D023B2A7C34D400215AAE /* PerfilView.swift */; };
 		A79D02412A7C3E1900215AAE /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79D02402A7C3E1900215AAE /* URLImage.swift */; };
-		A7A838ED2A9A3D12006FEFF3 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838EC2A9A3D12006FEFF3 /* HTTPClient.swift */; };
 		A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838EE2A9A3D48006FEFF3 /* APIs.swift */; };
 		A7A838F12A9A3FD4006FEFF3 /* AppDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838F02A9A3FD4006FEFF3 /* AppDataStore.swift */; };
 		A7A838F32A9A40DA006FEFF3 /* PostagemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838F22A9A40DA006FEFF3 /* PostagemModel.swift */; };
@@ -30,9 +30,9 @@
 		A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheModel.swift; sourceTree = "<group>"; };
 		A71139222A9A8F4F001BA085 /* PostagemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemView.swift; sourceTree = "<group>"; };
 		A738101A2A9AE330001A5983 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFetch.swift; sourceTree = "<group>"; };
 		A79D023B2A7C34D400215AAE /* PerfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfilView.swift; sourceTree = "<group>"; };
 		A79D02402A7C3E1900215AAE /* URLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLImage.swift; sourceTree = "<group>"; };
-		A7A838EC2A9A3D12006FEFF3 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		A7A838EE2A9A3D48006FEFF3 /* APIs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIs.swift; sourceTree = "<group>"; };
 		A7A838F02A9A3FD4006FEFF3 /* AppDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataStore.swift; sourceTree = "<group>"; };
 		A7A838F22A9A40DA006FEFF3 /* PostagemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemModel.swift; sourceTree = "<group>"; };
@@ -96,9 +96,9 @@
 			isa = PBXGroup;
 			children = (
 				A79D02402A7C3E1900215AAE /* URLImage.swift */,
-				A7A838EC2A9A3D12006FEFF3 /* HTTPClient.swift */,
 				A7A838EE2A9A3D48006FEFF3 /* APIs.swift */,
 				A7A838F02A9A3FD4006FEFF3 /* AppDataStore.swift */,
+				A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -230,12 +230,12 @@
 				A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */,
 				A7A838F62A9A4354006FEFF3 /* UsuarioModel.swift in Sources */,
 				A738101B2A9AE330001A5983 /* LoginView.swift in Sources */,
+				A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */,
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,
 				A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */,
 				A7A838F82A9A437A006FEFF3 /* Listagem.swift in Sources */,
-				A7A838ED2A9A3D12006FEFF3 /* HTTPClient.swift in Sources */,
 				A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */,
 				A7A838F32A9A40DA006FEFF3 /* PostagemModel.swift in Sources */,
 				A7A838F12A9A3FD4006FEFF3 /* AppDataStore.swift in Sources */,

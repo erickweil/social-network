@@ -13,27 +13,18 @@ class PostagensViewModel: ObservableObject {
     @Published var postagens: [Postagem] = []
     
     func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil) async throws {
-        let resp: ListagemPostagem
-        if let postagemPai {
-            resp = try await httpClient.load(
-                Resource(
-                    url: APIs.respostasPostagem(postagemPai._id).url,
-                    modelType: ListagemPostagem.self
-                ),
-                headers: ["Authorization": "Bearer \(token)"]
-            )            
-        } else {
-            resp = try await httpClient.load(
-                Resource(
-                    url: APIs.postagens.url,
-                    modelType: ListagemPostagem.self
-                ),
+        let url: URL = postagemPai != nil ? APIs.respostasPostagem(postagemPai!._id).url : APIs.postagens.url
+        let resp = try await httpClient.fetch(url,
+            FetchOptions(
+                method: .GET,
                 headers: ["Authorization": "Bearer \(token)"]
             )
-        }
+        )
         
-        DispatchQueue.main.async {
-            self.postagens = resp.resposta
+        if let respModel = try resp.body?.json(ListagemPostagem.self) {
+            DispatchQueue.main.async {
+                self.postagens = respModel.resposta
+            }
         }
         
         /*

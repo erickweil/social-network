@@ -19,18 +19,20 @@ class AppDataStore: ObservableObject {
     }
     
     public func fazerLogin(email: String, senha: String) async throws {
-        let resp = try await httpClient.load(
-            Resource(
-                url: APIs.login.url,
-                method: .post(JSONEncoder().encode([
+        let resp = try await httpClient.fetch(
+            APIs.login.url,
+            FetchOptions(
+                method: .POST,
+                body: JSONEncoder().encode([
                     "email": email,
                     "senha": senha
-                ])),
-                modelType: LoginResponse.self
+                ])
             )
         )
         
-        session.token = resp.token
-        session.usuario = resp.usuario
+        if let respModel = try resp.body?.json(LoginResponse.self) {
+            session.token = respModel.token
+            session.usuario = respModel.usuario
+        }
     }
 }
