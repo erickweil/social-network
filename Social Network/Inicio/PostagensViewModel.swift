@@ -7,13 +7,21 @@
 
 import Foundation
 
+
+
 // https://www.appypie.com/urlsession-swift-networking-how-to
 class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
-    @Published var postagens: [Postagem] = []
+    @Published var postagens: [Postagem]? = nil
     
     func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil) async throws {
-        let url: URL = postagemPai != nil ? APIs.respostasPostagem(postagemPai!._id).url : APIs.postagens.url
+        let url: URL
+        if postagemPai != nil {
+            url = APIs.respostasPostagem(postagemPai!._id).url
+        } else {
+            url = APIs.postagens.url
+        }
+        
         let resp = try await httpClient.fetch(url,
             FetchOptions(
                 method: .GET,
@@ -21,10 +29,14 @@ class PostagensViewModel: ObservableObject {
             )
         )
         
-        if let respModel = try resp.body?.json(ListagemPostagem.self) {
-            DispatchQueue.main.async {
-                self.postagens = respModel.resposta
-            }
+        guard resp.success else {
+            throw NetworkError.errorResponse("Não conseguiu carregar postagens")
+        }
+        
+        let respModel = try resp.json(ListagemPostagem.self)
+        
+        DispatchQueue.main.async {
+            self.postagens = respModel.resposta
         }
         
         /*

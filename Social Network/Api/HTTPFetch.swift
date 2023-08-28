@@ -7,49 +7,38 @@
 
 import Foundation
 
-
 enum NetworkError: Error {
-    case badRequest
-    case serverError(String)
-    case decodingError(String)
+    case badRequest(String)
     case invalidResponse
-    case invalidURL
+    case decodingError(String)
+    case errorResponse(String)
+    case invalidURL(String)
 }
 
 extension NetworkError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .badRequest:
-            return NSLocalizedString("Não foi possível processar a requisição", comment: "badRequestError")
-        case .serverError(let errorMessage):
-            return NSLocalizedString(errorMessage, comment: "serverError")
-        case .decodingError(let errorMessage):
-            return NSLocalizedString(errorMessage, comment: "decodingError")
+        case .badRequest(let msg):
+            return NSLocalizedString("Não foi possível processar a requisição: \(msg)", comment: "badRequestError")
         case .invalidResponse:
             return NSLocalizedString("Resposta Inválida", comment: "invalidResponse")
-        case .invalidURL:
-            return NSLocalizedString("URL Inválido", comment: "invalidURL")
+        case .decodingError(let msg):
+            return NSLocalizedString("Não conseguiu decodificar a resposta: \(msg)", comment: "decodingError")
+        case .errorResponse(let msg):
+            return NSLocalizedString("Resposta de Erro: \(msg)", comment: "errorResponse")
+        case .invalidURL(let msg):
+            return NSLocalizedString("URL Inválido: \(msg)", comment: "invalidURL")
         }
     }
 }
 
-extension Data {
-    func json<T: Codable>(_ modelType: T.Type) throws -> T {
-        guard let result = try? JSONDecoder().decode(modelType, from: self) else {
-            throw NetworkError.decodingError(String(decoding:self, as: UTF8.self))
-        }
-        
-        return result
-    }
-}
-
-
+// Para ser fácil adicionar componentes Query no URL
 extension URL {
     mutating func addQueryComponents(_ queryItems: [URLQueryItem]?) throws {
         var components = URLComponents(url: self, resolvingAgainstBaseURL: false)
         components?.queryItems = queryItems
         guard let url = components?.url else {
-            throw NetworkError.badRequest
+            throw NetworkError.invalidURL("Query components inválidos.")
         }
         
         self = url
@@ -91,8 +80,18 @@ struct HTTPClient {
 
     struct FetchResponse {
         let body: Data?
-        let status: Int
+        let success: Bool
         let httpResponse: HTTPURLResponse
+        
+        func json<T: Codable>(_ modelType: T.Type) throws -> T {
+            guard let body else { throw NetworkError.decodingError("Resposta vazia, porém esperava resposta") }
+            
+            guard let decoded = try? JSONDecoder().decode(modelType, from: body) else {
+                throw NetworkError.decodingError("Não conseguiu decodificar resposta. (\(body.count) bytes)")
+            }
+            
+            return decoded
+        }
     }
     
     public var session: URLSession
@@ -131,13 +130,15 @@ struct HTTPClient {
         
         let result = FetchResponse(
             body: data,
-            status: httpResp.statusCode,
+            success: httpResp.statusCode >= 200 && httpResp.statusCode <= 299,
             httpResponse: httpResp
         )
         
-        // guarda a resposta no model passado
-        //guard let body = try? JSONDecoder().decode(resource.modelType, from: data) else {
-        //    throw NetworkError.decodingError(String(decoding:data, as: UTF8.self))
+        // Implementar redirecionar em respostas 3xx?
+        // Será que todas as respostas 2xx são sucesso mesmo?
+        
+        //guard httpResp.statusCode >= 200 && httpResp.statusCode <= 299 else {
+        //    throw NetworkError.serverError(result)
         //}
         
         return result

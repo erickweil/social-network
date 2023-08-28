@@ -27,10 +27,70 @@ func dataParaTempoDecorrido(data: String) -> String {
         }
     } else { return "desconhecido" }
 }
+
+struct PostagemSkeleton: View {
+    @State var animLoading = false
+    
+    var body: some View {
+        let off: CGFloat = animLoading ? 10 : 0
+        HStack(alignment: .top, spacing: 10) {
+            Color(.lightGray)
+            .frame(width: 60,height:60)
+            .clipShape(Circle())
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Color(.lightGray)
+                .frame(width: 142, height: 17.0)
+                .offset(y: off/10)
+                                
+                Color(.lightGray)
+                .frame(height: 17.0)
+                .padding(.top, 10)
+                .offset(y: off/8)
+                
+                Color(.lightGray)
+                .frame(height: 17.0)
+                .padding(.top, 5)
+                .offset(y: off/4)
+                
+                Color(.lightGray)
+                .frame(width: 100, height: 17.0)
+                .padding(.top, 5)
+                .offset(y: off/2)
+                
+                Color(.lightGray)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(height: 250)
+                .padding(.top, 10)
+                .offset(y: off)
+                
+                HStack {
+                    Color(.lightGray)
+                        .frame(width: 64.0, height: 32.0)
+                        .padding(.trailing)
+                    Color(.lightGray)
+                        .frame(width: 64.0, height: 32.0)
+                }
+                .padding(.top, 10)
+                .offset(y: off)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeInOut.repeatForever(autoreverses:true)) {
+                animLoading = true
+            }
+        }
+        .background(.background)
+    }
+}
+
 // View que representa uma Postagem
 struct PostagemView: View {
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
+    
+    @State var ativarLink: Bool = false
+    
     let postagem: Postagem
     
     var body: some View {
@@ -46,16 +106,17 @@ struct PostagemView: View {
             .foregroundColor(.secondary)
             
             VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    Text(postagem.usuario.nome)
-                        .bold()
-                    Text("・")
-                        .foregroundColor(.secondary)
-                    Text(dataParaTempoDecorrido(data: postagem.created_at))
-                        .foregroundColor(.secondary)
+                NavigationLink(destination: PostagemListView(postagemPai: postagem), isActive: $ativarLink) {
+                    HStack(spacing: 0) {
+                        Text(postagem.usuario.nome)
+                            .bold()
+                        Text("・")
+                            .foregroundColor(.secondary)
+                        Text(dataParaTempoDecorrido(data: postagem.created_at))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
                 
                 Text(postagem.conteudo)
                     .lineLimit(12)
@@ -84,13 +145,18 @@ struct PostagemView: View {
                 }
                 
                 HStack {
-                    Image(systemName: "hand.thumbsup")
+                    Image(systemName: "hand.thumbsup").onTapGesture {
+                        print("Curtir")
+                    }
                     Text("\(postagem.numCurtidas)")
                         .padding(.trailing)
                     
-                    Image(systemName: "message")
+                    Image(systemName: "message").onTapGesture {
+                        print("Comentar")
+                    }
                     Text("\(postagem.numRespostas)")
                         .padding(.trailing)
+                    
                     Spacer()
                 }
                 .padding(.top, 10)
@@ -98,6 +164,10 @@ struct PostagemView: View {
             }
         }
         .background(.background)
+        .onTapGesture {
+            // fire off NavigationLink
+            ativarLink.toggle()
+        }
     }
     
     

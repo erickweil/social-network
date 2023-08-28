@@ -17,7 +17,7 @@ class AppDataStore: ObservableObject {
     init(httpClient: HTTPClient) {
         self.httpClient = httpClient
     }
-    
+        
     public func fazerLogin(email: String, senha: String) async throws {
         let resp = try await httpClient.fetch(
             APIs.login.url,
@@ -30,9 +30,15 @@ class AppDataStore: ObservableObject {
             )
         )
         
-        if let respModel = try resp.body?.json(LoginResponse.self) {
-            session.token = respModel.token
-            session.usuario = respModel.usuario
+        guard resp.success else {
+            throw NetworkError.errorResponse("Não conseguiu autenticar")
+        }
+        
+        let respModel = try resp.json(LoginResponse.self)
+        
+        DispatchQueue.main.async {
+            self.session.token = respModel.token
+            self.session.usuario = respModel.usuario
         }
     }
 }

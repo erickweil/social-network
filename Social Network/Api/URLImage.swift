@@ -8,9 +8,7 @@
 import SwiftUI
 
 func defaultPlaceholder(_ name: String = "photo.fill") -> some View {
-    Image(systemName: name)
-        .resizable()
-        .opacity(0.25)
+    Color(.lightGray)
 }
 
 struct clipComBorda<S>: ViewModifier where S: Shape {
