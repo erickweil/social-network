@@ -11,6 +11,8 @@ struct InicioToolbar: ToolbarContent {
     
     @EnvironmentObject private var store: AppDataStore
     
+    @Binding var menuOpened: Bool
+    
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .navigationBarLeading) {
             if let usuario = store.session.usuario {
@@ -23,6 +25,9 @@ struct InicioToolbar: ToolbarContent {
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
                 .foregroundColor(.secondary)
+                .onTapGesture {
+                    menuOpened = true
+                }
                 
             } else {
                 Text("Fazer Login")
@@ -32,6 +37,9 @@ struct InicioToolbar: ToolbarContent {
 }
 
 struct InicioToolbar_Previews: PreviewProvider {
+    
+    static var opened: Binding<Bool> = .constant(true)
+    
     static var previews: some View {
         NavigationView {
             LoginView() {
@@ -46,7 +54,7 @@ struct InicioToolbar_Previews: PreviewProvider {
                 }
                     .navigationBarBackButtonHidden(true)
                     .toolbar {
-                        InicioToolbar()
+                        InicioToolbar(menuOpened: opened)
                     }
             }
         }.environmentObject(AppDataStore(httpClient: HTTPClient()))

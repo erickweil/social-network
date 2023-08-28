@@ -8,8 +8,34 @@
 import SwiftUI
 
 struct InicioSideBar: View {
+    
+    @EnvironmentObject private var store: AppDataStore
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading) {
+            if let usuario = store.session.usuario {
+                URLImage(
+                    url: APIs.baseURL.appendingPathComponent(usuario.fotoPerfil),
+                    imageCache: store.imageCache)
+                {
+                    defaultPlaceholder()
+                }
+                .frame(width: 60, height: 60)
+                .clipShape(Circle())
+                .foregroundColor(.secondary)
+            
+                Text(usuario.nome)
+                .padding(.top, 10)
+            } else {
+                Color(.lightGray)
+                    .frame(width: 60,height:60)
+                    .clipShape(Circle())
+            }
+            
+            Divider()
+            
+            Spacer()
+        }
     }
 }
 

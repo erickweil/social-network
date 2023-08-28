@@ -9,13 +9,14 @@ import SwiftUI
 
 // View que lista as postagens
 struct InicioView: View {
+    @State var menuOpened: Bool = false
     var body: some View {
         TabView {
             NavigationView {
                 PostagemListView()
                     .navigationTitle("Para Você")
                     .toolbar {
-                        InicioToolbar()
+                        InicioToolbar(menuOpened: $menuOpened)
                     }
             }
             .tabItem() {
@@ -25,20 +26,26 @@ struct InicioView: View {
                 PostagemListView(mostrarPostagensCurtidas: true)
                     .navigationTitle("Curtidas")
                     .toolbar {
-                        InicioToolbar()
+                        InicioToolbar(menuOpened: $menuOpened)
                     }
             }.tabItem() {
                 Image(systemName: "heart")
             }
             
             NavigationView {
-                SideMenuDrawerTeste()
+                ViewExample(imageName: "magnifyingglass", color: .systemBlue)
             }.tabItem {
                 Image(systemName: "magnifyingglass")
             }
-            Text("Tela Configurações").tabItem {
+            
+            NavigationView {
+                ViewExample(imageName: "gear", color: .systemOrange)
+            }.tabItem {
                 Image(systemName: "gear")
             }
+        }
+        .sideMenuDrawer(menuOpened: $menuOpened) {
+            InicioSideBar()
         }
     }
 }

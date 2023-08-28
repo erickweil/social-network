@@ -8,65 +8,68 @@
 import SwiftUI
 
 extension View {
-    func sideMenuDrawer<C: View>(menuContent: C) -> some View {
-        modifier(SideMenuDrawer(menuContent: content))
+    func sideMenuDrawer<C: View>(menuOpened: Binding<Bool>,menuContent: @escaping () -> C) -> some View {
+        modifier(SideMenuDrawer(menuOpened: menuOpened,menuContent: menuContent))
     }
 }
 
 struct SideMenuDrawer<C>: ViewModifier where C: View {
-    @State
-    var menuOpened: Bool = false
+    @Binding
+    var menuOpened: Bool
     
     var menuContent: () -> C
     
     func body(content: Content) -> some View {
-        
         content
         .overlay {
-            if menuOpened {
-                Color(.gray)
-                    .opacity(0.5)
-                    .transition(.opacity)
-                
-                menuContent()
-                .padding()
-                .background(Color(.systemBackground))
-                .padding(.trailing, 100)
-                .transition(.move(edge: .leading))
+            ZStack {
+                if menuOpened {
+                    Color(.gray)
+                        .opacity(0.5)
+                        .transition(.opacity)
+                        .onTapGesture {
+                            menuOpened.toggle()
+                        }
+                    
+                    menuContent()
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .padding(.trailing, 100)
+                        .transition(.move(edge: .leading))
+                }
             }
-            
-        }
-        .onTapGesture {
-            withAnimation(.easeIn(duration: 0.15)) {
-                menuOpened.toggle()
-            }
+            .animation(.easeIn(duration: 0.15), value: menuOpened)
         }
     }
 }
 
 
 struct SideMenuDrawerTeste: View {
+    @State var opened: Bool = false
     var body: some View {
         ViewExample(imageName: "phone.fill", color: .systemRed)
-            .modifier(SideMenuDrawer(menuContent: {
-                VStack(alignment: .leading) {
-                    Color(.lightGray)
-                        .frame(width: 60,height:60)
-                        .clipShape(Circle())
-                    
-                    Color(.lightGray)
-                    .frame(height: 17.0)
-                    .padding(.top, 10)
-                    
-                    Color(.lightGray)
-                    .frame(height: 17.0)
-                    .padding(.top, 10)
-                    
-                    Divider()
-                    
-                    Spacer()
-                }
-            }))
+        .sideMenuDrawer(menuOpened: $opened) {
+            VStack(alignment: .leading) {
+                Color(.lightGray)
+                    .frame(width: 60,height:60)
+                    .clipShape(Circle())
+                
+                Color(.lightGray)
+                .frame(height: 17.0)
+                .padding(.top, 10)
+                
+                Color(.lightGray)
+                .frame(height: 17.0)
+                .padding(.top, 10)
+                
+                Divider()
+                
+                Spacer()
+            }
+        }
+        .onTapGesture {
+            opened.toggle()
+        }
     }
 }
 
