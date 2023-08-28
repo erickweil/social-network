@@ -14,16 +14,9 @@ struct InicioSideBar: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let usuario = store.session.usuario {
-                URLImage(
-                    url: APIs.baseURL.appendingPathComponent(usuario.fotoPerfil),
-                    imageCache: store.imageCache)
-                {
-                    defaultPlaceholder()
-                }
-                .frame(width: 60, height: 60)
-                .clipShape(Circle())
-                .foregroundColor(.secondary)
-            
+                FotoPerfilView(imgPath: usuario.fotoPerfil, width: 60)
+                    .matchedGeometryEffect(id: usuario.fotoPerfil, in: store.AppNS!)
+                
                 Text(usuario.nome)
                 .padding(.top, 10)
             } else {

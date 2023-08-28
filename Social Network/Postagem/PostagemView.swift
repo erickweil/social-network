@@ -97,15 +97,7 @@ struct PostagemView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            URLImage(
-                url: APIs.baseURL.appendingPathComponent(postagem.usuario.fotoPerfil),
-                imageCache: store.imageCache)
-            {
-                defaultPlaceholder()
-            }
-            .frame(width: 60)
-            .clipShape(Circle())
-            .foregroundColor(.secondary)
+            FotoPerfilView(imgPath: postagem.usuario.fotoPerfil)
             
             VStack(spacing: 0) {
                 NavigationLink(destination: PostagemListView(postagemPai: postagem), isActive: $ativarLink) {

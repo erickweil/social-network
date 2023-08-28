@@ -8,16 +8,14 @@
 import SwiftUI
 
 // View que lista as postagens
-struct InicioView: View {
+struct InicioView: View {    
     @State var menuOpened: Bool = false
     var body: some View {
         TabView {
             NavigationView {
                 PostagemListView()
                     .navigationTitle("Para Você")
-                    .toolbar {
-                        InicioToolbar(menuOpened: $menuOpened)
-                    }
+                    .inicioToolbar(menuOpened: $menuOpened)
             }
             .tabItem() {
                 Image(systemName: "house")
@@ -25,11 +23,9 @@ struct InicioView: View {
             NavigationView {
                 PostagemListView(mostrarPostagensCurtidas: true)
                     .navigationTitle("Curtidas")
-                    .toolbar {
-                        InicioToolbar(menuOpened: $menuOpened)
-                    }
+                    .inicioToolbar(menuOpened: $menuOpened)
             }.tabItem() {
-                Image(systemName: "heart")
+                Image(systemName: "hand.thumbsup")
             }
             
             NavigationView {

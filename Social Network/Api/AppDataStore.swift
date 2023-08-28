@@ -9,6 +9,7 @@ import SwiftUI
 // @MainActor A singleton actor whose executor is equivalent to the main dispatch queue.
 @MainActor
 class AppDataStore: ObservableObject {
+    var AppNS: Namespace.ID?
     let httpClient: HTTPClient
     @Published var session: APISession = APISession()
     

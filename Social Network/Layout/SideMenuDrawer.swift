@@ -30,15 +30,17 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
                         .onTapGesture {
                             menuOpened.toggle()
                         }
+                        .zIndex(1.0)
                     
                     menuContent()
                         .padding()
                         .background(Color(.systemBackground))
                         .padding(.trailing, 100)
                         .transition(.move(edge: .leading))
+                        .zIndex(2.0)
                 }
             }
-            .animation(.easeIn(duration: 0.15), value: menuOpened)
+            .animation(.easeIn(duration: 0.25), value: menuOpened)
         }
     }
 }
