@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PostagemListView: View {
     var postagemPai: Postagem?
-    
+    var mostrarPostagensCurtidas: Bool = false
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
     
@@ -25,7 +25,8 @@ struct PostagemListView: View {
             try await viewModel.fetchPostagens(
                 token: token,
                 httpClient: store.httpClient,
-                postagemPai: postagemPai
+                postagemPai: postagemPai,
+                postagensCurtidas: mostrarPostagensCurtidas
             )
         } catch {
             print(error.localizedDescription)
@@ -49,7 +50,6 @@ struct PostagemListView: View {
                         //    }
                     }
                     .listStyle(PlainListStyle())
-                    .navigationTitle("Postagens")
                 }
             } else {
                 List {
@@ -58,7 +58,6 @@ struct PostagemListView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
-                .navigationTitle("Postagens")
                 .task {
                     Task {
                         await carregarPostagens(token)
@@ -73,6 +72,6 @@ struct PostagemListView: View {
 
 struct PostagemListView_Previews: PreviewProvider {
     static var previews: some View {
-        PostagemListView()
+        Text("OK")
     }
 }

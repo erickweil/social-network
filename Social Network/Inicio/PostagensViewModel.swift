@@ -14,9 +14,11 @@ class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published var postagens: [Postagem]? = nil
     
-    func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil) async throws {
+    func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
         let url: URL
-        if postagemPai != nil {
+        if postagensCurtidas {
+            url = APIs.postagensCurtidas.url
+        } else if postagemPai != nil {
             url = APIs.respostasPostagem(postagemPai!._id).url
         } else {
             url = APIs.postagens.url

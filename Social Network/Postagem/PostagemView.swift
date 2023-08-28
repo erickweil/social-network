@@ -23,7 +23,9 @@ func dataParaTempoDecorrido(data: String) -> String {
         else if interval < _dia { return "\(Int(interval/_hora)) horas" }
         else if interval < _semana { return "\(Int(interval/_dia)) dias" }
         else {
-            return parsedData.formatted()
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "dd/MM/yyyy"
+            return dateFormat.string(from: parsedData)
         }
     } else { return "desconhecido" }
 }
@@ -175,7 +177,7 @@ struct PostagemView: View {
 
 struct PostagemView_Previews: PreviewProvider {
     static var previews: some View {
-        Text("OK")
+        PostagemSkeleton()
         //PostagemView(postagem: Postagem())
     }
 }
