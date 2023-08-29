@@ -50,13 +50,21 @@ export default class CurtidaControler {
         const resultado = await Curtida.replaceOne(doc,doc,{ upsert: true }); // substitui se existir.
 
         if(resultado.matchedCount == 1)
-		return res.status(200).json({message: "Já estava curtido"});
+		return res.status(200).json({
+            message: "Já estava curtido",
+            numCurtidas: postagem.numCurtidas,
+            estaCurtida: true
+        });
         else {
             // Já que é uma nova curtida, incrementa o número de curtidas da postagem
             postagem.numCurtidas += 1;
             await postagem.save();
 
-            return res.status(200).json({message: "Curtiu"});
+            return res.status(200).json({
+                message: "Curtiu",
+                numCurtidas: postagem.numCurtidas,
+                estaCurtida: true
+            });
         }
     }
 
@@ -73,13 +81,21 @@ export default class CurtidaControler {
         const deletado = await Curtida.deleteOne({ usuario: idUsuario, postagem: idPostagem });
 
         if(deletado.deletedCount != 1)
-        return res.status(200).json({message: "Já não estava curtido" });
+        return res.status(200).json({
+            message: "Já não estava curtido",
+            numCurtidas: postagem.numCurtidas,
+            estaCurtida: false
+        });
         else {
             // Já que descurtiu, decrementa o número de curtidas da postagem
             postagem.numCurtidas -= 1;
             await postagem.save();
             
-            return res.status(200).json({message: "Descurtiu"});
+            return res.status(200).json({
+                message: "Descurtiu",
+                numCurtidas: postagem.numCurtidas,
+                estaCurtida: false
+            });
         }
     }
 }
