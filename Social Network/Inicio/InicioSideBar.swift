@@ -11,11 +11,19 @@ struct InicioSideBar: View {
     
     @EnvironmentObject private var store: AppDataStore
     
+    @Binding var menuOpened: Bool
+    
     var body: some View {
         VStack(alignment: .leading) {
             if let usuario = store.session.usuario {
-                FotoPerfilView(imgPath: usuario.fotoPerfil, width: 60)
-                    .matchedGeometryEffect(id: usuario.fotoPerfil, in: store.AppNS!)
+                if menuOpened {
+                    FotoPerfilView(imgPath: usuario.fotoPerfil, width: 60)
+                        .matchedGeometryEffect(
+                            id: usuario.fotoPerfil,
+                            in: store.AppNS!
+                        )
+                        .transition(.asymmetric(insertion: .slide, removal: .identity))
+                }
                 
                 Text(usuario.nome)
                 .padding(.top, 10)
@@ -34,6 +42,7 @@ struct InicioSideBar: View {
 
 struct InicioSideBar_Previews: PreviewProvider {
     static var previews: some View {
-        InicioSideBar()
+        Text("OK")
+//        InicioSideBar()
     }
 }

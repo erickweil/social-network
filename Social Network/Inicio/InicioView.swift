@@ -41,7 +41,7 @@ struct InicioView: View {
             }
         }
         .sideMenuDrawer(menuOpened: $menuOpened) {
-            InicioSideBar()
+            InicioSideBar(menuOpened: $menuOpened)
         }
     }
 }

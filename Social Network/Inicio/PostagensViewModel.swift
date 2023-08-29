@@ -13,9 +13,16 @@ import Foundation
 class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published var postagens: [Postagem]? = nil
+    var proxPagina: Int = 1
+    var temMais: Bool = true
     
     func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
-        let url: URL
+        guard temMais else {
+            print("Não tem mais... não precisa carregar")
+            return
+        }
+
+        var url: URL
         if postagensCurtidas {
             url = APIs.postagensCurtidas.url
         } else if postagemPai != nil {
@@ -23,6 +30,8 @@ class PostagensViewModel: ObservableObject {
         } else {
             url = APIs.postagens.url
         }
+        
+        try url.addQueryComponents([.init(name: "pagina", value: "\(proxPagina)")])
         
         let resp = try await httpClient.fetch(url,
             FetchOptions(
@@ -38,7 +47,16 @@ class PostagensViewModel: ObservableObject {
         let respModel = try resp.json(ListagemPostagem.self)
         
         DispatchQueue.main.async {
-            self.postagens = respModel.resposta
+            if respModel.resposta.count < respModel.limite {
+                self.temMais = false
+            }
+            
+            if self.postagens != nil {
+                self.postagens!.append(contentsOf: respModel.resposta)
+            } else {
+                self.postagens = respModel.resposta
+            }
+            self.proxPagina = respModel.pagina+1
         }
         
         /*

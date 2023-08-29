@@ -24,12 +24,16 @@ struct InicioToolbar: ViewModifier {
             ToolbarItemGroup(placement: .navigationBarLeading) {
                 if let usuario = store.session.usuario {
                     FotoPerfilView(imgPath: usuario.fotoPerfil, width: 40)
-                        .matchedGeometryEffect(id: usuario.fotoPerfil, in: store.AppNS!,
-                                               properties: .size)
+                        .matchedGeometryEffect(
+                            id: usuario.fotoPerfil,
+                            in: store.AppNS!,
+                            properties: .size
+                            //isSource: !menuOpened
+                        )
+                        .transition(.identity)
                         .onTapGesture {
                             menuOpened = true
                         }
-                    
                     
                 } else {
                     Text("Fazer Login")

@@ -27,26 +27,28 @@ struct clipComBorda<S>: ViewModifier where S: Shape {
 
 // Lida com Cache e tudo mais...
 struct URLImage<P>: View where P : View {
-    private var imageCache: ImageCacheViewModel
+    private var imageCache: ImageCacheViewModel?
     
     let url: URL
     let placeholder: () -> P
     
-    init(url: URL, imageCache: ImageCacheViewModel, placeholder: @escaping () -> P) {
+    init(url: URL, imageCache: ImageCacheViewModel? = nil, placeholder: @escaping () -> P) {
         self.url = url
         self.imageCache = imageCache
         self.placeholder = placeholder
     }
     
     var body: some View {
-        if let cached = imageCache.getImageCache(url: url) {
+        if let cached = imageCache?.getImageCache(url: url) {
             cached
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         } else {            
             AsyncImage(url: url) { phase in
                 if let image = phase.image {
-                    cacheAndRender(image)
+                    let _ = cacheAndRender(image)
+                    
+                    image
                         .resizable()
                 } else if phase.error != nil {
                     ZStack {
@@ -65,9 +67,10 @@ struct URLImage<P>: View where P : View {
         }
     }
     
-    private func cacheAndRender(_ image: Image) -> Image {
-        imageCache.storeImageCache(url: url, image: image)
-        return image
+    private func cacheAndRender(_ image: Image) {
+        if let imageCache {
+            imageCache.storeImageCache(url: url, image: image)
+        }
     }
 }
 

@@ -91,76 +91,130 @@ struct PostagemView: View {
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
     
-    @State var ativarLink: Bool = false
+    @ObservedObject
+    var post: PostViewModel
     
-    let postagem: Postagem
+    var exibirComoResposta: Bool
+    
+    func curtir() async {
+        // Assim que aparecer na tela faz o fetch
+        do {
+            try await post.clicouCurtir(
+                token: store.session.token!,
+                httpClient: store.httpClient
+            )
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    @State var ativarLink: Bool = false
+    func tituloNome(_ postagem: Postagem) -> some View {
+        NavigationLink(destination: PostagemListView(postagemPai: postagem), isActive: $ativarLink) {
+            if exibirComoResposta {
+                HStack(spacing: 0) {
+                    Text(postagem.usuario.nome)
+                        .bold()
+                    Text("・")
+                        .foregroundColor(.secondary)
+                    Text(dataParaTempoDecorrido(data: postagem.created_at))
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(alignment: .leading) {
+                    Text(postagem.usuario.nome)
+                        .bold()
+                    Text(dataParaTempoDecorrido(data: postagem.created_at))
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            
+        }
+    }
+    
+    func conteudo(_ postagem: Postagem) -> some View {
+        Text(postagem.conteudo)
+            .lineLimit(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 5)
+    }
+    
+    func barraBotoes(_ postagem: Postagem) -> some View {
+        HStack {
+            Image(systemName: post.curtida ? "hand.thumbsup.fill" : "hand.thumbsup")
+                .renderingMode(.template)
+                .foregroundColor(post.curtida ? .accentColor : .secondary)
+                .onTapGesture {
+                    Task {
+                        await curtir()
+                    }
+                }
+            Text("\(post.numCurtidas)")
+                .frame(width: 60)
+            
+            Image(systemName: "message").onTapGesture {
+                print("Comentar")
+            }
+            Text("\(postagem.numRespostas)")
+                .frame(width: 60)
+            
+            Spacer()
+        }
+        .padding(.top, 10)
+        .foregroundColor(.secondary)
+    }
     
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            FotoPerfilView(imgPath: postagem.usuario.fotoPerfil)
-            
-            VStack(spacing: 0) {
-                NavigationLink(destination: PostagemListView(postagemPai: postagem), isActive: $ativarLink) {
-                    HStack(spacing: 0) {
-                        Text(postagem.usuario.nome)
-                            .bold()
-                        Text("・")
-                            .foregroundColor(.secondary)
-                        Text(dataParaTempoDecorrido(data: postagem.created_at))
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
+        let postagem: Postagem = post.postagem
+        
+        if exibirComoResposta {
+            HStack(alignment: .top, spacing: 10) {
+                FotoPerfilView(imgPath: postagem.usuario.fotoPerfil, width: 40)
                 
-                Text(postagem.conteudo)
-                    .lineLimit(12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, 5)
-                
-                if postagem.imagens.count > 0 {
-                    GeometryReader { geo in
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHStack {
-                                ForEach(postagem.imagens, id: \.self) { imagem in
-                                    URLImage(url: APIs.baseURL.appendingPathComponent(imagem),
-                                             imageCache: store.imageCache
-                                    ) {
-                                        defaultPlaceholder()
-                                    }
-                                    .modifier(clipComBorda(shape:RoundedRectangle(cornerRadius: 10)))
-                                    .foregroundColor(.secondary)
-                                    .frame(maxWidth: geo.size.width)
-                                }
-                            }
-                        }
-                    }
-                    .frame(height: 250)
-                    .padding(.top, 10)
-                }
-                
-                HStack {
-                    Image(systemName: "hand.thumbsup").onTapGesture {
-                        print("Curtir")
-                    }
-                    Text("\(postagem.numCurtidas)")
-                        .padding(.trailing)
+                VStack(spacing: 0) {
+                    tituloNome(postagem)
                     
-                    Image(systemName: "message").onTapGesture {
-                        print("Comentar")
-                    }
-                    Text("\(postagem.numRespostas)")
-                        .padding(.trailing)
+                    conteudo(postagem)
                     
-                    Spacer()
+                    if postagem.imagens.count > 0 {
+                        GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL, imageCache: store.imageCache)
+                            .frame(height: 250)
+                            .padding(.top, 10)
+                    }
+                    
+                    barraBotoes(postagem)
                 }
-                .padding(.top, 10)
-                .foregroundColor(.secondary)
             }
-        }
-        .background(.background)
-        .onTapGesture {
-            // fire off NavigationLink
-            ativarLink.toggle()
+            .background(.background)
+            .onTapGesture {
+                // fire off NavigationLink
+                ativarLink.toggle()
+            }
+        } else {
+            VStack(spacing: 0) {
+                HStack(alignment: .center, spacing: 10) {
+                    FotoPerfilView(imgPath: postagem.usuario.fotoPerfil, width: 60)
+                    tituloNome(postagem)
+                }
+                    
+                conteudo(postagem)
+                    .padding(.top, 10)
+                    
+                if postagem.imagens.count > 0 {
+                    GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL, imageCache: store.imageCache)
+                        .frame(height: 250)
+                        .padding(.top, 10)
+                }
+                
+                barraBotoes(postagem)
+            }
+            .background(.background)
+            .onTapGesture {
+                // fire off NavigationLink
+                ativarLink.toggle()
+            }
         }
     }
     

@@ -41,9 +41,31 @@ struct PostagemListView: View {
                     Text("Que vazio...")
                 } else {
                     List {
-                        ForEach(postagens, id: \.self) { postagem in
-                            PostagemView(postagem: postagem)
+                        
+                        if let postagemPai {
+                            PostagemView(
+                                post: PostViewModel(postagem: postagemPai),
+                                exibirComoResposta: false
+                            )
                         }
+                        
+                        ForEach(postagens, id: \.self) { postagem in
+                            PostagemView(
+                                post: PostViewModel(postagem: postagem),
+                                exibirComoResposta: postagem.postagemPai != nil
+                            )
+                        }
+                        
+                        if viewModel.temMais {
+                            PostagemSkeleton()
+                                .onAppear {
+                                    print("Apareceu o skel carregar mais")
+                                    Task {
+                                        await carregarPostagens(token)
+                                    }
+                                }
+                        }
+                        
                         //Text("Carregar Mais")
                         //    .onAppear {
                         //        print("Carregar mais")
@@ -53,15 +75,13 @@ struct PostagemListView: View {
                 }
             } else {
                 List {
-                    ForEach(0..<16) { i in
+                    ForEach(0..<3) { i in
                         PostagemSkeleton()
                     }
                 }
                 .listStyle(PlainListStyle())
                 .task {
-                    Task {
-                        await carregarPostagens(token)
-                    }
+                    await carregarPostagens(token)
                 }
             }
         } else {

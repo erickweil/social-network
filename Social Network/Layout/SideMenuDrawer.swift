@@ -36,6 +36,7 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
                         .padding()
                         .background(Color(.systemBackground))
                         .padding(.trailing, 100)
+                        //.transition(.identity)
                         .transition(.move(edge: .leading))
                         .zIndex(2.0)
                 }

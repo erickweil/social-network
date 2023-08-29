@@ -13,7 +13,7 @@ struct FotoPerfilView: View {
     
     var imgPath: String
     var width: CGFloat
-    
+        
     init(imgPath: String, width: CGFloat = 60) {
         self.imgPath = imgPath
         self.width = width

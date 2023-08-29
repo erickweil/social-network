@@ -14,7 +14,7 @@ struct Postagem: Hashable, Codable, Identifiable {
     let conteudo: String
     let hashtags: [String]
     let imagens: [String]
-    let numCurtidas: Int
+    var numCurtidas: Int
     let numRespostas: Int
     let nivel: Int
     let deletado: Bool?
@@ -23,6 +23,12 @@ struct Postagem: Hashable, Codable, Identifiable {
     let postagemPai: String?
     let posicao: Int?
     let respostas: [Postagem]?
+}
+
+struct CurtidaResponse: Hashable, Codable {
+    let message: String
+    let numCurtidas: Int
+    let estaCurtida: Bool
 }
 
 typealias ListagemPostagem = ListagemDeAlgo<Postagem>
