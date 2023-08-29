@@ -37,18 +37,22 @@ struct PostagemListView: View {
     var body: some View {
         if let token = store.session.token {
             if let postagens = viewModel.postagens {
-                if postagens.count == 0 {
-                    Text("Que vazio...")
-                } else {
-                    List {
-                        
+                List {
+                    
+                    if let postagemPai {
+                        PostagemView(
+                            post: PostViewModel(postagem: postagemPai),
+                            exibirComoResposta: false
+                        )
+                    }
+                    
+                    if postagens.count == 0 {
                         if let postagemPai {
-                            PostagemView(
-                                post: PostViewModel(postagem: postagemPai),
-                                exibirComoResposta: false
-                            )
+                            Text("Seja o primeiro a responder")
+                        } else {
+                            Text("Que vazio...")
                         }
-                        
+                    } else {
                         ForEach(postagens, id: \.self) { postagem in
                             PostagemView(
                                 post: PostViewModel(postagem: postagem),
@@ -65,14 +69,9 @@ struct PostagemListView: View {
                                     }
                                 }
                         }
-                        
-                        //Text("Carregar Mais")
-                        //    .onAppear {
-                        //        print("Carregar mais")
-                        //    }
                     }
-                    .listStyle(PlainListStyle())
                 }
+                .listStyle(PlainListStyle())
             } else {
                 List {
                     ForEach(0..<3) { i in

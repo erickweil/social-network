@@ -24,7 +24,7 @@ struct LoginView<Content>: View where Content: View {
                     .task {
                         // Assim que aparecer na tela faz o fetch
                         do {
-                            try await store.fazerLogin(email: "joao@email.com", senha: "ABCDabcd1234")
+                            try await store.session.fazerLogin(httpClient: store.httpClient,email: "joao@email.com", senha: "ABCDabcd1234")
                             shouldNavigate = true
                         } catch {
                             print(error.localizedDescription)
