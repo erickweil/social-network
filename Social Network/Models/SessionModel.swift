@@ -7,7 +7,7 @@
 
 import Foundation
 
-class APISessionViewModel {
+class APISessionViewModel: ObservableObject {
     // https://stackoverflow.com/questions/52591866/whats-the-correct-usage-of-urlsession-create-new-one-or-reuse-same-one
     public var token: String?
     public var usuario: Usuario?
