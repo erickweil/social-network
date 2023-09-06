@@ -7,23 +7,74 @@
 
 import Foundation
 import SwiftUI
-
-extension LoginView {
+extension NovoLoginView {
     class ViewModel: ObservableObject {
-        @AppStorage("AUTH_USER") var username = ""
-        @AppStorage("AUTH_PASSWORD") var password = ""
+        @AppStorage("LOGIN_EMAIL")
+        var email: String = ""
         
-        @Published var msgLoginInvalido = false
+        @AppStorage("LOGIN_SENHA")
+        var senha: String = ""
         
-        private var sampleUser = "username"
-        private var samplePassword = "password"
+        @Published
+        var exibirMensagemErro: Bool = false
+        var mensagemErro: String = ""
         
-        init() {
-            print("Usuário: \(username)")
+        
+        @Published
+        var autenticado: Bool = false
+        
+        func setarMensagemErro(_ erro: String) {
+            mensagemErro = erro
+            if erro == "" {
+                exibirMensagemErro = false
+            } else {
+                exibirMensagemErro = true
+            }
         }
         
-        func logPressed() {
-            print("Button pressed.")
+        func clicouOK(_ httpClient: HTTPClient) async {
+            print("Clicou, email:\(email) senha:\(senha)")
+            var emailTrimmed = email.trimmingCharacters(in: .whitespaces)
+            guard !emailTrimmed.isEmpty && !senha.isEmpty else {
+                DispatchQueue.main.async {
+                    self.setarMensagemErro("Preencha todos os campos")
+                }
+                return
+            }
+                                
+            guard let resp = try? await httpClient.fetch(
+                APIs.login.url,
+                FetchOptions(
+                    method: .POST,
+                    body: JSONEncoder().encode(
+                        [
+                            "email": emailTrimmed,
+                            "senha": senha
+                        ]
+                    )
+                )
+            ) else {
+                DispatchQueue.main.async {
+                    self.setarMensagemErro("Não conseguiu fazer login")
+                }
+                return
+            }
+            
+            print(String(decoding: resp.body!, as: UTF8.self))
+                    
+            guard let respModel = try? resp.json(LoginResponse.self) else {
+                DispatchQueue.main.async {
+                    self.setarMensagemErro("Falhou ao receber resposta do login")
+                }
+                return
+            }
+            
+            // Aplica a mudança na UI no Main Queue
+            DispatchQueue.main.async {
+                // Só chega aqui se não der nenhum erro
+                self.setarMensagemErro("")
+                self.autenticado = true
+            }
         }
     }
 }

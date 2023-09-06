@@ -16,14 +16,18 @@ struct Social_NetworkApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                LoginView() {
-                    InicioView()
-                        .navigationBarBackButtonHidden(true)
-                }
+                NovoLoginView()
             }.environmentObject({ () -> AppDataStore in
                 store.AppNS = AppNS
                 return store
             }())
+            
+            /*NavigationView {
+                LoginView() {
+                    InicioView()
+                        .navigationBarBackButtonHidden(true)
+                }
+            }*/
         }
     }
 }

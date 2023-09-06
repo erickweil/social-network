@@ -147,16 +147,16 @@ struct DetalhesPerfil: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
             
-            Button {
-                print("Clicou")
-            } label: {
+            NavigationLink(destination: {
+                ViewExample(imageName: "slider.horizontal.3", color: .systemGreen)
+            }, label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 40)
                     Text("SEGUIR")
                         .bold()
                         .foregroundColor(.white)
                 }.frame(width: 200, height: 60)
-            }
+            })
         }
     }
 }
