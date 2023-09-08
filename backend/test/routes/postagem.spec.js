@@ -61,6 +61,17 @@ describe("Teste Postagem",() => {
         expect(await checarArquivoExiste(pathImagemUpload)).toBeTruthy();
     });
 
+    test("Curtir Postagem", async () => {
+		await req.post("/postagens/"+idPost+"/curtidas")
+		.set("Authorization", `Bearer ${token}`)
+		.expect(200);
+
+        // Testando indempotência (Curtir o que já está curtido não deveria causar erro)
+        await req.post("/postagens/"+idPost+"/curtidas")
+		.set("Authorization", `Bearer ${token}`)
+		.expect(200);
+    });
+
     test("Postagem por ID", async () => {
 		const res = await req
 		.get("/postagens/"+idPost)
@@ -73,6 +84,8 @@ describe("Teste Postagem",() => {
         expect(postagem.hashtags).toContain("#"+rdn3Hashtag);
         expect(postagem.imagens.length).toBe(0);
         expect(postagem.numRespostas).toBe(1);
+        expect(postagem.numCurtidas).toBe(1);
+        expect(postagem.curtida).toBe(true);
         expect(postagem.postagemPai).toBeUndefined();
     });
 
@@ -86,17 +99,6 @@ describe("Teste Postagem",() => {
 
         const postagem = res.body.resposta[0];
         expect(postagem.postagemPai).toBe(idPost);
-    });
-
-    test("Curtir Postagem", async () => {
-		await req.post("/postagens/"+idPost+"/curtidas")
-		.set("Authorization", `Bearer ${token}`)
-		.expect(200);
-
-        // Testando indempotência (Curtir o que já está curtido não deveria causar erro)
-        await req.post("/postagens/"+idPost+"/curtidas")
-		.set("Authorization", `Bearer ${token}`)
-		.expect(200);
     });
 
     test("Testando filtros de postagem", wrapExpectError(async (status) => {
@@ -122,10 +124,11 @@ describe("Teste Postagem",() => {
             .set("Authorization", `Bearer ${token}`)
             .expect(200);
             
-            if(filtros.acceptMultiple)
-            expect(res.body.resposta.length).toBeGreaterThanOrEqual(1);
-            else
-            expect(res.body.resposta.length).toBe(1);
+            if(filtro.acceptMultiple) {
+                expect(res.body.resposta.length).toBeGreaterThanOrEqual(1);
+            } else {
+                expect(res.body.resposta.length).toBe(1);
+            }
 
             const postagem = res.body.resposta[0];
             expect(postagem._id).toBe(filtro.expectId);
