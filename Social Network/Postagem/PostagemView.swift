@@ -143,15 +143,15 @@ struct PostagemView: View {
     
     func barraBotoes(_ postagem: Postagem) -> some View {
         HStack {
-            Image(systemName: post.curtida ? "hand.thumbsup.fill" : "hand.thumbsup")
+            Image(systemName: postagem.curtida ? "hand.thumbsup.fill" : "hand.thumbsup")
                 .renderingMode(.template)
-                .foregroundColor(post.curtida ? .accentColor : .secondary)
+                .foregroundColor(postagem.curtida ? .accentColor : .secondary)
                 .onTapGesture {
                     Task {
                         await curtir()
                     }
                 }
-            Text("\(post.numCurtidas)")
+            Text("\(postagem.numCurtidas)")
                 .frame(width: 60)
             
             Image(systemName: "message").onTapGesture {

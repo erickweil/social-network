@@ -25,7 +25,7 @@ class APISessionViewModel: ObservableObject {
         )
         
         guard resp.success else {
-            throw NetworkError.errorResponse("Não conseguiu autenticar")
+            throw NetworkError.errorResponse("Usuário e/ou senha Incorretos")
         }
         
         let respModel = try resp.json(LoginResponse.self)

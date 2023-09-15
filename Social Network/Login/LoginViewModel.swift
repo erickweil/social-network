@@ -17,7 +17,7 @@ extension NovoLoginView {
         
         @Published
         var exibirMensagemErro: Bool = false
-        var mensagemErro: String = ""
+        private(set) var mensagemErro: String = ""
         
         
         @Published
@@ -32,49 +32,20 @@ extension NovoLoginView {
             }
         }
         
-        func clicouOK(_ httpClient: HTTPClient) async {
+        func validarFormulario() -> Bool {
             print("Clicou, email:\(email) senha:\(senha)")
-            var emailTrimmed = email.trimmingCharacters(in: .whitespaces)
+            let emailTrimmed = email.trimmingCharacters(in: .whitespaces)
             guard !emailTrimmed.isEmpty && !senha.isEmpty else {
                 DispatchQueue.main.async {
                     self.setarMensagemErro("Preencha todos os campos")
                 }
-                return
-            }
-                                
-            guard let resp = try? await httpClient.fetch(
-                APIs.login.url,
-                FetchOptions(
-                    method: .POST,
-                    body: JSONEncoder().encode(
-                        [
-                            "email": emailTrimmed,
-                            "senha": senha
-                        ]
-                    )
-                )
-            ) else {
-                DispatchQueue.main.async {
-                    self.setarMensagemErro("Não conseguiu fazer login")
-                }
-                return
+                return false
             }
             
-            print(String(decoding: resp.body!, as: UTF8.self))
-                    
-            guard let respModel = try? resp.json(LoginResponse.self) else {
-                DispatchQueue.main.async {
-                    self.setarMensagemErro("Falhou ao receber resposta do login")
-                }
-                return
-            }
-            
-            // Aplica a mudança na UI no Main Queue
-            DispatchQueue.main.async {
-                // Só chega aqui se não der nenhum erro
-                self.setarMensagemErro("")
-                self.autenticado = true
-            }
+            // Só chega aqui se não der nenhum erro
+            self.setarMensagemErro("")
+            return true
         }
+        
     }
 }

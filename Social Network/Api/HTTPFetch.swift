@@ -25,7 +25,7 @@ extension NetworkError: LocalizedError {
         case .decodingError(let msg):
             return NSLocalizedString("Não conseguiu decodificar a resposta: \(msg)", comment: "decodingError")
         case .errorResponse(let msg):
-            return NSLocalizedString("Resposta de Erro: \(msg)", comment: "errorResponse")
+            return NSLocalizedString("Erro: \(msg)", comment: "errorResponse")
         case .invalidURL(let msg):
             return NSLocalizedString("URL Inválido: \(msg)", comment: "invalidURL")
         }

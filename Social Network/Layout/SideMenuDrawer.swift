@@ -19,12 +19,14 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
     
     var menuContent: () -> C
     
+    @State var translation: CGFloat = 0.0
     func body(content: Content) -> some View {
         content
         .overlay {
             ZStack {
                 if menuOpened {
                     Color(.gray)
+                        .ignoresSafeArea()
                         .opacity(0.5)
                         .transition(.opacity)
                         .onTapGesture {
@@ -32,13 +34,33 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
                         }
                         .zIndex(1.0)
                     
-                    menuContent()
+                        menuContent()
                         .padding()
-                        .background(Color(.systemBackground))
-                        .padding(.trailing, 100)
+                        .background {
+                            Color(.systemBackground)
+                                .ignoresSafeArea()
+                                .shadow(radius: 10.0)
+                        }
+                        .padding(.trailing, 80)
+                        .offset(x: translation)
                         //.transition(.identity)
                         .transition(.move(edge: .leading))
                         .zIndex(2.0)
+                        .gesture(DragGesture().onChanged { value in
+                            self.translation = value.translation.width
+                            if self.translation > 0.0 {
+                                self.translation = 0.0
+                            }
+                        }.onEnded { value in
+                                if self.translation > -100 {
+                                    withAnimation {
+                                        self.translation = 0.0
+                                    }
+                                } else {
+                                    self.translation = 0.0
+                                    menuOpened.toggle()
+                                }
+                        })
                 }
             }
             .animation(.easeIn(duration: 0.25), value: menuOpened)
@@ -51,6 +73,9 @@ struct SideMenuDrawerTeste: View {
     @State var opened: Bool = false
     var body: some View {
         ViewExample(imageName: "phone.fill", color: .systemRed)
+        .onTapGesture {
+            opened.toggle()
+        }
         .sideMenuDrawer(menuOpened: $opened) {
             VStack(alignment: .leading) {
                 Color(.lightGray)
@@ -69,9 +94,6 @@ struct SideMenuDrawerTeste: View {
                 
                 Spacer()
             }
-        }
-        .onTapGesture {
-            opened.toggle()
         }
     }
 }

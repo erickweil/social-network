@@ -10,12 +10,11 @@ import Foundation
 class PostViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published public var postagem: Postagem
-    @Published private(set) var curtida: Bool
     
     func clicouCurtir(token: String, httpClient: HTTPClient) async throws {
         let url: URL = APIs.curtirPostagem(postagem._id).url
         var method: FetchOptions.HTTPMethod
-        if !curtida {
+        if !postagem.curtida {
             // Enviar POST para Curtir
             method = .POST
         } else {
@@ -37,18 +36,13 @@ class PostViewModel: ObservableObject {
         let respModel = try resp.json(CurtidaResponse.self)
         
         DispatchQueue.main.async {
-            self.curtida = respModel.estaCurtida
+            self.postagem.curtida = respModel.estaCurtida
             self.postagem.numCurtidas = respModel.numCurtidas
         }
     }
-    
-    var numCurtidas: Int {
-        postagem.numCurtidas
-    }
-    
+        
     init(postagem: Postagem) {
         self.postagem = postagem
-        self.curtida = false
     }
     
     

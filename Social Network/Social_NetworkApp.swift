@@ -9,25 +9,16 @@ import SwiftUI
 
 @main
 struct Social_NetworkApp: App {
-    @Namespace public var AppNS
-    
     @StateObject var store = AppDataStore(httpClient: HTTPClient())
     
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                NovoLoginView()
-            }.environmentObject({ () -> AppDataStore in
-                store.AppNS = AppNS
-                return store
-            }())
-            
-            /*NavigationView {
-                LoginView() {
+                NovoLoginView() {
                     InicioView()
                         .navigationBarBackButtonHidden(true)
                 }
-            }*/
+            }.environmentObject(store)
         }
     }
 }

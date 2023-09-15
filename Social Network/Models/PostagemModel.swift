@@ -23,6 +23,8 @@ struct Postagem: Hashable, Codable, Identifiable {
     let postagemPai: String?
     let posicao: Int?
     let respostas: [Postagem]?
+    
+    var curtida: Bool
 }
 
 struct CurtidaResponse: Hashable, Codable {

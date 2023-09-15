@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct NovoLoginView: View {
+struct NovoLoginView<Content>: View where Content: View {
+    var content: () -> Content
+    
     @EnvironmentObject
     var store: AppDataStore
     
@@ -17,8 +19,7 @@ struct NovoLoginView: View {
     var body: some View {
         ZStack {
             NavigationLink("Clique", isActive: $vm.autenticado, destination: {
-                PerfilUsuario()
-                    .navigationBarBackButtonHidden(true)
+                content()
             })
             
             Color("FundoLogin")
@@ -35,8 +36,24 @@ struct NovoLoginView: View {
                 HStack {
                     Spacer()
                     Button("Ok") {
-                        Task {
-                            await vm.clicouOK(store.httpClient)
+                        if vm.validarFormulario() {
+                            Task {
+                                do {
+                                    try await store.session.fazerLogin(
+                                        httpClient: store.httpClient,
+                                        email: vm.email,
+                                        senha: vm.senha)
+                                    
+                                    DispatchQueue.main.async {
+                                        vm.setarMensagemErro("")
+                                        vm.autenticado = true
+                                    }
+                                } catch {
+                                    DispatchQueue.main.async {
+                                        vm.setarMensagemErro(error.localizedDescription)
+                                    }
+                                }
+                            }
                         }
                     }
                     .buttonStyle(.borderedProminent)
@@ -61,15 +78,24 @@ struct NovoLoginView: View {
     }
 }
 
-
-
-
-
-
-
-
 struct NovoLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        NovoLoginView()
+        let store = AppDataStore(httpClient: HTTPClient())
+        
+        return NavigationView {
+            NovoLoginView {
+                VStack {
+                    if let token = store.session.token {
+                        Text("OK FEZ LOGIN")
+                        Text(token)
+                            .textSelection(.enabled)
+                            .padding()
+                    } else {
+                        Text("PRECISA AUTENTICAR")
+                    }
+                }
+            }
+        }
+        .environmentObject(store)
     }
 }

@@ -18,11 +18,6 @@ struct InicioSideBar: View {
             if let usuario = store.session.usuario {
                 if menuOpened {
                     FotoPerfilView(imgPath: usuario.fotoPerfil, width: 60)
-                        .matchedGeometryEffect(
-                            id: usuario.fotoPerfil,
-                            in: store.AppNS!
-                        )
-                        .transition(.asymmetric(insertion: .slide, removal: .identity))
                 }
                 
                 Text(usuario.nome)
