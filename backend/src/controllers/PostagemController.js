@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Postagem from "../models/Postagem.js";
+import Curtida from "../models/Curtida.js";
 import { deletarFotoUsuario, salvarFotoUsuario } from "../utils/foto.js";
 import anyAscii from "any-ascii";
 
@@ -81,6 +82,8 @@ export default class PostagemController {
 
 		const resultado = await listagem.lean();
 
+		await Curtida.populateCurtidas(req.usuario,resultado);
+
 		// Lento? +2 querys: 1 para encontrar e 1 populate usuario.
 		// Será que não existe um populate() ou algo do tipo que faz isso?
 		if(popular.respostas) {
@@ -97,6 +100,9 @@ export default class PostagemController {
 			if(popular.usuario) respostaListagem = respostaListagem.populate("usuario"); // Consistência
 
 			const resultadoRespostas = await respostaListagem.lean();
+
+			await Curtida.populateCurtidas(req.usuario,resultadoRespostas);
+
 			for(let postagem of resultado) { // Colocar as respostas nos lugares corretos.
 				postagem.respostas = new Array(limiteRespostas); // Inicia o array com undefined nos espaços possíveis
 				// Usando equals porque são dois ObjectId
@@ -157,10 +163,12 @@ export default class PostagemController {
 		if(mongoose.Types.ObjectId.isValid(id) === false)
 			return res.status(400).json({ error: true, message: "ID inválido" });
 	
-		const postagem = await Postagem.findById(id).populate("usuario");
+		const postagem = await Postagem.findById(id).populate("usuario").lean();
 		if(!postagem)
 			return res.status(404).json({ error: true, message: "Postagem não encontrada" });
 	
+		await Curtida.populateCurtidas(req.usuario,[postagem]);
+
 		return res.status(200).json(postagem);
     }
 

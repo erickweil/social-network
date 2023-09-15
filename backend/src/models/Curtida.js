@@ -25,5 +25,26 @@ Curtida.index({createdAt: 1}); // Para ficar rápido o sort
 // Um usuário só pode curtir uma postagem uma vez
 Curtida.index({usuario: 1, postagem: 1}, { unique: true });
 
+Curtida.statics.populateCurtidas = async function(usuario,resultadoPostagens) {
+  if(!usuario) return;
+
+  const idPostagens = await resultadoPostagens.map((doc) => doc._id);
+  const resultadoCurtidas = await this.find({
+    $and: [
+    { usuario: usuario._id }, // Encontrar todas as curtidas deste usuário
+    { postagem: { $in: idPostagens } } // E que sejam destas postagens
+    ]
+  }).lean(); // .lean() para o find() funcionar
+
+  for(let postagem of resultadoPostagens) {
+    if(resultadoCurtidas.find((curtida) => curtida.postagem.equals(postagem._id))) {
+      postagem.curtida = true;
+      //console.log("TRUE: ",postagem);
+    } else {
+      postagem.curtida = false;
+    }
+  }
+};
+
 // Criando o modelo de Curtidas
 export default mongoose.model("curtidas", Curtida);

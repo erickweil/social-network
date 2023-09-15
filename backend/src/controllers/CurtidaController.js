@@ -21,12 +21,15 @@ export default class CurtidaControler {
 			.populate({
 				path: "postagem",
 				populate: { path: "usuario"}
-			});
+			})
+            .lean(); // .lean() para poder editar ali o .curtida = true
 
 		// Não é um problema porque o limite de documentos por request é um valor baixo
 		let resposta = [];
-		for(let postagem of resultado) {
-			resposta.push(postagem["postagem"]);
+		for(let linha of resultado) {
+            let postagem = linha["postagem"];
+            postagem.curtida = true;
+			resposta.push(postagem);
 		}
 
 		return res.status(200).json({
