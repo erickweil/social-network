@@ -49,7 +49,7 @@ struct InicioView: View {
 struct InicioView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            LoginView() {
+            NovoLoginView() {
                 InicioView()
                     .navigationBarBackButtonHidden(true)
             }

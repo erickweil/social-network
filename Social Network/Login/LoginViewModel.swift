@@ -11,9 +11,11 @@ extension NovoLoginView {
     class ViewModel: ObservableObject {
         @AppStorage("LOGIN_EMAIL")
         var email: String = ""
+        @Published var erroEmail: String?
         
         @AppStorage("LOGIN_SENHA")
         var senha: String = ""
+        @Published var erroSenha: String?
         
         @Published
         var exibirMensagemErro: Bool = false
@@ -32,13 +34,30 @@ extension NovoLoginView {
             }
         }
         
+        func validaObrigatorio(_ txt: String) -> String? {
+            if txt.isEmpty {
+                return "Este campo é obrigatório"
+            } else {
+                return nil
+            }
+        }
+        
+        func validaEmail(_ txt: String) -> String? {
+            // https://www.hackingwithswift.com/articles/108/how-to-use-regular-expressions-in-swift
+            let regexPattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
+            let regex = try! NSRegularExpression(pattern: regexPattern)
+            if let match = regex.firstMatch(in: txt, range: NSRange(location: 0, length: txt.utf16.count)) {
+                return nil
+            } else {
+                return "Email inválido"
+            }
+        }
+        
         func validarFormulario() -> Bool {
-            print("Clicou, email:\(email) senha:\(senha)")
-            let emailTrimmed = email.trimmingCharacters(in: .whitespaces)
-            guard !emailTrimmed.isEmpty && !senha.isEmpty else {
-                DispatchQueue.main.async {
-                    self.setarMensagemErro("Preencha todos os campos")
-                }
+            erroEmail = validaObrigatorio(email) ?? validaEmail(email)
+            erroSenha = validaObrigatorio(senha)
+            
+            guard erroEmail == nil, erroSenha == nil else {
                 return false
             }
             
@@ -46,6 +65,5 @@ extension NovoLoginView {
             self.setarMensagemErro("")
             return true
         }
-        
     }
 }

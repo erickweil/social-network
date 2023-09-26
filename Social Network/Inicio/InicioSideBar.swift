@@ -37,7 +37,22 @@ struct InicioSideBar: View {
 
 struct InicioSideBar_Previews: PreviewProvider {
     static var previews: some View {
-        Text("OK")
-//        InicioSideBar()
+        TabView {
+            NavigationView {
+                ViewExample(imageName: "magnifyingglass", color: .systemBlue)
+            }.tabItem {
+                Image(systemName: "magnifyingglass")
+            }
+            
+            NavigationView {
+                ViewExample(imageName: "gear", color: .systemOrange)
+            }.tabItem {
+                Image(systemName: "gear")
+            }
+        }
+        .sideMenuDrawer(menuOpened: .constant(true)) {
+            InicioSideBar(menuOpened: .constant(true))
+        }
+        .environmentObject(AppDataStore(fake: true))
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct NovoLoginView<Content>: View where Content: View {
     var content: () -> Content
     
@@ -22,20 +23,29 @@ struct NovoLoginView<Content>: View where Content: View {
                 content()
             })
             
-            Color("FundoLogin")
+            Color("AccentColor")
                 .ignoresSafeArea()
+            
             VStack {
-                Text("Entrar")
-                    .font(.title)
-                TextField("Email", text: $vm.email)
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.never)
-                SecureField("Senha", text: $vm.senha)
-                    .textFieldStyle(.roundedBorder)
+                Image("Logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 200)
                 
-                HStack {
-                    Spacer()
-                    Button("Ok") {
+                Form {
+                    Text("Entrar")
+                        .bold()
+                    //TextField("Email", text: $vm.email)
+                    //   .textFieldStyle(.roundedBorder)
+                    //   .textInputAutocapitalization(.never)
+                    //SecureField("Senha", text: $vm.senha)
+                    //   .textFieldStyle(.roundedBorder)
+                    
+                    MeuInput("Email", texto: $vm.email, erro: vm.erroEmail)
+                    
+                    MeuInput("Senha", texto: $vm.senha, erro: vm.erroSenha, password: true)
+                    
+                    Button("Acessar") {
                         if vm.validarFormulario() {
                             Task {
                                 do {
@@ -58,16 +68,14 @@ struct NovoLoginView<Content>: View where Content: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
-                
+                .frame(maxWidth: 350,maxHeight: .infinity)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 20)
+                )
                 
             }
-            .padding(20)
-            .background {
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(Color(.systemBackground))
-            }
-            .frame(maxWidth: 350)
             .padding(40)
+            
         }
         .alert(vm.mensagemErro, isPresented: $vm.exibirMensagemErro) {
             Button("Fechar") {

@@ -16,4 +16,10 @@ class AppDataStore: ObservableObject {
     init(httpClient: HTTPClient) {
         self.httpClient = httpClient
     }
+    
+    init(fake: Bool) {
+        self.httpClient = HTTPClient()
+        self.session.token = "AAAAA"
+        self.session.usuario = Usuario(_id: "-1", nome: "João", fotoPerfil: "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg", fotoCapa: "", biografia: "olá", created_at: "", updated_at: "")
+    }
 }

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */; };
 		A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71139222A9A8F4F001BA085 /* PostagemView.swift */; };
+		A72860042AC34E7D00DDAF72 /* BordaModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72860032AC34E7D00DDAF72 /* BordaModifier.swift */; };
+		A72860062AC3598C00DDAF72 /* MeuInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72860052AC3598C00DDAF72 /* MeuInput.swift */; };
 		A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */; };
 		A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */; };
 		A76E85A82AA7EFEF00142769 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76E85A72AA7EFEF00142769 /* LoginView.swift */; };
@@ -39,6 +41,8 @@
 /* Begin PBXFileReference section */
 		A711391F2A9A8DC9001BA085 /* ImageCacheModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheModel.swift; sourceTree = "<group>"; };
 		A71139222A9A8F4F001BA085 /* PostagemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemView.swift; sourceTree = "<group>"; };
+		A72860032AC34E7D00DDAF72 /* BordaModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BordaModifier.swift; sourceTree = "<group>"; };
+		A72860052AC3598C00DDAF72 /* MeuInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeuInput.swift; sourceTree = "<group>"; };
 		A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFetch.swift; sourceTree = "<group>"; };
 		A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemListView.swift; sourceTree = "<group>"; };
 		A76E85A72AA7EFEF00142769 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -161,7 +165,7 @@
 		A7B5E5D92A506CC3008D56E0 /* Social Network */ = {
 			isa = PBXGroup;
 			children = (
-				A7F8E1F42A9CC4E000C7A0F8 /* Layout */,
+				A7F8E1F42A9CC4E000C7A0F8 /* Components */,
 				A73810192A9AE313001A5983 /* Login */,
 				A71139212A9A8F3F001BA085 /* Postagem */,
 				A7A838F42A9A4332006FEFF3 /* Models */,
@@ -183,13 +187,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		A7F8E1F42A9CC4E000C7A0F8 /* Layout */ = {
+		A7F8E1F42A9CC4E000C7A0F8 /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				A7F8E1F52A9CC50200C7A0F8 /* BottonNavBar.swift */,
 				A7F8E1F92A9CD62E00C7A0F8 /* SideMenuDrawer.swift */,
+				A72860032AC34E7D00DDAF72 /* BordaModifier.swift */,
+				A72860052AC3598C00DDAF72 /* MeuInput.swift */,
 			);
-			path = Layout;
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,6 +274,7 @@
 				A7A838F62A9A4354006FEFF3 /* UsuarioModel.swift in Sources */,
 				A76E85A82AA7EFEF00142769 /* LoginView.swift in Sources */,
 				A7F8E1F62A9CC50200C7A0F8 /* BottonNavBar.swift in Sources */,
+				A72860062AC3598C00DDAF72 /* MeuInput.swift in Sources */,
 				A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */,
 				A7E418182A9D10A000B794AF /* FotoPerfilView.swift in Sources */,
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
@@ -279,6 +286,7 @@
 				A7A838F82A9A437A006FEFF3 /* Listagem.swift in Sources */,
 				A7F8E1F82A9CD06E00C7A0F8 /* InicioToolbar.swift in Sources */,
 				A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */,
+				A72860042AC34E7D00DDAF72 /* BordaModifier.swift in Sources */,
 				A7A838F32A9A40DA006FEFF3 /* PostagemModel.swift in Sources */,
 				A7A838F12A9A3FD4006FEFF3 /* AppDataStore.swift in Sources */,
 				A78C40162A9E39EB00A88C15 /* PostViewModel.swift in Sources */,
