@@ -59,9 +59,10 @@ kind: Service
 metadata:
   name: socialize-api
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: socialize-api
   ports:
   - port: 80
     targetPort: 3000
+    nodePort: 30070
