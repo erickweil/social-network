@@ -25,6 +25,8 @@ struct Postagem: Hashable, Codable, Identifiable {
     let respostas: [Postagem]?
     
     var curtida: Bool
+    
+    static let exemplo = Postagem(_id: "AAAAAAAAAAAA", usuario: Usuario.exemplo, conteudo: "Exemplo de postagem", hashtags: [], imagens: [], numCurtidas: 0, numRespostas: 0, nivel: 0, deletado: false, created_at: ".", postagemPai: nil, posicao: nil, respostas: nil, curtida: false)
 }
 
 struct CurtidaResponse: Hashable, Codable {

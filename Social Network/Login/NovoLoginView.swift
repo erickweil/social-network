@@ -33,23 +33,22 @@ struct NovoLoginView<Content>: View where Content: View {
     
     var body: some View {
         ZStack {
-            NavigationLink(isActive: $vm.autenticado, destination: {
-                content()
-                    .environment(\.fezLogin, $vm.autenticado)
-            }, label: {
-                EmptyView()
-            })
             
-            Color(red: 0.85, green: 0.85, blue: 0.85)
-                .ignoresSafeArea()
             
             VStack(spacing: 20.0) {
-                Text("SZ")
-                    .bold()
-                    .font(.system(size: 72.0))
-                    //.resizable()
-                    //.aspectRatio(contentMode: .fit)
-                    //.frame(maxWidth: 200)
+                
+                NavigationLink(isActive: $vm.autenticado, destination: {
+                    content()
+                        .environment(\.fezLogin, $vm.autenticado)
+                }, label: {
+                    EmptyView()
+                })
+                
+                Image("Logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 200)
+                    .padding(.bottom, 40)
                 
                 VStack(spacing: 20.0) {
                     Text("Login")

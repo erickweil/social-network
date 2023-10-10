@@ -18,6 +18,8 @@ struct Usuario: Hashable, Codable, Identifiable {
     let biografia: String
     let created_at: String
     let updated_at: String
+    
+static let exemplo = Usuario(_id: "AAAAAAAAAAAA", nome: "Usuário Exemplo", email: "exemplo@gmail.com", fotoPerfil: "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg", fotoCapa: "", biografia: "sem biografia", created_at: ".", updated_at: ".")
 }
 
 struct LoginResponse: Hashable, Codable {

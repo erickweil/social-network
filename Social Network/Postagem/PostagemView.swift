@@ -98,6 +98,8 @@ struct PostagemView: View {
     
     var exibirComoResposta: Bool
     
+    var limitarLinhas: Bool = true
+    
     func curtir() async {
         // Assim que aparecer na tela faz o fetch
         do {
@@ -138,15 +140,17 @@ struct PostagemView: View {
     
     func conteudo(_ postagem: Postagem) -> some View {
         Text(postagem.conteudo)
-            .lineLimit(12)
+            .lineLimit(limitarLinhas ? 12 : 1000)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 5)
     }
     
     func barraBotoes(_ postagem: Postagem) -> some View {
         HStack {
-            Image(systemName: postagem.curtida ? "hand.thumbsup.fill" : "hand.thumbsup")
-                .renderingMode(.template)
+            Image(postagem.curtida ? "HeartSZ.fill" : "HeartSZ.outline")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 24.0,height: 24.0)
                 .foregroundColor(postagem.curtida ? .accentColor : .secondary)
                 .onTapGesture {
                     Task {
@@ -225,7 +229,15 @@ struct PostagemView: View {
 
 struct PostagemView_Previews: PreviewProvider {
     static var previews: some View {
-        PostagemSkeleton()
-        //PostagemView(postagem: Postagem())
+        //PostagemSkeleton()
+        List {
+            PostagemView(post: PostViewModel(postagem: Postagem.exemplo), exibirComoResposta: false)
+                
+            PostagemView(post: PostViewModel(postagem: Postagem.exemplo), exibirComoResposta: false)
+                
+            PostagemView(post: PostViewModel(postagem: Postagem.exemplo), exibirComoResposta: false)
+                
+        }
+        .listStyle(.plain)
     }
 }

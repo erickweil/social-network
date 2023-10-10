@@ -9,8 +9,9 @@ import SwiftUI
 
 struct InicioSideBar: View {
     
-    
     @Environment(\.fezLogin) private var fezLogin: Binding<Bool>
+    
+    @Environment(\.inicioTabSelect) private var inicioTabSelect: Binding<InicioTabTelas>
     
     @EnvironmentObject private var store: AppDataStore
     
@@ -20,75 +21,141 @@ struct InicioSideBar: View {
         VStack(alignment: .leading) {
             
             // HEADER
-            VStack(alignment: .leading) {
-                if let usuario = store.session.usuario {
-                    if menuOpened {
-                        FotoPerfilView(imgPath: usuario.fotoPerfil, width: 80)
-                    }
-                    
-                    Text(usuario.nome)
-                        .font(.title2)
-                        .bold()
-                        .padding(.top, 10)
-                        .foregroundColor(.primary)
-                    
-                    
-                    Text(usuario.email)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                } else {
-                    Color(.lightGray)
-                        .frame(width: 60,height:60)
-                        .clipShape(Circle())
-                }
-            }
-            .padding(20)
-            .frame(maxWidth: .infinity,minHeight: 120, alignment: .leading)
-            .background(
-                LinearGradient(colors: [Color(.systemBackground),Color(red: 0.9, green: 0.9, blue: 0.9)],
-                               startPoint: .center, endPoint: .bottom
-                )
-                .ignoresSafeArea(.all))
-                        
+            SideMenuHeader(usuario: store.session.usuario)
+            
             // BODY
             VStack(alignment: .leading, spacing: 15) {
                 
-                HStack(spacing: 32) {
-                    Image(systemName: "house.fill")
-                        .renderingMode(.template)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 28, height: 28)
-                    Text("Início")
-                        .font(.subheadline)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .background{
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.accentColor)
-                        .opacity(0.5)
-                }
+                SideMenuButton(
+                    icon: { Image(systemName: "house.fill").resizable() },
+                    title: "Início",
+                    titleKey: .inicio,
+                    selected: inicioTabSelect,
+                    action: onClicouButton)
                 
-                Button (action: {
-                    self.fezLogin.wrappedValue.toggle()
-                }) {
-                    HStack(spacing: 32) {
-                        Image(systemName: "door.left.hand.open")
-                            .renderingMode(.template)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 28, height: 28)
-                        Text("Sair")
-                            .font(.subheadline)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(10)
-                }
+                SideMenuButton(
+                    icon: { Image(systemName: "heart.fill").resizable() },
+                    title: "Curtidas",
+                    titleKey: .curtidas,
+                    selected: inicioTabSelect,
+                    action: onClicouButton)
+                
+                SideMenuButton(
+                    icon: { Image(systemName: "magnifyingglass").resizable() },
+                    title: "Pesquisa",
+                    titleKey: .pesquisa,
+                    selected: inicioTabSelect,
+                    action: onClicouButton)
+                
+                SideMenuButton(
+                    icon: { Image(systemName: "gear").resizable() },
+                    title: "Configurações",
+                    titleKey: .configuracoes,
+                    selected: inicioTabSelect,
+                    action: onClicouButton)
+                
+                Divider()
+                
+                SideMenuButton(
+                    icon: { Image(systemName: "door.left.hand.open").resizable() },
+                    title: "Sair",
+                    titleKey: .sair,
+                    selected: .constant(.inicio),
+                    action: onClicouButton)
+                
             }
             .padding(10)
             
             Spacer()
+        }
+    }
+    
+    func onClicouButton(_ titleKey: InicioTabTelas) {
+        switch titleKey {
+        case .inicio:
+            inicioTabSelect.wrappedValue = .inicio
+            menuOpened.toggle()
+            break
+        case .curtidas:
+            inicioTabSelect.wrappedValue = .curtidas
+            menuOpened.toggle()
+            break
+        case .pesquisa:
+            inicioTabSelect.wrappedValue = .pesquisa
+            menuOpened.toggle()
+            break
+        case .configuracoes:
+            inicioTabSelect.wrappedValue = .configuracoes
+            menuOpened.toggle()
+            break
+        case .sair:
+                self.fezLogin.wrappedValue.toggle()
+            break
+        }
+    }
+}
+
+struct SideMenuHeader: View {
+    var usuario: Usuario?
+    var body: some View {
+        VStack(alignment: .leading) {
+            if let usuario {
+                FotoPerfilView(imgPath: usuario.fotoPerfil, width: 80)
+                
+                Text(usuario.nome)
+                    .font(.title2)
+                    .bold()
+                    .padding(.top, 10)
+                    .foregroundColor(.primary)
+                
+                
+                Text(usuario.email)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            } else {
+                Color(.lightGray)
+                    .frame(width: 60,height:60)
+                    .clipShape(Circle())
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity,minHeight: 120, alignment: .leading)
+        .background(
+            LinearGradient(colors: [Color(.systemBackground),Color(red: 0.9, green: 0.9, blue: 0.9)],
+                           startPoint: .center, endPoint: .bottom
+            )
+            .ignoresSafeArea(.all))
+    }
+}
+
+struct SideMenuButton<Icon>: View where Icon : View {
+    var icon: () -> Icon
+    var title: String
+    var titleKey: InicioTabTelas
+    var selected: Binding<InicioTabTelas>
+    var action: (InicioTabTelas) -> Void
+    var body: some View {
+        Button (action: {
+            selected.wrappedValue = titleKey
+            action(titleKey)
+        }) {
+            HStack(spacing: 32) {
+                icon()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 28, height: 28)
+                Text(title)
+                    .font(.subheadline)
+            }
+            .foregroundColor(selected.wrappedValue == titleKey ? Color.accentColor : Color.primary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(10)
+            .background{
+                if selected.wrappedValue == titleKey {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.accentColor)
+                        .opacity(0.25)
+                }
+            }
         }
     }
 }

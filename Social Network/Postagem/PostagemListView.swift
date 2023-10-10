@@ -44,7 +44,8 @@ struct PostagemListView: View {
                     if let postagemPai {
                         PostagemView(
                             post: PostViewModel(postagem: postagemPai),
-                            exibirComoResposta: false
+                            exibirComoResposta: false,
+                            limitarLinhas: false
                         )
                     }
                     
