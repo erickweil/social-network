@@ -25,21 +25,33 @@ struct clipComBorda<S>: ViewModifier where S: Shape {
     }
 }
 
+// Para poder acessar o Cache de qualquer lugar da aplicação
+struct ImageCacheKey: EnvironmentKey {
+    static let defaultValue: ImageCacheViewModel = ImageCacheViewModel()
+}
+
+extension EnvironmentValues {
+    var imageCache: ImageCacheViewModel {
+        get { return self[ImageCacheKey.self] }
+        set { self[ImageCacheKey.self] = newValue }
+    }
+}
+
 // Lida com Cache e tudo mais...
 struct URLImage<P>: View where P : View {
-    private var imageCache: ImageCacheViewModel?
+    // private var imageCache: ImageCacheViewModel?
+    @Environment(\.imageCache) private var imageCache: ImageCacheViewModel
     
     let url: URL
     let placeholder: () -> P
     
-    init(url: URL, imageCache: ImageCacheViewModel? = nil, placeholder: @escaping () -> P) {
+    init(url: URL, placeholder: @escaping () -> P) {
         self.url = url
-        self.imageCache = imageCache
         self.placeholder = placeholder
     }
     
     var body: some View {
-        if let cached = imageCache?.getImageCache(url: url) {
+        if let cached = imageCache.getImageCache(url: url) {
             cached
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -68,24 +80,21 @@ struct URLImage<P>: View where P : View {
     }
     
     private func cacheAndRender(_ image: Image) {
-        if let imageCache {
+        //if let imageCache {
             imageCache.storeImageCache(url: url, image: image)
-        }
+        //}
     }
 }
 
 struct URLImage_Previews: PreviewProvider {
     static var previews: some View {
         let url = "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg"
-        let store = AppDataStore(httpClient: HTTPClient())
         List {
             ForEach(0..<10) { i in
-                URLImage(url: APIs.baseURL.appendingPathComponent(url),
-                         imageCache: store.imageCache
-                ) {
+                URLImage(url: APIs.baseURL.appendingPathComponent(url)) {
                     defaultPlaceholder()
                 }
             }
-        }.environmentObject(store)
+        }
     }
 }

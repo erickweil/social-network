@@ -13,6 +13,8 @@ struct PostagemListView: View {
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
     
+    @Environment(\.httpClient) private var httpClient: HTTPClient
+    
     // Estado local desta tela
     // @StateObject ->  mantém o valor mesmo em redraws
     // @ObservedObject -> recriado quando acontece um redraw
@@ -24,7 +26,7 @@ struct PostagemListView: View {
         do {
             try await viewModel.fetchPostagens(
                 token: token,
-                httpClient: store.httpClient,
+                httpClient: httpClient,
                 postagemPai: postagemPai,
                 postagensCurtidas: mostrarPostagensCurtidas
             )

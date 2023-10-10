@@ -30,6 +30,7 @@
 		A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */; };
 		A7B5E5DF2A506CC5008D56E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */; };
 		A7B5E5E22A506CC5008D56E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */; };
+		A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */; };
 		A7E418182A9D10A000B794AF /* FotoPerfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E418172A9D10A000B794AF /* FotoPerfilView.swift */; };
 		A7F8E1F62A9CC50200C7A0F8 /* BottonNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F8E1F52A9CC50200C7A0F8 /* BottonNavBar.swift */; };
 		A7F8E1F82A9CD06E00C7A0F8 /* InicioToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F8E1F72A9CD06E00C7A0F8 /* InicioToolbar.swift */; };
@@ -63,6 +64,7 @@
 		A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InicioView.swift; sourceTree = "<group>"; };
 		A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfRoundedRectangle.swift; sourceTree = "<group>"; };
 		A7E418172A9D10A000B794AF /* FotoPerfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FotoPerfilView.swift; sourceTree = "<group>"; };
 		A7F8E1F52A9CC50200C7A0F8 /* BottonNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottonNavBar.swift; sourceTree = "<group>"; };
 		A7F8E1F72A9CD06E00C7A0F8 /* InicioToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InicioToolbar.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				A7F8E1F92A9CD62E00C7A0F8 /* SideMenuDrawer.swift */,
 				A72860032AC34E7D00DDAF72 /* BordaModifier.swift */,
 				A72860052AC3598C00DDAF72 /* MeuInput.swift */,
+				A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */,
 				A7E418182A9D10A000B794AF /* FotoPerfilView.swift in Sources */,
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
+				A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,
 				A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */,
@@ -428,7 +432,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Social-Network-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Social Network";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -462,7 +466,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Social-Network-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Social Network";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

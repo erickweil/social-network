@@ -91,6 +91,8 @@ struct PostagemView: View {
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
     
+    @Environment(\.httpClient) private var httpClient: HTTPClient
+    
     @ObservedObject
     var post: PostViewModel
     
@@ -101,7 +103,7 @@ struct PostagemView: View {
         do {
             try await post.clicouCurtir(
                 token: store.session.token!,
-                httpClient: store.httpClient
+                httpClient: httpClient
             )
         } catch {
             print(error.localizedDescription)
@@ -179,7 +181,7 @@ struct PostagemView: View {
                     conteudo(postagem)
                     
                     if postagem.imagens.count > 0 {
-                        GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL, imageCache: store.imageCache)
+                        GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL)
                             .frame(height: 250)
                             .padding(.top, 10)
                     }
@@ -203,7 +205,7 @@ struct PostagemView: View {
                     .padding(.top, 10)
                     
                 if postagem.imagens.count > 0 {
-                    GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL, imageCache: store.imageCache)
+                    GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL)
                         .frame(height: 250)
                         .padding(.top, 10)
                 }

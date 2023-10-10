@@ -12,6 +12,7 @@ struct Usuario: Hashable, Codable, Identifiable {
     var id: String { _id }
     let _id: String
     let nome: String
+    let email: String
     let fotoPerfil: String
     let fotoCapa: String
     let biografia: String

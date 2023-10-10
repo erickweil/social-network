@@ -9,16 +9,13 @@ import SwiftUI
 
 struct GaleriaImagens: View {
     var imagens: [URL]
-    var imageCache: ImageCacheViewModel?
     
-    init(imagens: [URL], imageCache: ImageCacheViewModel? = nil) {
+    init(imagens: [URL]) {
         self.imagens = imagens
-        self.imageCache = imageCache
     }
     
-    init(imagens: [String], baseURL: URL, imageCache: ImageCacheViewModel? = nil) {
+    init(imagens: [String], baseURL: URL) {
         self.imagens = []
-        self.imageCache = imageCache
         for imagem in imagens {
             self.imagens.append(baseURL.appendingPathComponent(imagem))
         }
@@ -29,9 +26,7 @@ struct GaleriaImagens: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(imagens, id: \.self) { imagem in
-                        URLImage(url: imagem,
-                                 imageCache: imageCache
-                        ) {
+                        URLImage(url: imagem) {
                             defaultPlaceholder()
                         }
                         .modifier(clipComBorda(shape:RoundedRectangle(cornerRadius: 10)))

@@ -53,6 +53,6 @@ struct InicioView_Previews: PreviewProvider {
                 InicioView()
                     .navigationBarBackButtonHidden(true)
             }
-        }.environmentObject(AppDataStore(httpClient: HTTPClient()))
+        }.environmentObject(AppDataStore())
     }
 }

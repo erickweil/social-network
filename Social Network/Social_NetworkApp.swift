@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct Social_NetworkApp: App {
-    @StateObject var store = AppDataStore(httpClient: HTTPClient())
+    @StateObject var store = AppDataStore()
     
     var body: some Scene {
         WindowGroup {
@@ -18,7 +18,10 @@ struct Social_NetworkApp: App {
                     InicioView()
                         .navigationBarBackButtonHidden(true)
                 }
-            }.environmentObject(store)
+            }
+            .environmentObject(store)
+            .environment(\.imageCache, ImageCacheViewModel())
+            .environment(\.httpClient, HTTPClient())
         }
     }
 }

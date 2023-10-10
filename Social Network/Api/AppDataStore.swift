@@ -9,17 +9,13 @@ import SwiftUI
 // @MainActor A singleton actor whose executor is equivalent to the main dispatch queue.
 @MainActor
 class AppDataStore: ObservableObject {
-    let httpClient: HTTPClient
     let session: APISessionViewModel = APISessionViewModel()
     let imageCache: ImageCacheViewModel = ImageCacheViewModel()
     
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
-    }
-    
-    init(fake: Bool) {
-        self.httpClient = HTTPClient()
-        self.session.token = "AAAAA"
-        self.session.usuario = Usuario(_id: "-1", nome: "João", fotoPerfil: "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg", fotoCapa: "", biografia: "olá", created_at: "", updated_at: "")
+    init(fake: Bool = false) {
+        if fake {
+            self.session.token = "AAAAA"
+            self.session.usuario = Usuario(_id: "-1", nome: "João Da Silva", email: "email@example.com", fotoPerfil: "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg", fotoCapa: "", biografia: "olá", created_at: "", updated_at: "")
+        }
     }
 }

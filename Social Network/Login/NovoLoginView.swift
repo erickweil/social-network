@@ -7,50 +7,63 @@
 
 import SwiftUI
 
+// Indica se fez ou não Login
+struct FezLoginKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool> = .constant(false)
+}
+
+extension EnvironmentValues {
+    var fezLogin: Binding<Bool> {
+        get { return self[FezLoginKey.self] }
+        set { self[FezLoginKey.self] = newValue }
+    }
+}
 
 struct NovoLoginView<Content>: View where Content: View {
+    
     var content: () -> Content
     
     @EnvironmentObject
     var store: AppDataStore
+    
+    @Environment(\.httpClient) private var httpClient: HTTPClient
     
     @StateObject
     var vm: ViewModel = ViewModel()
     
     var body: some View {
         ZStack {
-            NavigationLink("Clique", isActive: $vm.autenticado, destination: {
+            NavigationLink(isActive: $vm.autenticado, destination: {
                 content()
+                    .environment(\.fezLogin, $vm.autenticado)
+            }, label: {
+                EmptyView()
             })
             
-            Color("AccentColor")
+            Color(red: 0.85, green: 0.85, blue: 0.85)
                 .ignoresSafeArea()
             
-            VStack {
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 200)
+            VStack(spacing: 20.0) {
+                Text("SZ")
+                    .bold()
+                    .font(.system(size: 72.0))
+                    //.resizable()
+                    //.aspectRatio(contentMode: .fit)
+                    //.frame(maxWidth: 200)
                 
-                Form {
-                    Text("Entrar")
+                VStack(spacing: 20.0) {
+                    Text("Login")
+                        .font(.largeTitle)
                         .bold()
-                    //TextField("Email", text: $vm.email)
-                    //   .textFieldStyle(.roundedBorder)
-                    //   .textInputAutocapitalization(.never)
-                    //SecureField("Senha", text: $vm.senha)
-                    //   .textFieldStyle(.roundedBorder)
                     
                     MeuInput("Email", texto: $vm.email, erro: vm.erroEmail)
-                    
                     MeuInput("Senha", texto: $vm.senha, erro: vm.erroSenha, password: true)
-                    
                     Button("Acessar") {
                         if vm.validarFormulario() {
                             Task {
                                 do {
                                     try await store.session.fazerLogin(
-                                        httpClient: store.httpClient,
+                                        httpClient: httpClient,
                                         email: vm.email,
                                         senha: vm.senha)
                                     
@@ -67,11 +80,21 @@ struct NovoLoginView<Content>: View where Content: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    HStack {
+                        Text("Novo por aqui?")
+                        NavigationLink("Cadastre-se", destination: {
+                            ViewExample(imageName: "person.fill", color: .systemBlue)
+                        })
+                    }
+                    .padding(.bottom, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: 350,maxHeight: .infinity)
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 20)
-                )
+                .padding(20.0)
+                .background(Color(.systemBackground))
+                .halfRounded(radius: 80.0)
+                .shadow(radius: 15.0,x:1,y:1)
                 
             }
             .padding(40)
@@ -88,7 +111,7 @@ struct NovoLoginView<Content>: View where Content: View {
 
 struct NovoLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        let store = AppDataStore(httpClient: HTTPClient())
+        let store = AppDataStore()
         
         return NavigationView {
             NovoLoginView {

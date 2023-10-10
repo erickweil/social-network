@@ -15,7 +15,7 @@ extension View {
 
 struct InicioToolbar: ViewModifier {
     @EnvironmentObject private var store: AppDataStore
-    
+        
     @Binding var menuOpened: Bool
     
     func body(content: Content) -> some View {
@@ -55,6 +55,6 @@ struct InicioToolbar_Previews: PreviewProvider {
                     .navigationBarBackButtonHidden(true)
                     .inicioToolbar(menuOpened: opened)
             }
-        }.environmentObject(AppDataStore(httpClient: HTTPClient()))
+        }.environmentObject(AppDataStore())
     }
 }

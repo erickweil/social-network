@@ -16,7 +16,7 @@ struct LoginView<Content>: View where Content: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        let store = AppDataStore(httpClient: HTTPClient())
+        let store = AppDataStore()
         
         return NavigationView {
             LoginView {

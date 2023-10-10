@@ -5,7 +5,7 @@
 //  Created by Erick Leonardo Weil on 27/08/23.
 //
 
-import Foundation
+import SwiftUI
 
 enum NetworkError: Error {
     case badRequest(String)
@@ -73,6 +73,18 @@ struct FetchOptions {
         self.headers = headers
         self.body = body
         self.redirect = redirect
+    }
+}
+
+// Para poder acessar o HTTPClient de qualquer lugar da aplicação
+struct HttpClientKey: EnvironmentKey {
+    static let defaultValue: HTTPClient = HTTPClient()
+}
+
+extension EnvironmentValues {
+    var httpClient: HTTPClient {
+        get { return self[HttpClientKey.self] }
+        set { self[HttpClientKey.self] = newValue }
     }
 }
 

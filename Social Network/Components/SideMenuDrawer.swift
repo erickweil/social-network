@@ -35,7 +35,6 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
                         .zIndex(1.0)
                     
                         menuContent()
-                        .padding()
                         .background {
                             Color(.systemBackground)
                                 .ignoresSafeArea()
