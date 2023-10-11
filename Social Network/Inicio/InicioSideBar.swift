@@ -34,7 +34,10 @@ struct InicioSideBar: View {
                     action: onClicouButton)
                 
                 SideMenuButton(
-                    icon: { Image(systemName: "heart.fill").resizable() },
+                    icon: { HeartSZIcon(
+                        filled: true,
+                        fillColor: inicioTabSelect.wrappedValue == .curtidas ? Color("AccentColor") : Color.primary
+                    ) },
                     title: "Curtidas",
                     titleKey: .curtidas,
                     selected: inicioTabSelect,
@@ -89,6 +92,8 @@ struct InicioSideBar: View {
             menuOpened.toggle()
             break
         case .sair:
+                store.session.token = ""
+                store.session.usuario = nil
                 self.fezLogin.wrappedValue.toggle()
             break
         }

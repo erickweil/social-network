@@ -6,11 +6,43 @@
 //
 
 import Foundation
+import SwiftUI
 
 class APISessionViewModel: ObservableObject {
     // https://stackoverflow.com/questions/52591866/whats-the-correct-usage-of-urlsession-create-new-one-or-reuse-same-one
-    public var token: String?
-    public var usuario: Usuario?
+    @AppStorage("SESSION_TOKEN")
+    public var token: String = ""
+    
+    @AppStorage("SESSION_USER")
+    private var jsonUsuario: String = ""
+    private var objUsuario: Usuario? = nil
+    
+    
+    public var usuario: Usuario? {
+        get {
+            if objUsuario != nil {
+                return objUsuario
+            } else if !jsonUsuario.isEmpty {
+                objUsuario = try? JSONDecoder().decode(Usuario.self, from:  jsonUsuario.data(using: .utf8)!)
+                return objUsuario
+            } else {
+                return nil
+            }
+        }
+        set {
+            if newValue == nil {
+                objUsuario = nil
+                jsonUsuario = ""
+            } else {
+                objUsuario = newValue
+                jsonUsuario = String(data: (try? JSONEncoder().encode(objUsuario))!, encoding: .utf8) ?? ""
+            }
+        }
+    }
+    
+    public var estaLogado: Bool {
+        return !token.isEmpty
+    }
     
     public func fazerLogin(httpClient: HTTPClient,email: String, senha: String) async throws {
         let resp = try await httpClient.fetch(

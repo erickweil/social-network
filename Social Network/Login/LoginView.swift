@@ -21,9 +21,9 @@ struct LoginView_Previews: PreviewProvider {
         return NavigationView {
             LoginView {
                 VStack {
-                    if let token = store.session.token {
+                    if store.session.estaLogado {
                         Text("OK FEZ LOGIN")
-                        Text(token)
+                        Text(store.session.token)
                             .textSelection(.enabled)
                             .padding()
                     } else {

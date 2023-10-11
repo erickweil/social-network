@@ -54,6 +54,7 @@ struct InicioView: View {
             
             NavigationView {
                 ViewExample(imageName: "magnifyingglass", color: .systemBlue)
+                    .inicioToolbar(menuOpened: $menuOpened)
             }.tabItem {
                 Image(systemName: "magnifyingglass")
             }
@@ -61,6 +62,7 @@ struct InicioView: View {
             
             NavigationView {
                 ViewExample(imageName: "gear", color: .systemOrange)
+                    .inicioToolbar(menuOpened: $menuOpened)
             }.tabItem {
                 Image(systemName: "gear")
             }

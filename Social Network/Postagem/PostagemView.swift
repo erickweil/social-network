@@ -104,7 +104,7 @@ struct PostagemView: View {
         // Assim que aparecer na tela faz o fetch
         do {
             try await post.clicouCurtir(
-                token: store.session.token!,
+                token: store.session.token,
                 httpClient: httpClient
             )
         } catch {
@@ -147,9 +147,9 @@ struct PostagemView: View {
     
     func barraBotoes(_ postagem: Postagem) -> some View {
         HStack {
-            Image(postagem.curtida ? "HeartSZ.fill" : "HeartSZ.outline")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+            
+            
+            HeartSZIcon(filled: postagem.curtida)
                 .frame(width: 24.0,height: 24.0)
                 .foregroundColor(postagem.curtida ? .accentColor : .secondary)
                 .onTapGesture {
@@ -160,7 +160,11 @@ struct PostagemView: View {
             Text("\(postagem.numCurtidas)")
                 .frame(width: 60)
             
-            Image(systemName: "message").onTapGesture {
+            Image(systemName: "message")
+                .resizable()
+                 .scaledToFit()
+                 .frame(width: 24, height: 24)
+                .onTapGesture {
                 print("Comentar")
             }
             Text("\(postagem.numRespostas)")

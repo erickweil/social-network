@@ -104,6 +104,11 @@ struct NovoLoginView<Content>: View where Content: View {
                 
             }.buttonStyle(.bordered)
         }
+        .onAppear {
+            if store.session.estaLogado {
+                vm.autenticado = true
+            }
+        }
         
     }
 }
@@ -115,9 +120,9 @@ struct NovoLoginView_Previews: PreviewProvider {
         return NavigationView {
             NovoLoginView {
                 VStack {
-                    if let token = store.session.token {
+                    if store.session.estaLogado {
                         Text("OK FEZ LOGIN")
-                        Text(token)
+                        Text(store.session.token)
                             .textSelection(.enabled)
                             .padding()
                     } else {

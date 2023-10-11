@@ -17,6 +17,7 @@ extension NovoLoginView {
         var senha: String = ""
         @Published var erroSenha: String?
         
+        
         @Published
         var exibirMensagemErro: Bool = false
         private(set) var mensagemErro: String = ""

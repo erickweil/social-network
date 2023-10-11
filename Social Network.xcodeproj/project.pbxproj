@@ -26,6 +26,7 @@
 		A7A838F62A9A4354006FEFF3 /* UsuarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838F52A9A4354006FEFF3 /* UsuarioModel.swift */; };
 		A7A838F82A9A437A006FEFF3 /* Listagem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838F72A9A437A006FEFF3 /* Listagem.swift */; };
 		A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A838F92A9A452F006FEFF3 /* SessionModel.swift */; };
+		A7ACC6622AD616F600FC11D3 /* HeartSZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */; };
 		A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DA2A506CC3008D56E0 /* Social_NetworkApp.swift */; };
 		A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */; };
 		A7B5E5DF2A506CC5008D56E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */; };
@@ -59,6 +60,7 @@
 		A7A838F52A9A4354006FEFF3 /* UsuarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsuarioModel.swift; sourceTree = "<group>"; };
 		A7A838F72A9A437A006FEFF3 /* Listagem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Listagem.swift; sourceTree = "<group>"; };
 		A7A838F92A9A452F006FEFF3 /* SessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionModel.swift; sourceTree = "<group>"; };
+		A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartSZ.swift; sourceTree = "<group>"; };
 		A7B5E5D72A506CC3008D56E0 /* Social Network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Social Network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7B5E5DA2A506CC3008D56E0 /* Social_NetworkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Social_NetworkApp.swift; sourceTree = "<group>"; };
 		A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InicioView.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				A72860032AC34E7D00DDAF72 /* BordaModifier.swift */,
 				A72860052AC3598C00DDAF72 /* MeuInput.swift */,
 				A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */,
+				A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
 				A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
+				A7ACC6622AD616F600FC11D3 /* HeartSZ.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,
 				A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */,
 				A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */,

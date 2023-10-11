@@ -16,20 +16,28 @@ extension View {
 struct InicioToolbar: ViewModifier {
     @EnvironmentObject private var store: AppDataStore
         
+    @Environment(\.fezLogin) private var fezLogin: Binding<Bool>
+    
     @Binding var menuOpened: Bool
     
     func body(content: Content) -> some View {
         content
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarLeading) {
-                if let usuario = store.session.usuario {
-                    FotoPerfilView(imgPath: usuario.fotoPerfil, width: 40)
+                if store.session.estaLogado {
+                    //FotoPerfilView(imgPath: usuario.fotoPerfil, width: 40)
+                    Image(systemName: "line.3.horizontal")
                         .onTapGesture {
                             menuOpened = true
                         }
                     
                 } else {
-                    Text("Fazer Login")
+                    Text("Fazer Login \(store.session.token)")
+                        .onTapGesture {
+                            store.session.token = ""
+                            store.session.usuario = nil
+                            fezLogin.wrappedValue.toggle()
+                        }
                 }
             }
         }

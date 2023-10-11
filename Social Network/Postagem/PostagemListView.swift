@@ -37,7 +37,7 @@ struct PostagemListView: View {
     
     
     var body: some View {
-        if let token = store.session.token {
+        if store.session.estaLogado {
             if let postagens = viewModel.postagens {
                 List {
                     
@@ -68,7 +68,7 @@ struct PostagemListView: View {
                                 .onAppear {
                                     print("Apareceu o skel carregar mais")
                                     Task {
-                                        await carregarPostagens(token)
+                                        await carregarPostagens(store.session.token)
                                     }
                                 }
                         }
@@ -83,7 +83,7 @@ struct PostagemListView: View {
                 }
                 .listStyle(PlainListStyle())
                 .task {
-                    await carregarPostagens(token)
+                    await carregarPostagens(store.session.token)
                 }
             }
         } else {
