@@ -10,7 +10,6 @@ import SwiftUI
 @MainActor
 class AppDataStore: ObservableObject {
     let session: APISessionViewModel = APISessionViewModel()
-    let imageCache: ImageCacheViewModel = ImageCacheViewModel()
     
     init(fake: Bool = false) {
         if fake {

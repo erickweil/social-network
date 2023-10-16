@@ -12,9 +12,7 @@ struct PostagemListView: View {
     var mostrarPostagensCurtidas: Bool = false
     // Estado global da aplicação
     @EnvironmentObject private var store: AppDataStore
-    
-    @Environment(\.httpClient) private var httpClient: HTTPClient
-    
+        
     // Estado local desta tela
     // @StateObject ->  mantém o valor mesmo em redraws
     // @ObservedObject -> recriado quando acontece um redraw
@@ -26,7 +24,6 @@ struct PostagemListView: View {
         do {
             try await viewModel.fetchPostagens(
                 token: token,
-                httpClient: httpClient,
                 postagemPai: postagemPai,
                 postagensCurtidas: mostrarPostagensCurtidas
             )
@@ -50,7 +47,7 @@ struct PostagemListView: View {
                     }
                     
                     if postagens.count == 0 {
-                        if let postagemPai {
+                        if postagemPai != nil {
                             Text("Seja o primeiro a responder")
                         } else {
                             Text("Que vazio...")

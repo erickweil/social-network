@@ -11,7 +11,7 @@ class PostViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
     @Published public var postagem: Postagem
     
-    func clicouCurtir(token: String, httpClient: HTTPClient) async throws {
+    func clicouCurtir(token: String) async throws {
         let url: URL = APIs.curtirPostagem(postagem._id).url
         var method: FetchOptions.HTTPMethod
         if !postagem.curtida {
@@ -22,7 +22,7 @@ class PostViewModel: ObservableObject {
             method = .DELETE
         }
         
-        let resp = try await httpClient.fetch(url,
+        let resp = try await HTTPClient.instance.fetch(url,
             FetchOptions(
                 method: method,
                 headers: ["Authorization": "Bearer \(token)"]

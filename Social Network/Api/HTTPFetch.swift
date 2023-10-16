@@ -76,19 +76,21 @@ struct FetchOptions {
     }
 }
 
-// Para poder acessar o HTTPClient de qualquer lugar da aplicação
-struct HttpClientKey: EnvironmentKey {
-    static let defaultValue: HTTPClient = HTTPClient()
-}
-
-extension EnvironmentValues {
-    var httpClient: HTTPClient {
-        get { return self[HttpClientKey.self] }
-        set { self[HttpClientKey.self] = newValue }
-    }
-}
-
 struct HTTPClient {
+    
+    static private var _instance: HTTPClient? = nil
+    static var instance: HTTPClient {
+        get {
+            if let client = HTTPClient._instance {
+                return client
+            }
+            
+            print("Criou HTTPClient")
+            let client = HTTPClient()
+            HTTPClient._instance = client
+            return client
+        }
+    }
 
     struct FetchResponse {
         let body: Data?

@@ -20,8 +20,6 @@ struct Social_NetworkApp: App {
                 }
             }
             .environmentObject(store)
-            .environment(\.imageCache, ImageCacheViewModel())
-            .environment(\.httpClient, HTTPClient())
         }
     }
 }

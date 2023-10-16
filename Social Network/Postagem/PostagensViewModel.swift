@@ -16,7 +16,7 @@ class PostagensViewModel: ObservableObject {
     var proxPagina: Int = 1
     var temMais: Bool = true
     
-    func fetchPostagens(token: String, httpClient: HTTPClient, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
+    func fetchPostagens(token: String, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
         guard temMais else {
             print("Não tem mais... não precisa carregar")
             return
@@ -33,7 +33,7 @@ class PostagensViewModel: ObservableObject {
         
         try url.addQueryComponents([.init(name: "pagina", value: "\(proxPagina)")])
         
-        let resp = try await httpClient.fetch(url,
+        let resp = try await HTTPClient.instance.fetch(url,
             FetchOptions(
                 method: .GET,
                 headers: ["Authorization": "Bearer \(token)"]

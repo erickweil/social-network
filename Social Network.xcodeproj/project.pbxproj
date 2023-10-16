@@ -89,6 +89,7 @@
 		A71139212A9A8F3F001BA085 /* Postagem */ = {
 			isa = PBXGroup;
 			children = (
+				A7FB7EFC2A5AE73900B78214 /* PostagensViewModel.swift */,
 				A71139222A9A8F4F001BA085 /* PostagemView.swift */,
 				A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */,
 				A7E418172A9D10A000B794AF /* FotoPerfilView.swift */,
@@ -111,7 +112,6 @@
 		A79D02392A7C25E900215AAE /* Inicio */ = {
 			isa = PBXGroup;
 			children = (
-				A7FB7EFC2A5AE73900B78214 /* PostagensViewModel.swift */,
 				A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */,
 				A7F8E1F72A9CD06E00C7A0F8 /* InicioToolbar.swift */,
 				A7F8E1FB2A9CDE2D00C7A0F8 /* InicioSideBar.swift */,

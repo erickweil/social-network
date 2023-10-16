@@ -44,8 +44,8 @@ class APISessionViewModel: ObservableObject {
         return !token.isEmpty
     }
     
-    public func fazerLogin(httpClient: HTTPClient,email: String, senha: String) async throws {
-        let resp = try await httpClient.fetch(
+    public func fazerLogin(email: String, senha: String) async throws {
+        let resp = try await HTTPClient.instance.fetch(
             APIs.login.url,
             FetchOptions(
                 method: .POST,

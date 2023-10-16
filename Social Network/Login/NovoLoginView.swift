@@ -25,9 +25,7 @@ struct NovoLoginView<Content>: View where Content: View {
     
     @EnvironmentObject
     var store: AppDataStore
-    
-    @Environment(\.httpClient) private var httpClient: HTTPClient
-    
+        
     @StateObject
     var vm: ViewModel = ViewModel()
     
@@ -62,7 +60,6 @@ struct NovoLoginView<Content>: View where Content: View {
                             Task {
                                 do {
                                     try await store.session.fazerLogin(
-                                        httpClient: httpClient,
                                         email: vm.email,
                                         senha: vm.senha)
                                     
