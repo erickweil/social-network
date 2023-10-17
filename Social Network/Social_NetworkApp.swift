@@ -8,18 +8,17 @@
 import SwiftUI
 
 @main
-struct Social_NetworkApp: App {
-    @StateObject var store = AppDataStore()
-    
+struct Social_NetworkApp: App {    
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                NovoLoginView() {
-                    InicioView()
-                        .navigationBarBackButtonHidden(true)
+                SplashScreen {
+                    NovoLoginView() {
+                        InicioView()
+                            .navigationBarBackButtonHidden(true)
+                    }
                 }
             }
-            .environmentObject(store)
         }
     }
 }

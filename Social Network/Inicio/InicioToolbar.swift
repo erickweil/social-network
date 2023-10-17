@@ -14,9 +14,7 @@ extension View {
 }
 
 struct InicioToolbar: ViewModifier {
-    @EnvironmentObject private var store: AppDataStore
-        
-    @Environment(\.fezLogin) private var fezLogin: Binding<Bool>
+    @EnvironmentObject private var store: LoginViewModel
     
     @Binding var menuOpened: Bool
     
@@ -24,7 +22,7 @@ struct InicioToolbar: ViewModifier {
         content
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarLeading) {
-                if store.session.estaLogado {
+                if store.estaLogado {
                     //FotoPerfilView(imgPath: usuario.fotoPerfil, width: 40)
                     Image(systemName: "line.3.horizontal")
                         .onTapGesture {
@@ -32,11 +30,10 @@ struct InicioToolbar: ViewModifier {
                         }
                     
                 } else {
-                    Text("Fazer Login \(store.session.token)")
+                    // Não deveria nunca acontecer mas né
+                    Text("Fazer Login \(store.token)")
                         .onTapGesture {
-                            store.session.token = ""
-                            store.session.usuario = nil
-                            fezLogin.wrappedValue.toggle()
+                            store.estaLogado = false
                         }
                 }
             }
@@ -50,7 +47,7 @@ struct InicioToolbar_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationView {
-            LoginView() {
+            NovoLoginView() {
                 List {
                     VStack {
                         PostagemSkeleton()
@@ -63,6 +60,6 @@ struct InicioToolbar_Previews: PreviewProvider {
                     .navigationBarBackButtonHidden(true)
                     .inicioToolbar(menuOpened: opened)
             }
-        }.environmentObject(AppDataStore())
+        }
     }
 }

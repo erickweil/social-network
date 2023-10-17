@@ -13,6 +13,7 @@ enum APIs {
     case postagensCurtidas
     case login
     case curtirPostagem(String)
+    case usuarioLogado
     
     public static var baseURL: URL {
         URL(string: "https://socialize-api.app.fslab.dev")!
@@ -31,6 +32,8 @@ enum APIs {
             return APIs.baseURL.appendingPathComponent("/login")
         case .curtirPostagem(let id):
             return APIs.baseURL.appendingPathComponent("/postagens/\(id)/curtidas")
+        case .usuarioLogado:
+            return APIs.baseURL.appendingPathComponent("/usuarios/logado")
         }
     }
 }

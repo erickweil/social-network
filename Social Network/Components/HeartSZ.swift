@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct HeartSZ : Shape {
+    let left: Bool
+    let right: Bool
+    
+    init(left: Bool = true,right: Bool = true) {
+        self.left = left;
+        self.right = right;
+    }
+    
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let w = rect.width
@@ -16,22 +24,33 @@ struct HeartSZ : Shape {
         let topoff = w * 0.022
         let rightoff = w * 0.064
         
-        path.move(to: CGPoint(x: 0, y: radius))
-        path.addArc(
-            center: CGPoint(x: radius, y: radius),
-            radius: radius,
-            startAngle: .degrees(180), endAngle: .degrees(0),
-            clockwise: false
-        )
-        path.addLine(to: CGPoint(x: w/2, y: topoff))
-        path.addLine(to: CGPoint(x: w + rightoff, y: topoff))
-        path.addLine(to: CGPoint(x: w/2, y: h))
+        if left {
+            path.move(to: CGPoint(x: 0, y: radius))
+            path.addArc(
+                center: CGPoint(x: radius, y: radius),
+                radius: radius,
+                startAngle: .degrees(180), endAngle: .degrees(0),
+                clockwise: false
+            )
+        } else {
+            path.move(to: CGPoint(x: radius*2, y: radius))
+        }
         
-        path.addCurve(
-            to: CGPoint(x: 0, y: radius),
-            control1: CGPoint(x: w/2 - radius/12,y: h/2),
-            control2: CGPoint(x: 0, y: h/2)
-        )
+        if right {
+            path.addLine(to: CGPoint(x: w/2, y: topoff))
+            path.addLine(to: CGPoint(x: w + rightoff, y: topoff))
+            path.addLine(to: CGPoint(x: w/2, y: h))
+        } else {
+            path.move(to: CGPoint(x:w/2, y: h))
+        }
+        
+        if left {
+            path.addCurve(
+                to: CGPoint(x: 0, y: radius),
+                control1: CGPoint(x: w/2 - radius/12,y: h/2),
+                control2: CGPoint(x: 0, y: h/2)
+            )
+        }
         
         return path
     }
@@ -57,6 +76,8 @@ struct HeartSZ_Previews: PreviewProvider {
             
             HeartSZIcon(filled: true)
                 .frame(width: 320, height: 320)
+            
+               
         }
     }
 }

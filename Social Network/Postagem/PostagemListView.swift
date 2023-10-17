@@ -11,7 +11,7 @@ struct PostagemListView: View {
     var postagemPai: Postagem?
     var mostrarPostagensCurtidas: Bool = false
     // Estado global da aplicação
-    @EnvironmentObject private var store: AppDataStore
+    @EnvironmentObject private var store: LoginViewModel
         
     // Estado local desta tela
     // @StateObject ->  mantém o valor mesmo em redraws
@@ -34,7 +34,7 @@ struct PostagemListView: View {
     
     
     var body: some View {
-        if store.session.estaLogado {
+        if store.estaLogado {
             if let postagens = viewModel.postagens {
                 List {
                     
@@ -65,7 +65,7 @@ struct PostagemListView: View {
                                 .onAppear {
                                     print("Apareceu o skel carregar mais")
                                     Task {
-                                        await carregarPostagens(store.session.token)
+                                        await carregarPostagens(store.token)
                                     }
                                 }
                         }
@@ -80,7 +80,7 @@ struct PostagemListView: View {
                 }
                 .listStyle(PlainListStyle())
                 .task {
-                    await carregarPostagens(store.session.token)
+                    await carregarPostagens(store.token)
                 }
             }
         } else {

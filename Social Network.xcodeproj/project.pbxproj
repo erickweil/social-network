@@ -13,7 +13,6 @@
 		A72860062AC3598C00DDAF72 /* MeuInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72860052AC3598C00DDAF72 /* MeuInput.swift */; };
 		A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */; };
 		A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */; };
-		A76E85A82AA7EFEF00142769 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76E85A72AA7EFEF00142769 /* LoginView.swift */; };
 		A76E85AA2AA7F0BD00142769 /* NovoLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */; };
 		A76E85AC2AA7FB8000142769 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76E85AB2AA7FB8000142769 /* LoginViewModel.swift */; };
 		A78C40162A9E39EB00A88C15 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78C40152A9E39EB00A88C15 /* PostViewModel.swift */; };
@@ -31,6 +30,8 @@
 		A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */; };
 		A7B5E5DF2A506CC5008D56E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */; };
 		A7B5E5E22A506CC5008D56E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */; };
+		A7C38EF32ADF1E990041538C /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C38EF22ADF1E990041538C /* SplashScreen.swift */; };
+		A7C38EF52ADF1EDA0041538C /* NeonFlicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */; };
 		A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */; };
 		A7E418182A9D10A000B794AF /* FotoPerfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E418172A9D10A000B794AF /* FotoPerfilView.swift */; };
 		A7F8E1F62A9CC50200C7A0F8 /* BottonNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F8E1F52A9CC50200C7A0F8 /* BottonNavBar.swift */; };
@@ -47,7 +48,6 @@
 		A72860052AC3598C00DDAF72 /* MeuInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeuInput.swift; sourceTree = "<group>"; };
 		A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFetch.swift; sourceTree = "<group>"; };
 		A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemListView.swift; sourceTree = "<group>"; };
-		A76E85A72AA7EFEF00142769 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovoLoginView.swift; sourceTree = "<group>"; };
 		A76E85AB2AA7FB8000142769 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		A78C40152A9E39EB00A88C15 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
@@ -66,6 +66,8 @@
 		A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InicioView.swift; sourceTree = "<group>"; };
 		A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A7C38EF22ADF1E990041538C /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeonFlicker.swift; sourceTree = "<group>"; };
 		A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfRoundedRectangle.swift; sourceTree = "<group>"; };
 		A7E418172A9D10A000B794AF /* FotoPerfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FotoPerfilView.swift; sourceTree = "<group>"; };
 		A7F8E1F52A9CC50200C7A0F8 /* BottonNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottonNavBar.swift; sourceTree = "<group>"; };
@@ -102,7 +104,6 @@
 		A73810192A9AE313001A5983 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				A76E85A72AA7EFEF00142769 /* LoginView.swift */,
 				A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */,
 				A76E85AB2AA7FB8000142769 /* LoginViewModel.swift */,
 			);
@@ -115,6 +116,7 @@
 				A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */,
 				A7F8E1F72A9CD06E00C7A0F8 /* InicioToolbar.swift */,
 				A7F8E1FB2A9CDE2D00C7A0F8 /* InicioSideBar.swift */,
+				A7C38EF22ADF1E990041538C /* SplashScreen.swift */,
 			);
 			path = Inicio;
 			sourceTree = "<group>";
@@ -200,6 +202,7 @@
 				A72860052AC3598C00DDAF72 /* MeuInput.swift */,
 				A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */,
 				A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */,
+				A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -274,11 +277,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7C38EF32ADF1E990041538C /* SplashScreen.swift in Sources */,
 				A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */,
 				A7F8E1FA2A9CD62E00C7A0F8 /* SideMenuDrawer.swift in Sources */,
 				A71139202A9A8DC9001BA085 /* ImageCacheModel.swift in Sources */,
 				A7A838F62A9A4354006FEFF3 /* UsuarioModel.swift in Sources */,
-				A76E85A82AA7EFEF00142769 /* LoginView.swift in Sources */,
 				A7F8E1F62A9CC50200C7A0F8 /* BottonNavBar.swift in Sources */,
 				A72860062AC3598C00DDAF72 /* MeuInput.swift in Sources */,
 				A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */,
@@ -286,6 +289,7 @@
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
 				A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
+				A7C38EF52ADF1EDA0041538C /* NeonFlicker.swift in Sources */,
 				A7ACC6622AD616F600FC11D3 /* HeartSZ.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,
 				A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */,

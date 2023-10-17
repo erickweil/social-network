@@ -8,7 +8,7 @@
 import SwiftUI
 
 // Indica se fez ou não Login
-struct FezLoginKey: EnvironmentKey {
+/*struct FezLoginKey: EnvironmentKey {
     static let defaultValue: Binding<Bool> = .constant(false)
 }
 
@@ -17,36 +17,31 @@ extension EnvironmentValues {
         get { return self[FezLoginKey.self] }
         set { self[FezLoginKey.self] = newValue }
     }
-}
+}*/
 
 struct NovoLoginView<Content>: View where Content: View {
     
     var content: () -> Content
     
-    @EnvironmentObject
-    var store: AppDataStore
-        
-    @StateObject
-    var vm: ViewModel = ViewModel()
+    // Estado global da aplicação
+    @EnvironmentObject private var vm: LoginViewModel
     
     var body: some View {
         ZStack {
-            
-            
             VStack(spacing: 20.0) {
                 
-                NavigationLink(isActive: $vm.autenticado, destination: {
+                NavigationLink(isActive: $vm.navegarLogin, destination: {
                     content()
-                        .environment(\.fezLogin, $vm.autenticado)
+                        .environmentObject(vm)
                 }, label: {
                     EmptyView()
                 })
                 
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 200)
-                    .padding(.bottom, 40)
+                //Image("Logo")
+                //    .resizable()
+                //    .aspectRatio(contentMode: .fit)
+                //    .frame(maxWidth: 200)
+                //    .padding(.bottom, 40)
                 
                 VStack(spacing: 20.0) {
                     Text("Login")
@@ -59,14 +54,9 @@ struct NovoLoginView<Content>: View where Content: View {
                         if vm.validarFormulario() {
                             Task {
                                 do {
-                                    try await store.session.fazerLogin(
+                                    try await vm.fazerLogin(
                                         email: vm.email,
                                         senha: vm.senha)
-                                    
-                                    DispatchQueue.main.async {
-                                        vm.setarMensagemErro("")
-                                        vm.autenticado = true
-                                    }
                                 } catch {
                                     DispatchQueue.main.async {
                                         vm.setarMensagemErro(error.localizedDescription)
@@ -90,7 +80,7 @@ struct NovoLoginView<Content>: View where Content: View {
                 .padding(20.0)
                 .background(Color(.systemBackground))
                 .halfRounded(radius: 80.0)
-                .shadow(radius: 15.0,x:1,y:1)
+                .shadow(color:.white,radius: 15.0,x:1,y:1)
                 
             }
             .padding(40)
@@ -101,33 +91,21 @@ struct NovoLoginView<Content>: View where Content: View {
                 
             }.buttonStyle(.bordered)
         }
-        .onAppear {
-            if store.session.estaLogado {
-                vm.autenticado = true
-            }
-        }
-        
     }
 }
 
 struct NovoLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        let store = AppDataStore()
         
         return NavigationView {
             NovoLoginView {
                 VStack {
-                    if store.session.estaLogado {
                         Text("OK FEZ LOGIN")
-                        Text(store.session.token)
-                            .textSelection(.enabled)
-                            .padding()
-                    } else {
-                        Text("PRECISA AUTENTICAR")
-                    }
                 }
             }
+            .frame(maxWidth: .infinity,maxHeight: .infinity)
+            .background(.black,ignoresSafeAreaEdges: .all)
+            .environmentObject(LoginViewModel())
         }
-        .environmentObject(store)
     }
 }

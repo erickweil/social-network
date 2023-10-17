@@ -8,8 +8,8 @@ import SwiftUI
 
 // @MainActor A singleton actor whose executor is equivalent to the main dispatch queue.
 @MainActor
-class AppDataStore: ObservableObject {
-    let session: APISessionViewModel = APISessionViewModel()
+class AppDataStoree: ObservableObject {
+    let session: APISessionViewModell = APISessionViewModell()
     
     init(fake: Bool = false) {
         if fake {

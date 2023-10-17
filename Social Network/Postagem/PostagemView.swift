@@ -89,7 +89,7 @@ struct PostagemSkeleton: View {
 // View que representa uma Postagem
 struct PostagemView: View {
     // Estado global da aplicação
-    @EnvironmentObject private var store: AppDataStore
+    @EnvironmentObject private var store: LoginViewModel
         
     @ObservedObject
     var post: PostViewModel
@@ -102,7 +102,7 @@ struct PostagemView: View {
         // Assim que aparecer na tela faz o fetch
         do {
             try await post.clicouCurtir(
-                token: store.session.token
+                token: store.token
             )
         } catch {
             print(error.localizedDescription)

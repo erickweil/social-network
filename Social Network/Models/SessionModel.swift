@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class APISessionViewModel: ObservableObject {
+class APISessionViewModell: ObservableObject {
     // https://stackoverflow.com/questions/52591866/whats-the-correct-usage-of-urlsession-create-new-one-or-reuse-same-one
     @AppStorage("SESSION_TOKEN")
     public var token: String = ""

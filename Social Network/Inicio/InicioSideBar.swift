@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct InicioSideBar: View {
-    
-    @Environment(\.fezLogin) private var fezLogin: Binding<Bool>
-    
+        
     @Environment(\.inicioTabSelect) private var inicioTabSelect: Binding<InicioTabTelas>
     
-    @EnvironmentObject private var store: AppDataStore
+    @EnvironmentObject private var store: LoginViewModel
     
     @Binding var menuOpened: Bool
     
@@ -21,7 +19,7 @@ struct InicioSideBar: View {
         VStack(alignment: .leading) {
             
             // HEADER
-            SideMenuHeader(usuario: store.session.usuario)
+            SideMenuHeader(usuario: store.usuario)
             
             // BODY
             VStack(alignment: .leading, spacing: 15) {
@@ -92,9 +90,7 @@ struct InicioSideBar: View {
             menuOpened.toggle()
             break
         case .sair:
-                store.session.token = ""
-                store.session.usuario = nil
-                self.fezLogin.wrappedValue.toggle()
+            store.estaLogado = false
             break
         }
     }
@@ -167,22 +163,25 @@ struct SideMenuButton<Icon>: View where Icon : View {
 
 struct InicioSideBar_Previews: PreviewProvider {
     static var previews: some View {
-        TabView {
-            NavigationView {
-                ViewExample(imageName: "magnifyingglass", color: .systemBlue)
-            }.tabItem {
-                Image(systemName: "magnifyingglass")
-            }
-            
-            NavigationView {
-                ViewExample(imageName: "gear", color: .systemOrange)
-            }.tabItem {
-                Image(systemName: "gear")
+        NavigationView {
+            NovoLoginView {
+                TabView {
+                    NavigationView {
+                        ViewExample(imageName: "magnifyingglass", color: .systemBlue)
+                    }.tabItem {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    
+                    NavigationView {
+                        ViewExample(imageName: "gear", color: .systemOrange)
+                    }.tabItem {
+                        Image(systemName: "gear")
+                    }
+                }
+                .sideMenuDrawer(menuOpened: .constant(true)) {
+                    InicioSideBar(menuOpened: .constant(true))
+                }
             }
         }
-        .sideMenuDrawer(menuOpened: .constant(true)) {
-            InicioSideBar(menuOpened: .constant(true))
-        }
-        .environmentObject(AppDataStore(fake: true))
     }
 }
