@@ -99,6 +99,24 @@ describe("Usuarios",() => {
         expect(usuario.senha).toBeUndefined();
     });
 
+
+    test("Verificar o próprio usuário:", async () => {
+        const res = await req
+        .get("/usuarios/logado")
+        .set("Authorization", `Bearer ${token}`)  
+        .set("Accept", "aplication/json")
+        .expect(200);
+
+        const usuario = res.body;
+        expect(usuario._id).toBe(novoUsuario._id);
+        expect(usuario.nome).toBe(novoUsuario.nome);
+        expect(usuario.email).toBe(novoUsuario.email);
+        expect(usuario.fotoPerfil).toBeDefined();
+        expect(usuario.fotoCapa).toBeDefined();
+        expect(usuario.biografia).toBeDefined();
+        expect(usuario.senha).toBeUndefined();
+	});
+
     test("Usuário inexistente Por ID:", async () => {		
 		const res = await getUsuarioPorID(req,token,"551137c2f9e1fac808a5f572").expect(404);
 	});
@@ -179,7 +197,7 @@ describe("Usuarios",() => {
 
     test("Tentando utilizar o mesmo token após deletar conta", async () => {
         const res = await req
-        .get("/usuarios")
+        .get("/usuarios/logado")
         .set("Authorization", `Bearer ${token}`)  
         .set("Accept", "aplication/json")
         .expect(498);

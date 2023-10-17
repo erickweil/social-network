@@ -14,6 +14,7 @@ describe("Teste Login", () => {
 		const rotas = [
 			{method:"get", path:"/usuarios"},
 			{method:"get", path:"/usuarios/551137c2f9e1fac808a5f572"},
+			{method:"get", path:"/usuarios/logado"},
 			{method:"patch", path:"/usuarios"},
 			{method:"delete", path:"/usuarios"},
 			{method:"post", path:"/usuarios/foto-perfil"},
