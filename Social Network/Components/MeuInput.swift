@@ -43,8 +43,8 @@ struct MeuInput: View {
         let diminuirLabel = estaFocado || !texto.isEmpty
         let cor: Color =
             erro != nil ? Color(.systemRed) :
-            estaFocado ? .accentColor :
-            .secondary
+        estaFocado ? Color.destaque :
+            Color.secundaria
         let padding = 10.0
         
         VStack(alignment: .leading) {
@@ -55,7 +55,7 @@ struct MeuInput: View {
                     Text(label)
                         .font(diminuirLabel ? .system(size: 12.0) : .body)
                         .padding(.horizontal,diminuirLabel ? 5 : 0)
-                        .background(Color(colorScheme == .dark ? .secondarySystemBackground : .systemBackground))
+                        .background(colorScheme == .dark ? Color.fundo : Color.fundo)
                         .padding(.leading,padding)
                         .frame(
                             maxWidth: .infinity,

@@ -36,7 +36,7 @@ struct SideMenuDrawer<C>: ViewModifier where C: View {
                     
                         menuContent()
                         .background {
-                            Color(.systemBackground)
+                            Color.fundo
                                 .ignoresSafeArea()
                                 .shadow(radius: 10.0)
                         }

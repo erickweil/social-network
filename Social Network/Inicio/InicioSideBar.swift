@@ -34,7 +34,7 @@ struct InicioSideBar: View {
                 SideMenuButton(
                     icon: { HeartSZIcon(
                         filled: true,
-                        fillColor: inicioTabSelect.wrappedValue == .curtidas ? Color("AccentColor") : Color.primary
+                        fillColor: inicioTabSelect.wrappedValue == .curtidas ? Color.destaque : Color.texto
                     ) },
                     title: "Curtidas",
                     titleKey: .curtidas,
@@ -107,12 +107,12 @@ struct SideMenuHeader: View {
                     .font(.title2)
                     .bold()
                     .padding(.top, 10)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.texto)
                 
                 
                 Text(usuario.email)
                     .font(.body)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.secundaria)
             } else {
                 Color(.lightGray)
                     .frame(width: 60,height:60)
@@ -122,7 +122,7 @@ struct SideMenuHeader: View {
         .padding(20)
         .frame(maxWidth: .infinity,minHeight: 120, alignment: .leading)
         .background(
-            LinearGradient(colors: [Color(.systemBackground),Color(red: 0.9, green: 0.9, blue: 0.9)],
+            LinearGradient(colors: [Color.fundo,Color(red: 0.9, green: 0.9, blue: 0.9)],
                            startPoint: .center, endPoint: .bottom
             )
             .ignoresSafeArea(.all))
@@ -147,13 +147,13 @@ struct SideMenuButton<Icon>: View where Icon : View {
                 Text(title)
                     .font(.subheadline)
             }
-            .foregroundColor(selected.wrappedValue == titleKey ? Color.accentColor : Color.primary)
+            .foregroundColor(selected.wrappedValue == titleKey ? Color.destaque : Color.texto)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
             .background{
                 if selected.wrappedValue == titleKey {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.accentColor)
+                        .fill(Color.destaque)
                         .opacity(0.25)
                 }
             }

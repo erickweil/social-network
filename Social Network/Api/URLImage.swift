@@ -67,7 +67,7 @@ struct URLImage<P>: View where P : View {
                         placeholder()
                         
                         Spacer().background {
-                            Text("Erro ao carregar imagem")
+                            Text("?")
                                 .font(.title)
                         }
                     }

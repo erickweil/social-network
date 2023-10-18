@@ -78,7 +78,7 @@ struct NovoLoginView<Content>: View where Content: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(20.0)
-                .background(Color(.systemBackground))
+                .background(Color.fundo)
                 .halfRounded(radius: 80.0)
                 .shadow(color:.white,radius: 15.0,x:1,y:1)
                 
@@ -104,7 +104,7 @@ struct NovoLoginView_Previews: PreviewProvider {
                 }
             }
             .frame(maxWidth: .infinity,maxHeight: .infinity)
-            .background(.black,ignoresSafeAreaEdges: .all)
+            .background(Color.secundaria,ignoresSafeAreaEdges: .all)
             .environmentObject(LoginViewModel())
         }
     }

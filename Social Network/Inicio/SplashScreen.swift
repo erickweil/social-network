@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HeartSZAnim: View {
-    var fillColor: Color = Color("AccentColor")
+    var fillColor: Color = Color.destaque
     @State var anim: CGFloat = 0.0
     
     var body: some View {
@@ -16,23 +16,24 @@ struct HeartSZAnim: View {
         VStack {
             ZStack {
                 HeartSZ(left: false, right: true)
-                    .stroke(lineWidth: 5.50)
+                    .trim(from: 0, to: anim)
+                    .stroke(fillColor,lineWidth: 5.50)
                     .padding(40)
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: Color("AccentColor"), frontColor: Color.white)
                     .frame(width: 200, height: 200)
-                    .animation(.spring(response: 0.75,dampingFraction: 0.70), value: anim)
+                    .animation(.easeInOut(duration: 0.75).delay(1.0), value: anim)
                 
                 HeartSZ(left: true, right: false)
-                    .stroke(lineWidth: 5.50)
+                    .stroke(fillColor,lineWidth: 5.50)
                     .padding(40)
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: Color("AccentColor"), frontColor: Color.white)
                     .frame(width: 200, height: 200)
-                    .animation(.spring(response: 0.4,dampingFraction: 0.60).delay(0.15), value: anim)
+                    .rotation3DEffect(.degrees(anim * (360 * 2)), axis: (x: 0,y: 1,z: 0))
+                    .animation(.easeOut(duration: 1.0), value: anim)
+                    //.animation(.spring(response: 0.7,dampingFraction: 0.30), value: anim)
             }
             
             HStack(spacing: 0) {
                 Text("S").bold()
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: Color("AccentColor"), frontColor: .white)
+                    .neonFlicker(isFaceUp: anim == 1.0, backColor: fillColor, frontColor: .white)
                     .animation(.spring(response: 0.6,dampingFraction: 0.60).delay(0.25), value: anim)
                 
                 if anim == 1.0 {
@@ -41,7 +42,7 @@ struct HeartSZAnim: View {
                 }
                 
                 Text("z").bold()
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: Color("AccentColor"), frontColor: .white)
+                    .neonFlicker(isFaceUp: anim == 1.0, backColor: fillColor, frontColor: .white)
                     .animation(.spring(response: 0.5,dampingFraction: 0.75).delay(0.15), value: anim)
                 
                 if anim == 1.0 {
@@ -50,7 +51,7 @@ struct HeartSZAnim: View {
                 }
             }
             .animation(.default.delay(2.0), value: anim)
-            .foregroundColor(.white)
+            .foregroundColor(Color.texto)
             .font(.system(size: 52))
         }
         .onAppear {
@@ -72,7 +73,7 @@ struct SplashScreen<Content>: View where Content: View {
         
     var body: some View {
         ZStack {
-            Color.black
+            Color.primaria
             
             VStack {
                 HeartSZAnim()

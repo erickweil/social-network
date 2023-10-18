@@ -31,7 +31,7 @@ struct PerfilUsuario: View {
     var body: some View {
         ZStack(alignment: .top) {
             // Fundo
-            FundoView(cor1: .accentColor, cor2: .primary)
+            FundoView(cor1: Color.destaque , cor2: Color.primaria )
             
             // Informações
             VStack {

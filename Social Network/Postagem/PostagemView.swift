@@ -117,9 +117,9 @@ struct PostagemView: View {
                     Text(postagem.usuario.nome)
                         .bold()
                     Text("・")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.secundaria)
                     Text(dataParaTempoDecorrido(data: postagem.created_at))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.secundaria)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
@@ -127,7 +127,7 @@ struct PostagemView: View {
                     Text(postagem.usuario.nome)
                         .bold()
                     Text(dataParaTempoDecorrido(data: postagem.created_at))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.secundaria)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -148,7 +148,7 @@ struct PostagemView: View {
             
             HeartSZIcon(filled: postagem.curtida)
                 .frame(width: 24.0,height: 24.0)
-                .foregroundColor(postagem.curtida ? .accentColor : .secondary)
+                .foregroundColor(postagem.curtida ? Color.destaque : Color.secundaria )
                 .onTapGesture {
                     Task {
                         await curtir()
@@ -170,7 +170,7 @@ struct PostagemView: View {
             Spacer()
         }
         .padding(.top, 10)
-        .foregroundColor(.secondary)
+        .foregroundColor(Color.secundaria)
     }
     
     var body: some View {

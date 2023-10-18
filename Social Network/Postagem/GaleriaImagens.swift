@@ -30,7 +30,7 @@ struct GaleriaImagens: View {
                             defaultPlaceholder()
                         }
                         .modifier(clipComBorda(shape:RoundedRectangle(cornerRadius: 10)))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.secundaria)
                         .frame(maxWidth: geo.size.width)
                     }
                 }

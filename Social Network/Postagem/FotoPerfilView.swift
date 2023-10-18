@@ -23,7 +23,7 @@ struct FotoPerfilView: View {
         }
         .frame(width: width)
         .clipShape(Circle())
-        .foregroundColor(.secondary)
+        .foregroundColor(Color.secundaria)
     }
 }
 
