@@ -77,15 +77,38 @@ struct MeuInput: View {
     }
 }
 
-struct MeuInput_Previews: PreviewProvider {
-    static var previews: some View {
+struct ExemploMeuInput: View {
+    @State var nome: String = ""
+    @State var sobrenome: String = ""
+    @State var senha1: String = ""
+    @State var senha2: String = ""
+    
+    @State var erroSenha: String?
+    var body: some View {
         Form {
             Section("Teste") {
-                MeuInput("Nome",texto: .constant(""))
-                MeuInput("Sobrenome",texto: .constant(""))
-                MeuInput("Senha",texto: .constant(""),erro: "As senhas devem ser iguais", password: true)
-                MeuInput("Senha",texto: .constant(""), password: true)
+                MeuInput("Nome",texto: $nome)
+                MeuInput("Sobrenome",texto: $sobrenome)
+                MeuInput("Senha",texto: $senha1,erro: erroSenha, password: true)
+                MeuInput("Senha",texto: $senha2,erro: erroSenha, password: true)
+                
+                
+                Button("Validar") {
+                    if senha1 != senha2 {
+                        erroSenha = "As senhas não batem"
+                    } else {
+                        erroSenha = nil
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }
+    }
+}
+
+struct MeuInput_Previews: PreviewProvider {
+    static var previews: some View {
+        ExemploMeuInput()
     }
 }
