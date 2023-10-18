@@ -30,6 +30,7 @@
 		A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */; };
 		A7B5E5DF2A506CC5008D56E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */; };
 		A7B5E5E22A506CC5008D56E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */; };
+		A7C132432ADF7ACF00F8950B /* ColorPallete.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C132422ADF7ACF00F8950B /* ColorPallete.swift */; };
 		A7C38EF32ADF1E990041538C /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C38EF22ADF1E990041538C /* SplashScreen.swift */; };
 		A7C38EF52ADF1EDA0041538C /* NeonFlicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */; };
 		A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */; };
@@ -66,6 +67,7 @@
 		A7B5E5DC2A506CC3008D56E0 /* InicioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InicioView.swift; sourceTree = "<group>"; };
 		A7B5E5DE2A506CC5008D56E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7B5E5E12A506CC5008D56E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A7C132422ADF7ACF00F8950B /* ColorPallete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPallete.swift; sourceTree = "<group>"; };
 		A7C38EF22ADF1E990041538C /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeonFlicker.swift; sourceTree = "<group>"; };
 		A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfRoundedRectangle.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				A7C4E1C52AD581C5003F715F /* HalfRoundedRectangle.swift */,
 				A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */,
 				A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */,
+				A7C132422ADF7ACF00F8950B /* ColorPallete.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */,
 				A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */,
 				A76E85AC2AA7FB8000142769 /* LoginViewModel.swift in Sources */,
+				A7C132432ADF7ACF00F8950B /* ColorPallete.swift in Sources */,
 				A7A838F82A9A437A006FEFF3 /* Listagem.swift in Sources */,
 				A7F8E1F82A9CD06E00C7A0F8 /* InicioToolbar.swift in Sources */,
 				A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */,

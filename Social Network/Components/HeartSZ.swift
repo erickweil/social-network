@@ -58,12 +58,12 @@ struct HeartSZ : Shape {
 
 struct HeartSZIcon: View {
     var filled: Bool = false
-    var fillColor: Color = Color("AccentColor")
+    var fillColor: Color = .destaque
     var body: some View {
         if filled {
             HeartSZ().fill(fillColor)
         } else {
-            HeartSZ().stroke(Color.secondary, lineWidth: 1.50)
+            HeartSZ().stroke(Color.secundaria, lineWidth: 1.50)
         }
     }
 }
@@ -76,8 +76,6 @@ struct HeartSZ_Previews: PreviewProvider {
             
             HeartSZIcon(filled: true)
                 .frame(width: 320, height: 320)
-            
-               
         }
     }
 }
