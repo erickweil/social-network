@@ -70,9 +70,9 @@ struct NovoLoginView<Content>: View where Content: View {
                     
                     HStack {
                         Text("Novo por aqui?")
-                        NavigationLink("Cadastre-se", destination: {
-                            ViewExample(imageName: "person.fill", color: .systemBlue)
-                        })
+                        Button("Cadastre-se") {
+                            vm.navegarCadastro = true
+                        }
                     }
                     .padding(.bottom, 20)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -80,11 +80,16 @@ struct NovoLoginView<Content>: View where Content: View {
                 .padding(20.0)
                 .background(Color.fundo)
                 .halfRounded(radius: 80.0)
-                .shadow(color:.white,radius: 15.0,x:1,y:1)
+                .shadow(color:.secundaria,radius: 15.0,x:1,y:1)
                 
             }
             .padding(40)
             
+        }
+        .sheet(isPresented: $vm.navegarCadastro) {
+            NavigationView {
+                CadastroView()
+            }
         }
         .alert(vm.mensagemErro, isPresented: $vm.exibirMensagemErro) {
             Button("Fechar") {

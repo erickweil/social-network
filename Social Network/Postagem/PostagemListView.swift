@@ -18,7 +18,6 @@ struct PostagemListView: View {
     // @ObservedObject -> recriado quando acontece um redraw
     @StateObject var viewModel = PostagensViewModel()
     
-    
     func carregarPostagens(_ token: String) async {
         // Assim que aparecer na tela faz o fetch
         do {
@@ -27,8 +26,12 @@ struct PostagemListView: View {
                 postagemPai: postagemPai,
                 postagensCurtidas: mostrarPostagensCurtidas
             )
+        } catch NetworkError.unauthorized {
+            store.estaLogado = false
         } catch {
             print(error.localizedDescription)
+            viewModel.mensagemErro = error.localizedDescription
+            viewModel.exibirMensagemErro = true
         }
     }
     
@@ -72,6 +75,23 @@ struct PostagemListView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
+                .sheet(isPresented: $viewModel.navegarNovaPostagem) {
+                    NavigationView {
+                        NovaPostagemView()
+                    }
+                }
+                .toolbar() {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Postar") {
+                            viewModel.navegarNovaPostagem = true
+                        }
+                    }
+                }
+                .alert(viewModel.mensagemErro, isPresented: $viewModel.exibirMensagemErro) {
+                    Button("Fechar") {
+                        
+                    }.buttonStyle(.bordered)
+                }
             } else {
                 List {
                     ForEach(0..<3) { i in

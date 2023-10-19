@@ -11,6 +11,12 @@
 		A71139232A9A8F4F001BA085 /* PostagemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71139222A9A8F4F001BA085 /* PostagemView.swift */; };
 		A72860042AC34E7D00DDAF72 /* BordaModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72860032AC34E7D00DDAF72 /* BordaModifier.swift */; };
 		A72860062AC3598C00DDAF72 /* MeuInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72860052AC3598C00DDAF72 /* MeuInput.swift */; };
+		A733D0782AE1B4940058750C /* CadastroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D0772AE1B4940058750C /* CadastroView.swift */; };
+		A733D07A2AE1B4AF0058750C /* CadastroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D0792AE1B4AF0058750C /* CadastroViewModel.swift */; };
+		A733D07C2AE1BD2E0058750C /* FormularioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D07B2AE1BD2E0058750C /* FormularioViewModel.swift */; };
+		A733D07E2AE1D7730058750C /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D07D2AE1D7730058750C /* Alertable.swift */; };
+		A733D0802AE1DC900058750C /* NovaPostagemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D07F2AE1DC900058750C /* NovaPostagemView.swift */; };
+		A733D0822AE1DC9B0058750C /* NovaPostagemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733D0812AE1DC9B0058750C /* NovaPostagemViewModel.swift */; };
 		A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */; };
 		A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */; };
 		A76E85AA2AA7F0BD00142769 /* NovoLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */; };
@@ -47,6 +53,12 @@
 		A71139222A9A8F4F001BA085 /* PostagemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemView.swift; sourceTree = "<group>"; };
 		A72860032AC34E7D00DDAF72 /* BordaModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BordaModifier.swift; sourceTree = "<group>"; };
 		A72860052AC3598C00DDAF72 /* MeuInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeuInput.swift; sourceTree = "<group>"; };
+		A733D0772AE1B4940058750C /* CadastroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadastroView.swift; sourceTree = "<group>"; };
+		A733D0792AE1B4AF0058750C /* CadastroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadastroViewModel.swift; sourceTree = "<group>"; };
+		A733D07B2AE1BD2E0058750C /* FormularioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormularioViewModel.swift; sourceTree = "<group>"; };
+		A733D07D2AE1D7730058750C /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
+		A733D07F2AE1DC900058750C /* NovaPostagemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovaPostagemView.swift; sourceTree = "<group>"; };
+		A733D0812AE1DC9B0058750C /* NovaPostagemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovaPostagemViewModel.swift; sourceTree = "<group>"; };
 		A73F46C82A9BCFAF0009A835 /* HTTPFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFetch.swift; sourceTree = "<group>"; };
 		A74BF7C12A9C1A6C00B8BD82 /* PostagemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostagemListView.swift; sourceTree = "<group>"; };
 		A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovoLoginView.swift; sourceTree = "<group>"; };
@@ -99,6 +111,8 @@
 				A7E418172A9D10A000B794AF /* FotoPerfilView.swift */,
 				A78C40152A9E39EB00A88C15 /* PostViewModel.swift */,
 				A78C40172A9E457900A88C15 /* GaleriaImagens.swift */,
+				A733D07F2AE1DC900058750C /* NovaPostagemView.swift */,
+				A733D0812AE1DC9B0058750C /* NovaPostagemViewModel.swift */,
 			);
 			path = Postagem;
 			sourceTree = "<group>";
@@ -108,6 +122,9 @@
 			children = (
 				A76E85A92AA7F0BD00142769 /* NovoLoginView.swift */,
 				A76E85AB2AA7FB8000142769 /* LoginViewModel.swift */,
+				A733D0772AE1B4940058750C /* CadastroView.swift */,
+				A733D0792AE1B4AF0058750C /* CadastroViewModel.swift */,
+				A733D07B2AE1BD2E0058750C /* FormularioViewModel.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -206,6 +223,7 @@
 				A7ACC6612AD616F600FC11D3 /* HeartSZ.swift */,
 				A7C38EF42ADF1EDA0041538C /* NeonFlicker.swift */,
 				A7C132422ADF7ACF00F8950B /* ColorPallete.swift */,
+				A733D07D2AE1D7730058750C /* Alertable.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -290,11 +308,13 @@
 				A73F46C92A9BCFAF0009A835 /* HTTPFetch.swift in Sources */,
 				A7E418182A9D10A000B794AF /* FotoPerfilView.swift in Sources */,
 				A79D023C2A7C34D400215AAE /* PerfilView.swift in Sources */,
+				A733D07A2AE1B4AF0058750C /* CadastroViewModel.swift in Sources */,
 				A7C4E1C62AD581C5003F715F /* HalfRoundedRectangle.swift in Sources */,
 				A7A838FA2A9A452F006FEFF3 /* SessionModel.swift in Sources */,
 				A7C38EF52ADF1EDA0041538C /* NeonFlicker.swift in Sources */,
 				A7ACC6622AD616F600FC11D3 /* HeartSZ.swift in Sources */,
 				A7A838EF2A9A3D48006FEFF3 /* APIs.swift in Sources */,
+				A733D07C2AE1BD2E0058750C /* FormularioViewModel.swift in Sources */,
 				A74BF7C22A9C1A6C00B8BD82 /* PostagemListView.swift in Sources */,
 				A7B5E5DD2A506CC3008D56E0 /* InicioView.swift in Sources */,
 				A76E85AC2AA7FB8000142769 /* LoginViewModel.swift in Sources */,
@@ -302,10 +322,14 @@
 				A7A838F82A9A437A006FEFF3 /* Listagem.swift in Sources */,
 				A7F8E1F82A9CD06E00C7A0F8 /* InicioToolbar.swift in Sources */,
 				A7B5E5DB2A506CC3008D56E0 /* Social_NetworkApp.swift in Sources */,
+				A733D0802AE1DC900058750C /* NovaPostagemView.swift in Sources */,
 				A72860042AC34E7D00DDAF72 /* BordaModifier.swift in Sources */,
+				A733D0822AE1DC9B0058750C /* NovaPostagemViewModel.swift in Sources */,
 				A7A838F32A9A40DA006FEFF3 /* PostagemModel.swift in Sources */,
 				A7A838F12A9A3FD4006FEFF3 /* AppDataStore.swift in Sources */,
+				A733D0782AE1B4940058750C /* CadastroView.swift in Sources */,
 				A78C40162A9E39EB00A88C15 /* PostViewModel.swift in Sources */,
+				A733D07E2AE1D7730058750C /* Alertable.swift in Sources */,
 				A79D02412A7C3E1900215AAE /* URLImage.swift in Sources */,
 				A76E85AA2AA7F0BD00142769 /* NovoLoginView.swift in Sources */,
 				A7FB7EFD2A5AE73900B78214 /* PostagensViewModel.swift in Sources */,

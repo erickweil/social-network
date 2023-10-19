@@ -15,42 +15,34 @@ struct HeartSZAnim: View {
         
         VStack {
             ZStack {
-                HeartSZ(left: false, right: true)
-                    .trim(from: 0, to: anim)
-                    .stroke(fillColor,lineWidth: 5.50)
+                
+                HeartSZ(left: true, right: true)
+                    .fill(Color.destaque)
                     .padding(40)
                     .frame(width: 200, height: 200)
-                    .animation(.easeInOut(duration: 0.75).delay(1.0), value: anim)
+                    .scaleEffect(anim)
+                    .animation(.easeInOut(duration: 0.33).delay(0.66), value: anim)
                 
                 HeartSZ(left: true, right: false)
-                    .stroke(fillColor,lineWidth: 5.50)
+                    .trim(from: 0, to: anim)
+                    .stroke(Color.primaria,lineWidth: 5.50)
                     .padding(40)
                     .frame(width: 200, height: 200)
-                    .rotation3DEffect(.degrees(anim * (360 * 2)), axis: (x: 0,y: 1,z: 0))
-                    .animation(.easeOut(duration: 1.0), value: anim)
-                    //.animation(.spring(response: 0.7,dampingFraction: 0.30), value: anim)
+                    .animation(.easeInOut(duration: 0.33), value: anim)
+                
+                HeartSZ(left: false, right: true)
+                    .trim(from: 0, to: anim)
+                    .stroke(Color.primaria,lineWidth: 5.50)
+                    .padding(40)
+                    .frame(width: 200, height: 200)
+                    .animation(.easeInOut(duration: 0.33).delay(0.33), value: anim)
             }
             
             HStack(spacing: 0) {
-                Text("S").bold()
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: fillColor, frontColor: .white)
-                    .animation(.spring(response: 0.6,dampingFraction: 0.60).delay(0.25), value: anim)
-                
-                if anim == 1.0 {
-                    Text("ociali")
-                        .transition(.opacity)
-                }
-                
-                Text("z").bold()
-                    .neonFlicker(isFaceUp: anim == 1.0, backColor: fillColor, frontColor: .white)
-                    .animation(.spring(response: 0.5,dampingFraction: 0.75).delay(0.15), value: anim)
-                
-                if anim == 1.0 {
-                    Text("e")
-                        .transition(.opacity)
-                }
+                Text("Socialize").bold()
+                    .opacity(anim == 1 ? 1.0 : 0.0)
             }
-            .animation(.default.delay(2.0), value: anim)
+            .animation(.easeInOut(duration: 0.33).delay(0.66), value: anim)
             .foregroundColor(Color.texto)
             .font(.system(size: 52))
         }
@@ -73,7 +65,7 @@ struct SplashScreen<Content>: View where Content: View {
         
     var body: some View {
         ZStack {
-            Color.primaria
+            Color.destaque2
             
             VStack {
                 HeartSZAnim()
@@ -107,7 +99,7 @@ struct SplashScreen<Content>: View where Content: View {
         }
         .task {
             // Delay da animação
-            try? await Task.sleep(nanoseconds: 2_350_000_000)
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
             
             DispatchQueue.main.async {
                 withAnimation {

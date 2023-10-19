@@ -14,15 +14,24 @@ struct MeuInput: View {
     var erro: String?
     var password: Bool
     @FocusState private var estaFocado: Bool
+    var autoCapitalization: TextInputAutocapitalization
+    var autoCorrection: Bool
     
     // https://www.hackingwithswift.com/quick-start/swiftui/how-to-detect-dark-mode
     @Environment(\.colorScheme) var colorScheme
     
-    init(_ label: String, texto: Binding<String>, erro: String? = nil, password: Bool = false) {
+    init(_ label: String,
+         texto: Binding<String>,
+         erro: String? = nil,
+         password: Bool = false,
+         autoCapitalization: TextInputAutocapitalization = .never,
+         autoCorrection: Bool = false) {
         self.label = label
         self._texto = texto
         self.erro = erro
         self.password = password
+        self.autoCapitalization = autoCapitalization
+        self.autoCorrection = autoCorrection
     }
     
     func getFieldTextOrPasswordField(password: Bool) -> some View {
@@ -30,11 +39,13 @@ struct MeuInput: View {
             if password {
                 SecureField("", text: $texto)
                     .focused($estaFocado)
-                    .textInputAutocapitalization(.never)
+                    .textInputAutocapitalization(autoCapitalization)
+                    .autocorrectionDisabled(!autoCorrection)
             } else {
                 TextField("", text: $texto)
                     .focused($estaFocado)
-                    .textInputAutocapitalization(.never)
+                    .textInputAutocapitalization(autoCapitalization)
+                    .autocorrectionDisabled(!autoCorrection)
             }
         }
     }

@@ -14,7 +14,7 @@ class PostViewModel: ObservableObject {
     func clicouCurtir(token: String) async throws {
         let url: URL = APIs.curtirPostagem(postagem._id).url
         var method: FetchOptions.HTTPMethod
-        if !postagem.curtida {
+        if postagem.curtida == nil || !(postagem.curtida!) {
             // Enviar POST para Curtir
             method = .POST
         } else {
@@ -29,8 +29,8 @@ class PostViewModel: ObservableObject {
             )
         )
         
-        guard resp.success else {
-            throw NetworkError.errorResponse("Não conseguiu curtir/descurtir")
+        if let error = resp.error {
+            throw error
         }
         
         let respModel = try resp.json(CurtidaResponse.self)

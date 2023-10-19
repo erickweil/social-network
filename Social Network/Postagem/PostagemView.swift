@@ -146,9 +146,9 @@ struct PostagemView: View {
         HStack {
             
             
-            HeartSZIcon(filled: postagem.curtida)
+            HeartSZIcon(filled: postagem.curtida ?? false)
                 .frame(width: 24.0,height: 24.0)
-                .foregroundColor(postagem.curtida ? Color.destaque : Color.secundaria )
+                .foregroundColor((postagem.curtida ?? false) ? Color.destaque : Color.secundaria )
                 .onTapGesture {
                     Task {
                         await curtir()

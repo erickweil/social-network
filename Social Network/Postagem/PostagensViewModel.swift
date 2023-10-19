@@ -16,6 +16,12 @@ class PostagensViewModel: ObservableObject {
     var proxPagina: Int = 1
     var temMais: Bool = true
     
+    @Published var exibirMensagemErro: Bool = false
+    var mensagemErro: String = ""
+    
+    // false mantém a tela login aberta, true vai para a próxima tela
+    @Published var navegarNovaPostagem = false
+    
     func fetchPostagens(token: String, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
         guard temMais else {
             print("Não tem mais... não precisa carregar")
@@ -40,8 +46,8 @@ class PostagensViewModel: ObservableObject {
             )
         )
         
-        guard resp.success else {
-            throw NetworkError.errorResponse("Não conseguiu carregar postagens")
+        if let error = resp.error {
+            throw error
         }
         
         let respModel = try resp.json(ListagemPostagem.self)

@@ -10,7 +10,8 @@ import SwiftUI
 public extension Color {
     static let texto = Color("CorTexto")
     static let fundo = Color("Background")
-    static let primaria = Color("Primary")
+    static let primaria = Color("CorTexto")
+    static let destaque2 = Color("Primary")
     static let secundaria = Color("Secondary")
     static let destaque = Color("AccentColor")
 }

@@ -27,4 +27,17 @@ struct LoginResponse: Hashable, Codable {
     let usuario: Usuario
 }
 
+struct CadastrarErroResponse: Hashable, Codable {
+    let error: Bool
+    let message: String?
+    let validation: CadastroValidacao?
+    
+    struct CadastroValidacao: Hashable, Codable {
+        let nome: String?
+        let email: String?
+        let senha: String?
+    }
+}
+
+
 typealias ListagemUsuario = ListagemDeAlgo<Usuario>
