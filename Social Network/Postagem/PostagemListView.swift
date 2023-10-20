@@ -77,7 +77,12 @@ struct PostagemListView: View {
                 .listStyle(PlainListStyle())
                 .sheet(isPresented: $viewModel.navegarNovaPostagem) {
                     NavigationView {
-                        NovaPostagemView()
+                        NovaPostagemView(onNovoPost: { post in
+                            viewModel.resetarPostagens()
+                            Task {
+                                await carregarPostagens(store.token)
+                            }
+                        })
                     }
                 }
                 .toolbar() {

@@ -9,10 +9,17 @@ import SwiftUI
 
 
 struct MeuInput: View {
+    
+    enum TipoInput {
+        case password
+        case singleLineText
+        case multilineText
+    }
+    
     var label: String
     @Binding var texto: String
     var erro: String?
-    var password: Bool
+    var tipo: TipoInput
     @FocusState private var estaFocado: Bool
     var autoCapitalization: TextInputAutocapitalization
     var autoCorrection: Bool
@@ -23,21 +30,27 @@ struct MeuInput: View {
     init(_ label: String,
          texto: Binding<String>,
          erro: String? = nil,
-         password: Bool = false,
+         tipo: TipoInput = .singleLineText,
          autoCapitalization: TextInputAutocapitalization = .never,
          autoCorrection: Bool = false) {
         self.label = label
         self._texto = texto
         self.erro = erro
-        self.password = password
+        self.tipo = tipo
         self.autoCapitalization = autoCapitalization
         self.autoCorrection = autoCorrection
     }
     
-    func getFieldTextOrPasswordField(password: Bool) -> some View {
-        HStack {
-            if password {
+    func getFieldTextOrPasswordField(_ tipo: TipoInput) -> some View {
+        VStack {
+            if tipo == .password {
                 SecureField("", text: $texto)
+                    .focused($estaFocado)
+                    .textInputAutocapitalization(autoCapitalization)
+                    .autocorrectionDisabled(!autoCorrection)
+            } else if tipo == .multilineText {
+                // Não funciona dentro de um form?
+                TextEditor(text: $texto)
                     .focused($estaFocado)
                     .textInputAutocapitalization(autoCapitalization)
                     .autocorrectionDisabled(!autoCorrection)
@@ -59,7 +72,7 @@ struct MeuInput: View {
         let padding = 10.0
         
         VStack(alignment: .leading) {
-                getFieldTextOrPasswordField(password: password)
+                getFieldTextOrPasswordField(tipo)
                 .padding(padding)
                 .colocarBorda(8, lineWidth: estaFocado ? 2 : 1, strokeColor: cor)
                 .overlay {
@@ -93,6 +106,7 @@ struct ExemploMeuInput: View {
     @State var sobrenome: String = ""
     @State var senha1: String = ""
     @State var senha2: String = ""
+    @State var bio: String = ""
     
     @State var erroSenha: String?
     var body: some View {
@@ -100,8 +114,9 @@ struct ExemploMeuInput: View {
             Section("Teste") {
                 MeuInput("Nome",texto: $nome)
                 MeuInput("Sobrenome",texto: $sobrenome)
-                MeuInput("Senha",texto: $senha1,erro: erroSenha, password: true)
-                MeuInput("Senha",texto: $senha2,erro: erroSenha, password: true)
+                MeuInput("Senha",texto: $senha1,erro: erroSenha, tipo: .password)
+                MeuInput("Senha",texto: $senha2,erro: erroSenha, tipo: .password)
+                MeuInput("Biografia",texto: $bio, tipo: .multilineText)
                 
                 
                 Button("Validar") {

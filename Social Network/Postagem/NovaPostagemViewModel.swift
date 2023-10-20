@@ -9,7 +9,7 @@ import SwiftUI
 
 class NovaPostagemViewModel: FomularioViewModel {
     // Inputs
-    var conteudo: String = ""
+    @Published var conteudo: String = ""
     @Published var erroConteudo: String?
     
     var postagemPai: String?

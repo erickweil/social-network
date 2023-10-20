@@ -22,6 +22,12 @@ class PostagensViewModel: ObservableObject {
     // false mantém a tela login aberta, true vai para a próxima tela
     @Published var navegarNovaPostagem = false
     
+    func resetarPostagens() {
+        proxPagina = 1
+        temMais = true
+        postagens = nil
+    }
+    
     func fetchPostagens(token: String, postagemPai: Postagem? = nil, postagensCurtidas: Bool = false) async throws {
         guard temMais else {
             print("Não tem mais... não precisa carregar")

@@ -9,16 +9,16 @@ import SwiftUI
 
 class CadastroViewModel: FomularioViewModel {
     // Inputs
-    var email: String = ""
+    @Published var email: String = ""
     @Published var erroEmail: String?
     
-    var nome: String = ""
+    @Published var nome: String = ""
     @Published var erroNome: String?
     
-    var senha1: String = ""
+    @Published var senha1: String = ""
     @Published var erroSenha1: String?
     
-    var senha2: String = ""
+    @Published var senha2: String = ""
     @Published var erroSenha2: String?
     
     func validarFormulario() -> Bool {

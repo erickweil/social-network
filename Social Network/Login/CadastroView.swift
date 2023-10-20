@@ -25,8 +25,8 @@ struct CadastroView: View {
             }
             
             Section("Senha") {
-                MeuInput("Senha", texto: $vm.senha1, erro: vm.erroSenha1, password: true)
-                MeuInput("Confirmar Senha", texto: $vm.senha2, erro: vm.erroSenha2, password: true)
+                MeuInput("Senha", texto: $vm.senha1, erro: vm.erroSenha1, tipo: .password)
+                MeuInput("Confirmar Senha", texto: $vm.senha2, erro: vm.erroSenha2, tipo: .password)
             }
             
             Button("Cadastrar") {

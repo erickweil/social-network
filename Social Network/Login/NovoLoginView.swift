@@ -49,7 +49,7 @@ struct NovoLoginView<Content>: View where Content: View {
                         .bold()
                     
                     MeuInput("Email", texto: $vm.email, erro: vm.erroEmail)
-                    MeuInput("Senha", texto: $vm.senha, erro: vm.erroSenha, password: true)
+                    MeuInput("Senha", texto: $vm.senha, erro: vm.erroSenha, tipo: .password)
                     Button("Acessar") {
                         if vm.validarFormulario() {
                             Task {

@@ -42,7 +42,7 @@ class FomularioViewModel: ObservableObject {
         // https://www.hackingwithswift.com/articles/108/how-to-use-regular-expressions-in-swift
         let regexPattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$"
         let regex = try! NSRegularExpression(pattern: regexPattern)
-        if let match = regex.firstMatch(in: txt, range: NSRange(location: 0, length: txt.utf16.count)) {
+        if let _ = regex.firstMatch(in: txt, range: NSRange(location: 0, length: txt.utf16.count)) {
             return nil
         } else {
             return "Email inválido"
