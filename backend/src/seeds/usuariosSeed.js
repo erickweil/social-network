@@ -1,11 +1,9 @@
 import fakerbr from "faker-br";
 import { faker } from "@faker-js/faker";
 import Usuario, { usuarioTeste } from "../models/Usuario.js";
-import Seguidor from "../models/Seguidor.js";
 import bcrypt from "bcryptjs";
 
 export default async function usuariosSeed(quantidade) {
-    await Seguidor.deleteMany();
     await Usuario.deleteMany();
 
     let resultado = await Usuario.criarUsuario(usuarioTeste );
@@ -51,20 +49,7 @@ export default async function usuariosSeed(quantidade) {
 
         process.stdout.write("\rCadastrando Usuários: "+(i+1)+"/"+quantidade+"......\t");
     }
-
-    // seguir 10 outros usuários em média
-    for(let i = 0; i < idUsuarios.length*10; i++) {
-        let idUsuarioA = idUsuarios[Math.floor(Math.random() * idUsuarios.length)];
-        let idUsuarioB = idUsuarios[Math.floor(Math.random() * idUsuarios.length)];
-
-        if(idUsuarioA != idUsuarioB) {
-            const doc = { usuario: idUsuarioA, seguido: idUsuarioB };
-            await Seguidor.replaceOne(doc,doc,{ upsert: true }); // substitui se existir.
-        }
-
-        process.stdout.write("\rSeguindo Usuários: "+(i+1)+"/"+(idUsuarios.length*10)+"......\t");
-    }
-
-
     console.log("OK!");
+
+    return idUsuarios;
 }

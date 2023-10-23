@@ -10,7 +10,7 @@ export default class CurtidaControler {
         const pagina = parseInt(req.query.pagina) || 1;
 		const limite = 16;
 
-		let listagem = Curtida.find({usuario: idUsuario}).sort({createdAt: -1 });
+		let listagem = Curtida.find({usuario: idUsuario}).sort({_id: -1 });
 		
 		if(pagina > 1) {
 			listagem = listagem.skip(limite * (pagina - 1));

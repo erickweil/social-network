@@ -68,7 +68,7 @@ export default class PostagemController {
 
 		// Se está listando postagens em geral e não respostas à uma postagem, ordena por mais recentes primeiro
 		if(!filtrar.resposta) {
-			listagem = listagem.sort({createdAt: -1 });
+			listagem = listagem.sort({_id: -1 });
 		}
 		
 		if(pagina > 1) {
