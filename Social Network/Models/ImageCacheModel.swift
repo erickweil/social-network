@@ -17,12 +17,20 @@ class ImageCacheViewModel {
         self.cache = [:]
     }
     
-    func storeImageCache(url: URL, image: Image) {
+    func storeImageCache(url: URL?, image: Image) {
+        guard let url else {
+            return
+        }
+        
         print(" \(ImageCacheViewModel.n) Guardou \(url) no cache. Cache possui \(cache.count) imagens")
         cache[url.absoluteString] = image
     }
     
-    func getImageCache(url: URL) -> Image? {
+    func getImageCache(url: URL?) -> Image? {
+        guard let url else {
+            return nil
+        }
+        
         if let img = cache[url.absoluteString] {
             print(" \(ImageCacheViewModel.n) Obtendo do cache: \(url)")
             return img

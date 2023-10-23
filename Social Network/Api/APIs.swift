@@ -17,9 +17,17 @@ enum APIs {
     case usuarios
     
     public static var baseURL: URL {
-        URL(string: "https://socialize-api.app.fslab.dev")!
+        //URL(string: "https://socialize-api.app.fslab.dev")!
+        URL(string: "http://192.168.1.88:3000")!
     }
     
+    static func getURL(_ url: String) -> URL? {
+        if !url.hasPrefix("http://") && !url.hasPrefix("https://") {
+            return APIs.baseURL.appendingPathComponent(url);
+        } else {
+            return URL(string: url);
+        }
+    }
     
     var url: URL {
         switch self {

@@ -12,10 +12,16 @@ struct NovaPostagemView: View {
     @EnvironmentObject private var store: LoginViewModel
     
     @Environment(\.dismiss) var dismiss
-    // Estado global da aplicação
-    @StateObject private var vm: NovaPostagemViewModel = NovaPostagemViewModel()
+        
+    @StateObject private var vm: NovaPostagemViewModel// = NovaPostagemViewModel()
     
     var onNovoPost: (Postagem) -> Void
+    
+    init(idPostagemPai: String? = nil, onNovoPost: @escaping (Postagem) -> Void) {
+        _vm = StateObject(wrappedValue: NovaPostagemViewModel(idPostagemPai: idPostagemPai))
+        self.onNovoPost = onNovoPost
+    }
+    
     
     var body: some View {
         Form {
@@ -24,9 +30,9 @@ struct NovaPostagemView: View {
                     .frame(minHeight: 60)
                     .keyboardType(.default)
             }
-            .padding(.top, 20)
+            .padding(.vertical, 20)
         }
-        .navigationTitle("Nova Postagem")
+        .navigationTitle(vm.idPostagemPai != nil ? "Nova Resposta" : "Nova Postagem")
         .toolbar() {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Cancelar") {

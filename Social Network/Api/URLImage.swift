@@ -42,10 +42,10 @@ struct URLImage<P>: View where P : View {
     // private var imageCache: ImageCacheViewModel?
     @Environment(\.imageCache) private var imageCache: ImageCacheViewModel
     
-    let url: URL
+    let url: URL?
     let placeholder: () -> P
     
-    init(url: URL, placeholder: @escaping () -> P) {
+    init(url: URL?, placeholder: @escaping () -> P) {
         self.url = url
         self.placeholder = placeholder
     }

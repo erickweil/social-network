@@ -17,7 +17,7 @@ struct FotoPerfilView: View {
     }
     
     var body: some View {
-        URLImage(url: APIs.baseURL.appendingPathComponent(imgPath))
+        URLImage(url: APIs.getURL(imgPath))
         {
             defaultPlaceholder()
         }

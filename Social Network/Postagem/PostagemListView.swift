@@ -77,11 +77,13 @@ struct PostagemListView: View {
                 .listStyle(PlainListStyle())
                 .sheet(isPresented: $viewModel.navegarNovaPostagem) {
                     NavigationView {
-                        NovaPostagemView(onNovoPost: { post in
+                        NovaPostagemView(idPostagemPai: postagemPai?.id ,onNovoPost: { post in
                             viewModel.resetarPostagens()
-                            Task {
-                                await carregarPostagens(store.token)
-                            }
+                            
+                            // Não precisa! porque já vai carregar
+                            //Task {
+                            //    await carregarPostagens(store.token)
+                            //}
                         })
                     }
                 }

@@ -8,11 +8,17 @@
 import SwiftUI
 
 class NovaPostagemViewModel: FomularioViewModel {
+    var idPostagemPai: String?
+    
     // Inputs
-    @Published var conteudo: String = ""
+    @Published var conteudo: String
     @Published var erroConteudo: String?
     
-    var postagemPai: String?
+    init(idPostagemPai: String? = nil) {
+        self.idPostagemPai = idPostagemPai
+        self.conteudo = ""
+        self.erroConteudo = nil
+    }
         
     func validarFormulario() -> Bool {
         erroConteudo = validaObrigatorio(conteudo)
@@ -28,14 +34,19 @@ class NovaPostagemViewModel: FomularioViewModel {
     
     // Só deve chamar realizarCadastro() se validarFormulario() der true
     public func realizarCadastro(token: String) async throws -> Postagem? {
+        
+        var multipartBody: [String : (Data, filename: String?)] = [:]
+        
+        multipartBody["conteudo"] = (conteudo.data(using: .utf8)!, nil)
+        if let idPostagemPai {
+            multipartBody["postagemPai"] = (idPostagemPai.data(using: .utf8)!, nil)
+        }
         let resp = try await HTTPClient.instance.fetch(
             APIs.postagens.url,
             FetchOptions(
                 method: .POST,
                 headers: ["Authorization": "Bearer \(token)"],
-                multipartBody: [
-                    "conteudo": (conteudo.data(using: .utf8)!, nil)
-                ]
+                multipartBody: multipartBody
             )
         )
         

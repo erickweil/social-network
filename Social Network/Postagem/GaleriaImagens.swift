@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct GaleriaImagens: View {
-    var imagens: [URL]
+    var imagens: [URL?]
     
-    init(imagens: [URL]) {
+    init(imagens: [URL?]) {
         self.imagens = imagens
     }
     
-    init(imagens: [String], baseURL: URL) {
+    init(imagens: [String]) {
         self.imagens = []
         for imagem in imagens {
-            self.imagens.append(baseURL.appendingPathComponent(imagem))
+            self.imagens.append(APIs.getURL(imagem))
         }
     }
     
@@ -44,8 +44,7 @@ struct GaleriaImagens_Previews: PreviewProvider {
         GaleriaImagens(
             imagens: [
             "/img/64c0251e2296e61e0f501ba7/98ccd7ed-0163-47dd-8dba-4ad5243b7cb3.jpg"
-            ],
-            baseURL: APIs.baseURL
+            ]
         )
     }
 }

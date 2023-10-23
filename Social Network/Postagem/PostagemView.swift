@@ -186,7 +186,7 @@ struct PostagemView: View {
                     conteudo(postagem)
                     
                     if postagem.imagens.count > 0 {
-                        GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL)
+                        GaleriaImagens(imagens: postagem.imagens)
                             .frame(height: 250)
                             .padding(.top, 10)
                     }
@@ -210,7 +210,7 @@ struct PostagemView: View {
                     .padding(.top, 10)
                     
                 if postagem.imagens.count > 0 {
-                    GaleriaImagens(imagens: postagem.imagens, baseURL: APIs.baseURL)
+                    GaleriaImagens(imagens: postagem.imagens)
                         .frame(height: 250)
                         .padding(.top, 10)
                 }
