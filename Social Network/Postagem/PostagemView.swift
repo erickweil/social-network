@@ -98,6 +98,14 @@ struct PostagemView: View {
     
     var limitarLinhas: Bool = true
     
+    var exibirBotoes: Bool = true
+    
+    @State var ativarLink: Bool = false
+    
+    @State var ativarComentarLink: Bool = false
+    
+    var onComentar: (() -> Void)?
+    
     func curtir() async {
         // Assim que aparecer na tela faz o fetch
         do {
@@ -109,7 +117,6 @@ struct PostagemView: View {
         }
     }
     
-    @State var ativarLink: Bool = false
     func tituloNome(_ postagem: Postagem) -> some View {
         NavigationLink(destination: PostagemListView(postagemPai: postagem), isActive: $ativarLink) {
             if exibirComoResposta {
@@ -136,10 +143,17 @@ struct PostagemView: View {
     }
     
     func conteudo(_ postagem: Postagem) -> some View {
-        Text(postagem.conteudo)
-            .lineLimit(limitarLinhas ? 12 : 1000)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 5)
+        ZStack {
+            
+            NavigationLink(destination: PostagemListView(postagemPai: postagem,abrirResposta: true), isActive: $ativarComentarLink) {
+                EmptyView()
+            }.opacity(0)
+            
+            Text(postagem.conteudo)
+                .lineLimit(limitarLinhas ? 12 : 1000)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 5)
+        }
     }
     
     func barraBotoes(_ postagem: Postagem) -> some View {
@@ -162,7 +176,11 @@ struct PostagemView: View {
                  .scaledToFit()
                  .frame(width: 24, height: 24)
                 .onTapGesture {
-                print("Comentar")
+                    if let onComentar {
+                        onComentar()
+                    } else {
+                        ativarComentarLink = true
+                    }
             }
             Text("\(postagem.numRespostas)")
                 .frame(width: 60)
@@ -191,7 +209,9 @@ struct PostagemView: View {
                             .padding(.top, 10)
                     }
                     
-                    barraBotoes(postagem)
+                    if exibirBotoes {
+                        barraBotoes(postagem)
+                    }
                 }
             }
             .background(.background)

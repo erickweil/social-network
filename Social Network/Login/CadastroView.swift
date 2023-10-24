@@ -18,7 +18,8 @@ struct CadastroView: View {
     var body: some View {
         Form {
             Section("Informações") {
-                MeuInput("Nome", texto: $vm.nome, erro: vm.erroNome, autoCapitalization: .words)
+                MeuInput("Nome", texto: $vm.nome, erro: vm.erroNome)
+                    .textInputAutocapitalization(.words)
                     .keyboardType(.namePhonePad)
                 MeuInput("Email", texto: $vm.email, erro: vm.erroEmail)
                     .keyboardType(.emailAddress)

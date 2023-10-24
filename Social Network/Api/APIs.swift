@@ -18,7 +18,7 @@ enum APIs {
     
     public static var baseURL: URL {
         //URL(string: "https://socialize-api.app.fslab.dev")!
-        URL(string: "http://192.168.1.88:3000")!
+        URL(string: "http://192.168.1.101:3000")!
     }
     
     static func getURL(_ url: String) -> URL? {

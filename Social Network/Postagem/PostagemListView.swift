@@ -9,15 +9,21 @@ import SwiftUI
 
 struct PostagemListView: View {
     var postagemPai: Postagem?
-    var mostrarPostagensCurtidas: Bool = false
-    // Estado global da aplicação
-    @EnvironmentObject private var store: LoginViewModel
-        
+    var mostrarPostagensCurtidas: Bool
     // Estado local desta tela
     // @StateObject ->  mantém o valor mesmo em redraws
     // @ObservedObject -> recriado quando acontece um redraw
-    @StateObject var viewModel = PostagensViewModel()
+    @StateObject var viewModel: PostagensViewModel
     
+    // Estado global da aplicação
+    @EnvironmentObject private var store: LoginViewModel
+    
+    init(postagemPai: Postagem? = nil, mostrarPostagensCurtidas: Bool = false, abrirResposta: Bool = false) {
+        self.postagemPai = postagemPai
+        self.mostrarPostagensCurtidas = mostrarPostagensCurtidas
+        self._viewModel = StateObject(wrappedValue: PostagensViewModel(navegarNovaPostagem: abrirResposta))
+    }
+        
     func carregarPostagens(_ token: String) async {
         // Assim que aparecer na tela faz o fetch
         do {
@@ -39,45 +45,55 @@ struct PostagemListView: View {
     var body: some View {
         if store.estaLogado {
             if let postagens = viewModel.postagens {
-                List {
-                    
-                    if let postagemPai {
-                        PostagemView(
-                            post: PostViewModel(postagem: postagemPai),
-                            exibirComoResposta: false,
-                            limitarLinhas: false
-                        )
-                    }
-                    
-                    if postagens.count == 0 {
-                        if postagemPai != nil {
-                            Text("Seja o primeiro a responder")
-                        } else {
-                            Text("Que vazio...")
-                        }
-                    } else {
-                        ForEach(postagens, id: \.self) { postagem in
+                VStack {
+                    List {
+                        
+                        if let postagemPai {
                             PostagemView(
-                                post: PostViewModel(postagem: postagem),
-                                exibirComoResposta: postagem.postagemPai != nil
+                                post: PostViewModel(postagem: postagemPai),
+                                exibirComoResposta: false,
+                                limitarLinhas: false,
+                                onComentar: {
+                                    viewModel.navegarNovaPostagem = true
+                                }
                             )
                         }
                         
-                        if viewModel.temMais {
-                            PostagemSkeleton()
-                                .onAppear {
-                                    print("Apareceu o skel carregar mais")
-                                    Task {
-                                        await carregarPostagens(store.token)
+                        if postagens.count > 0 {
+                            ForEach(postagens, id: \.self) { postagem in
+                                PostagemView(
+                                    post: PostViewModel(postagem: postagem),
+                                    exibirComoResposta: postagem.postagemPai != nil
+                                )
+                            }
+                            
+                            if viewModel.temMais {
+                                PostagemSkeleton()
+                                    .onAppear {
+                                        print("Apareceu o skel carregar mais")
+                                        Task {
+                                            await carregarPostagens(store.token)
+                                        }
                                     }
-                                }
+                            }
                         }
                     }
+                    .listStyle(PlainListStyle())
+                    
+                    if postagemPai != nil {
+                        Divider()
+                        Text("Adicione uma resposta")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .onTapGesture {
+                                viewModel.navegarNovaPostagem = true
+                            }
+                            .background(Color.fundo)
+                    }
                 }
-                .listStyle(PlainListStyle())
                 .sheet(isPresented: $viewModel.navegarNovaPostagem) {
                     NavigationView {
-                        NovaPostagemView(idPostagemPai: postagemPai?.id ,onNovoPost: { post in
+                        NovaPostagemView(postagemPai: postagemPai ,onNovoPost: { post in
                             viewModel.resetarPostagens()
                             
                             // Não precisa! porque já vai carregar
@@ -88,9 +104,11 @@ struct PostagemListView: View {
                     }
                 }
                 .toolbar() {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Postar") {
-                            viewModel.navegarNovaPostagem = true
+                    if postagemPai == nil {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("Postar") {
+                                viewModel.navegarNovaPostagem = true
+                            }
                         }
                     }
                 }

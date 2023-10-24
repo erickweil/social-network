@@ -8,14 +8,14 @@
 import SwiftUI
 
 class NovaPostagemViewModel: FomularioViewModel {
-    var idPostagemPai: String?
+    var postagemPai: Postagem?
     
     // Inputs
     @Published var conteudo: String
     @Published var erroConteudo: String?
     
-    init(idPostagemPai: String? = nil) {
-        self.idPostagemPai = idPostagemPai
+    init(postagemPai: Postagem? = nil) {
+        self.postagemPai = postagemPai
         self.conteudo = ""
         self.erroConteudo = nil
     }
@@ -38,8 +38,8 @@ class NovaPostagemViewModel: FomularioViewModel {
         var multipartBody: [String : (Data, filename: String?)] = [:]
         
         multipartBody["conteudo"] = (conteudo.data(using: .utf8)!, nil)
-        if let idPostagemPai {
-            multipartBody["postagemPai"] = (idPostagemPai.data(using: .utf8)!, nil)
+        if let postagemPai {
+            multipartBody["postagemPai"] = (postagemPai.id.data(using: .utf8)!, nil)
         }
         let resp = try await HTTPClient.instance.fetch(
             APIs.postagens.url,

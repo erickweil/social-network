@@ -21,8 +21,11 @@ struct MeuInput: View {
     var erro: String?
     var tipo: TipoInput
     @FocusState private var estaFocado: Bool
-    var autoCapitalization: TextInputAutocapitalization
-    var autoCorrection: Bool
+    private var autoCapitalization: TextInputAutocapitalization
+    private var autoCorrectionDisabled: Bool
+    
+    private var exibirBorda: Bool
+    private var iniciarFocado: Bool
     
     // https://www.hackingwithswift.com/quick-start/swiftui/how-to-detect-dark-mode
     @Environment(\.colorScheme) var colorScheme
@@ -30,15 +33,17 @@ struct MeuInput: View {
     init(_ label: String,
          texto: Binding<String>,
          erro: String? = nil,
-         tipo: TipoInput = .singleLineText,
-         autoCapitalization: TextInputAutocapitalization = .never,
-         autoCorrection: Bool = false) {
+         tipo: TipoInput = .singleLineText
+    ) {
         self.label = label
         self._texto = texto
         self.erro = erro
         self.tipo = tipo
-        self.autoCapitalization = autoCapitalization
-        self.autoCorrection = autoCorrection
+        
+        self.iniciarFocado = false
+        self.autoCapitalization = .never
+        self.autoCorrectionDisabled = true
+        self.exibirBorda = true
     }
     
     func getFieldTextOrPasswordField(_ tipo: TipoInput) -> some View {
@@ -47,18 +52,19 @@ struct MeuInput: View {
                 SecureField("", text: $texto)
                     .focused($estaFocado)
                     .textInputAutocapitalization(autoCapitalization)
-                    .autocorrectionDisabled(!autoCorrection)
+                    .autocorrectionDisabled(autoCorrectionDisabled)
             } else if tipo == .multilineText {
                 // Não funciona dentro de um form?
                 TextEditor(text: $texto)
                     .focused($estaFocado)
                     .textInputAutocapitalization(autoCapitalization)
-                    .autocorrectionDisabled(!autoCorrection)
+                    .autocorrectionDisabled(autoCorrectionDisabled)
+                    .frame(minHeight: 38)
             } else {
                 TextField("", text: $texto)
                     .focused($estaFocado)
                     .textInputAutocapitalization(autoCapitalization)
-                    .autocorrectionDisabled(!autoCorrection)
+                    .autocorrectionDisabled(autoCorrectionDisabled)
             }
         }
     }
@@ -74,7 +80,7 @@ struct MeuInput: View {
         VStack(alignment: .leading) {
                 getFieldTextOrPasswordField(tipo)
                 .padding(padding)
-                .colocarBorda(8, lineWidth: estaFocado ? 2 : 1, strokeColor: cor)
+                .colocarBorda(8, lineWidth: exibirBorda ? (estaFocado ? 2 : 1) : 0, strokeColor: cor)
                 .overlay {
                     Text(label)
                         .font(diminuirLabel ? .system(size: 12.0) : .body)
@@ -98,7 +104,43 @@ struct MeuInput: View {
             }
         }
         .listRowSeparator(.hidden)
+        .onAppear {
+            if iniciarFocado {
+                //DispatchQueue.main.async {
+                self.estaFocado = true
+                //}
+            }
+        }
     }
+}
+
+extension MeuInput {
+    // Depois mudar para usar modifiers e não aquele construtor gigante https://stackoverflow.com/questions/76082301/how-do-you-provide-custom-modifiers-for-your-components
+
+    func exibirBorda(_ exibirBorda: Bool) -> Self {
+        var copy = self
+        copy.exibirBorda = exibirBorda
+        return copy
+    }
+    
+    func textInputAutocapitalization(_ autoCapitalization: TextInputAutocapitalization) -> Self {
+        var copy = self
+        copy.autoCapitalization = autoCapitalization
+        return copy
+    }
+    
+    func autocorrectionDisabled(_ disabled: Bool) -> Self {
+        var copy = self
+        copy.autoCorrectionDisabled = disabled
+        return copy
+    }
+    
+    func iniciarFocado(_ iniciarFocado: Bool = true) -> Self {
+        var copy = self
+        copy.iniciarFocado = iniciarFocado
+        return copy
+    }
+    
 }
 
 struct ExemploMeuInput: View {
@@ -117,7 +159,7 @@ struct ExemploMeuInput: View {
                 MeuInput("Senha",texto: $senha1,erro: erroSenha, tipo: .password)
                 MeuInput("Senha",texto: $senha2,erro: erroSenha, tipo: .password)
                 MeuInput("Biografia",texto: $bio, tipo: .multilineText)
-                
+                    
                 
                 Button("Validar") {
                     if senha1 != senha2 {
@@ -129,7 +171,9 @@ struct ExemploMeuInput: View {
                 .buttonStyle(.borderedProminent)
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
+            .padding(.horizontal)
         }
+        .plainFormStyle()
     }
 }
 

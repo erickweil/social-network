@@ -17,22 +17,34 @@ struct NovaPostagemView: View {
     
     var onNovoPost: (Postagem) -> Void
     
-    init(idPostagemPai: String? = nil, onNovoPost: @escaping (Postagem) -> Void) {
-        _vm = StateObject(wrappedValue: NovaPostagemViewModel(idPostagemPai: idPostagemPai))
+    init(postagemPai: Postagem? = nil, onNovoPost: @escaping (Postagem) -> Void) {
+        _vm = StateObject(wrappedValue: NovaPostagemViewModel(postagemPai: postagemPai))
         self.onNovoPost = onNovoPost
     }
     
     
     var body: some View {
         Form {
-            Section {
-                MeuInput("Conteúdo", texto: $vm.conteudo, erro: vm.erroConteudo, tipo: .multilineText, autoCapitalization: .sentences)
-                    .frame(minHeight: 60)
-                    .keyboardType(.default)
+            
+            if let postagemPai = vm.postagemPai {
+                VStack {
+                    PostagemView(post: PostViewModel(postagem: postagemPai), exibirComoResposta: true, exibirBotoes: false)
+                }
+                .background(Color.secundaria)
+                .padding()
+                
+                Divider()
             }
-            .padding(.vertical, 20)
+            
+            MeuInput("", texto: $vm.conteudo, erro: vm.erroConteudo, tipo: .multilineText)
+                .textInputAutocapitalization(.sentences)
+                .exibirBorda(false)
+                .iniciarFocado()
+                .keyboardType(.default)
+                .frame(minHeight: 56)
         }
-        .navigationTitle(vm.idPostagemPai != nil ? "Nova Resposta" : "Nova Postagem")
+        .plainFormStyle()
+        .navigationTitle(vm.postagemPai != nil ? "Nova Resposta" : "Nova Postagem")
         .toolbar() {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("Cancelar") {

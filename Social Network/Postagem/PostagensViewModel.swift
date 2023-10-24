@@ -12,15 +12,24 @@ import Foundation
 // https://www.appypie.com/urlsession-swift-networking-how-to
 class PostagensViewModel: ObservableObject {
     // Published para que ao mudar atualize o View
-    @Published var postagens: [Postagem]? = nil
-    var proxPagina: Int = 1
-    var temMais: Bool = true
+    @Published var postagens: [Postagem]?
+    var proxPagina: Int
+    var temMais: Bool
     
-    @Published var exibirMensagemErro: Bool = false
-    var mensagemErro: String = ""
+    @Published var exibirMensagemErro: Bool
+    var mensagemErro: String
     
     // false mantém a tela login aberta, true vai para a próxima tela
-    @Published var navegarNovaPostagem = false
+    @Published var navegarNovaPostagem: Bool
+    
+    init(postagens: [Postagem]? = nil, proxPagina: Int = 1, temMais: Bool = true, exibirMensagemErro: Bool = false, mensagemErro: String = "", navegarNovaPostagem: Bool = false) {
+        self.postagens = postagens
+        self.proxPagina = proxPagina
+        self.temMais = temMais
+        self.exibirMensagemErro = exibirMensagemErro
+        self.mensagemErro = mensagemErro
+        self.navegarNovaPostagem = navegarNovaPostagem
+    }
     
     func resetarPostagens() {
         proxPagina = 1

@@ -13,22 +13,26 @@ struct Borda: ViewModifier {
     var strokeColor: Color?
     var fillColor: Color?
     func body(content: Content) -> some View {
-        content
-            .background {
-                ZStack {
-                    let rect = RoundedRectangle(cornerRadius: raio)
-                    
-                    if let strokeColor {
-                        rect.stroke(lineWidth: lineWidth).foregroundColor(strokeColor)
-                    } else {
-                        rect.stroke(lineWidth: lineWidth)
-                    }
-                    
-                    if let fillColor {
-                        rect.fill(fillColor)
+        if lineWidth <= 0 {
+            content
+        } else {
+            content
+                .background {
+                    ZStack {
+                        let rect = RoundedRectangle(cornerRadius: raio)
+                        
+                        if let strokeColor {
+                            rect.stroke(lineWidth: lineWidth).foregroundColor(strokeColor)
+                        } else {
+                            rect.stroke(lineWidth: lineWidth)
+                        }
+                        
+                        if let fillColor {
+                            rect.fill(fillColor)
+                        }
                     }
                 }
-            }
+        }
     }
 }
 
