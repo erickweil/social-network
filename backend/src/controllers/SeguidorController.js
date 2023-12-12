@@ -19,7 +19,7 @@ export default class SeguidorControler {
         let quemProcurar = listarSeguindo === true ? "usuario" : "seguido";
         let quemEncontrar = listarSeguindo === true ? "seguido" : "usuario";
 
-        let listagem = Seguidor.find({[quemProcurar]:id}).sort({createdAt: -1 });
+        let listagem = Seguidor.find({[quemProcurar]:id}).sort({_id: -1 });
         
 		if(pagina > 1) {
 			listagem = listagem.skip(limite * (pagina - 1));

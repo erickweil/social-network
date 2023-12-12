@@ -313,6 +313,7 @@ const router = express.Router();
  */
 
 router.get("/usuarios", AuthMiddleware, wrapException(UsuarioControler.listarUsuarios));
+router.get("/usuarios/logado", AuthMiddleware, wrapException(UsuarioControler.listarUsuarioLogado));
 router.get("/usuarios/:id", AuthMiddleware, wrapException(UsuarioControler.listarUsuarioPorId));
 
 // Operações no próprio usuário autenticado

@@ -49,6 +49,12 @@ export default class UsuarioControler {
 	
 		return res.status(200).json(usuario);
 	}
+
+	// Rota para conferir se o token é válido e obter informações atualizadas do usuário
+	static async listarUsuarioLogado(req,res) {	
+		// Não precisa pesquisar no banco pois o auth middleware já fez isso
+		return res.status(200).json(req.usuario);
+	}
 	
 	static async cadastrarUsuario(req,res) {
 		const nome = req.body.nome;
