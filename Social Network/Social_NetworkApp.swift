@@ -8,10 +8,17 @@
 import SwiftUI
 
 @main
-struct Social_NetworkApp: App {
+struct Social_NetworkApp: App {    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                SplashScreen {
+                    NovoLoginView() {
+                        InicioView()
+                            .navigationBarBackButtonHidden(true)
+                    }
+                }
+            }
         }
     }
 }
